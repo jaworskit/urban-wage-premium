@@ -57,7 +57,7 @@ clear all
 
 	clear
 
-	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2010" {
+	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
 		qui append using "$project/data/population/population_`year'.dta"
 	}
 	
@@ -71,25 +71,19 @@ clear all
 	
 *-> MA county to MSA crosswalk
 
-	qui use "$project/data/urbanareas/metarea_final.dta", clear 
+	qui use "$project/data/dta/temp/population_1940_2010.dta", clear
+	* rm "$project/dta/temp/population_1940_2010.dta"
+
+	* Merge with County FIPS to MSA Crosswalk
+	merge 1:m fips year using "$project/data/urbanareas/metarea_final.dta"
 	
-	gen statefip = floor(fips/1000)
-	
-	* drop Hawaii and Alaska
-	qui drop if statefip == 2 | statefip == 15
-	
-	* Merge with county-level market access	
-	merge m:1 fips year using "$project/data/marketaccess/dta/MA_allyears.dta"
-		
 	* _merge == 2 is because there are many counties without an MSA
 	drop _merge
+		
+	* Merge with county-level market access	
+	merge m:1 fips year using "$project/data/marketaccess/dta/MA_allyears.dta"
 	
-	
-	* Merge with county-level population
-	merge m:1 fips year using "$project/data/dta/temp/population_1940_2010.dta"
-	* rm "$project/dta/temp/population_1940_2010.dta"
-	
-	* A few fips codes are missing ma (171 obs.; Virginia is messed up)
+	* A few fips codes are missing ma (330 obs.; Virginia is messed up)
 	drop if missing(ma)
 	
 	* For missing, code = statefip when we collpase by code

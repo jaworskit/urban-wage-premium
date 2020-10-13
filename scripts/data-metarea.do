@@ -98,5 +98,11 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 	qui keep if _merge != 2 
 	qui replace in_ipums = 0 if missing(in_ipums)
 	drop _merge
+	
+	
+	gen statefip = floor(fips/1000)
+	* drop Hawaii and Alaska
+	qui drop if statefip == 2 | statefip == 15
+	
 	qui save "$project/data/urbanareas/metarea_final.dta", replace
 	
