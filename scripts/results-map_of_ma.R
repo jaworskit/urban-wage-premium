@@ -11,6 +11,7 @@ library(haven)
 library(sf) 
 library(rmapshaper)
 library(tigris)
+library(patchwork)
 
 setwd("~/Dropbox/UrbanWagePremium/")
 
@@ -21,7 +22,7 @@ source("https://gist.githubusercontent.com/kylebutts/7dc66a01ec7e499faa90b4f1fd4
 
 ## Load MA data ----------------------------------------------------------------
 
-ma <- haven::read_dta("dta/msa_market_access.dta") %>% 
+ma <- haven::read_dta("data/dta/msa_market_access.dta") %>% 
 	mutate(
 		state_fips = case_when(
 			code >= 100000 ~ code / 100000
@@ -32,14 +33,18 @@ ma <- haven::read_dta("dta/msa_market_access.dta") %>%
 	select(code, year, everything()) %>% 
 	arrange(code, year) 
 
-ma_nonurban <- ma %>% filter(!is.na(state_fips))
+ma_nonurban <- ma %>% 
+	filter(!is.na(state_fips))
 
 ma <- ma %>% 
 	filter(is.na(state_fips)) %>% 
 	select(code, year, log_ma)
 
 
+
 ## Prepare MSAs ----------------------------------------------------------------
+
+## 1950 ------------------------------------------------------------------------
 
 msa_1950 <- sf::read_sf("data/shapefiles/MSA_1950/US_smsa_1950.shp") %>% 
 	rmapshaper::ms_simplify(keep = 0.01) %>% 
@@ -91,21 +96,24 @@ msa_1950 <- sf::read_sf("data/shapefiles/MSA_1950/US_smsa_1950.shp") %>%
 
 
 ma_1940 <- full_join(
-		msa_1950, 
-		ma %>% 
-			filter(year == 1940) %>% 
-			filter(!(code %in% c("2001", "2200", "7161"))), 
-		by = "code"
-	)
+	msa_1950, 
+	ma %>% 
+		filter(year == 1940) %>% 
+		filter(!(code %in% c("2001", "2200", "7161"))), 
+	by = "code"
+) %>%
+	select(code, metarea, year, log_ma, geometry)
 
 ma_1950 <- full_join(
-		msa_1950, 
-		ma %>% 
-			filter(year == 1950) %>% 
-			filter(!(code %in% c("2001", "2200", "7161"))), 
-		by = "code"
-	)
+	msa_1950, 
+	ma %>% 
+		filter(year == 1950) %>% 
+		filter(!(code %in% c("2001", "2200", "7161"))), 
+	by = "code"
+) %>%
+	select(code, metarea, year, log_ma, geometry)
 
+## 1960 ------------------------------------------------------------------------
 
 msa_1960 <- sf::read_sf("data/shapefiles/MSA_1960/") %>% 
 	rmapshaper::ms_simplify(keep = 0.01) %>% 
@@ -164,16 +172,20 @@ msa_1960 <- sf::read_sf("data/shapefiles/MSA_1960/") %>%
 	)
 
 ma_1960 <- full_join(
-		msa_1960, 
-		ma %>% 
-			filter(year == 1960) %>% 
-			filter(!(code %in% c("1260", "5990"))), 
-		by = "code"
-	) 
+	msa_1960, 
+	ma %>% 
+		filter(year == 1960) %>% 
+		filter(!(code %in% c("1260", "5990"))), 
+	by = "code"
+) %>%
+	st_transform(st_crs(msa_1950)) %>% 
+	select(code, metarea, year, log_ma, geometry)
 
+## 1970 ------------------------------------------------------------------------
 
 msa_1970 <- sf::read_sf("data/shapefiles/MSA_1970/") %>% 
 	rmapshaper::ms_simplify(keep = 0.01) %>% 
+	st_transform(st_crs(msa_1950)) %>% 
 	select(code = SMSAA, metarea = SMSA, geometry) %>%
 	# Not in Ipums
 	filter(!(code %in% c(
@@ -244,15 +256,20 @@ msa_1970 <- sf::read_sf("data/shapefiles/MSA_1970/") %>%
 
 
 ma_1970 <- full_join(
-		msa_1970, 
-		ma %>% 
-			filter(year == 1970) %>% 
-			filter(!(code %in% c("2020", "2700", "3980", "4410", "6240", "7161", "7480", "9140", "9260"))), 
-		by = "code"
-	)
+	msa_1970, 
+	ma %>% 
+		filter(year == 1970) %>% 
+		filter(!(code %in% c("2020", "2700", "3980", "4410", "6240", "7161", "7480", "9140", "9260"))), 
+	by = "code"
+) %>%
+	select(code, metarea, year, log_ma, geometry)
+
+
+## 1980 ------------------------------------------------------------------------
 
 msa_1980 <- sf::read_sf("data/shapefiles/MSA_1980/") %>% 
 	rmapshaper::ms_simplify(keep = 0.01) %>% 
+	st_transform(st_crs(msa_1950)) %>% 
 	select(code = SMSAA, metarea = SMSA, geometry) %>%
 	# Not in Ipums
 	filter(!(code %in% c(
@@ -347,15 +364,18 @@ ma_1980 <- full_join(
 		msa_1980, 
 		ma %>% 
 			filter(year == 1980) %>% 
-			filter(!(code %in% c("0460", "1921", "2320", "4760", "6240", "7560"))), 
+			filter(!(code %in% c("0460", "1921", "4760", "6240", "7560"))), 
 		by = "code"
-	) %>% view()
-	
-	
+	) %>%
+	select(code, year, log_ma, geometry)
+
+
+## 1990 ------------------------------------------------------------------------
 
 msa_1990 <- sf::read_sf("data/shapefiles/MSA_1990/") %>% 
 	rmapshaper::ms_simplify(keep = 0.01) %>% 
-	select(code = MSACMSA, geometry) %>% 
+	st_transform(st_crs(msa_1950)) %>% 
+	select(code = MSACMSA, geometry, area = SHAPE_AREA) %>% 
 	# Not in Ipums
 	filter(!(code %in% c(
 		# Meriden, CT SMSA 
@@ -366,40 +386,56 @@ msa_1990 <- sf::read_sf("data/shapefiles/MSA_1990/") %>%
 		"0380",
 		# Honolulu, HI SMSA
 		"3320",
-		# Not sure what these 3 are
-		"0405", "1282", "6025"
+		
+		# Next to Anderson, SC
+		"0405"
 	))) %>% 
-		mutate(
-			code = case_when(
-				# Buffalo, NY
-				code == "1282" ~ "1280",
-				# Burlington, VT
-				code == "1305" ~ "1310",
-				# Cincinnati-Hamilton
-				code == "1642" ~ "1640",
-				# Panama City
-				code == "6015" ~ "6010",
-				# Grand Forks, ND
-				msa == "2985" ~ "2990",
-				# Elmira, NY
-				code == "2335" ~ "2330",
-				# Florence, SC
-				code == "2655" ~ "2660",
-				# Naples, FL
-				code == "5345" ~ "5340",
-				# Glens Falls, NY
-				code == "2975" ~ "2970",
-				# Jacksonville, NC
-				code == "3605" ~ "3600",
-				# Pittsburg
-				code == "6282" ~ "6280",
-				# Parkersburg/Marietta, WV/OH
-				code == "6025" ~ "6020", 
-				# Panama City, FL
-				code == "6015" ~ "6010",
-				TRUE ~ code
-			)
+	mutate(
+		code = case_when(
+			# Buffalo, NY
+			code == "1282" ~ "1280",
+			# Burlington, VT
+			code == "1305" ~ "1310",
+			# Cincinnati-Hamilton
+			code == "1642" ~ "1640",
+			# Panama City
+			code == "6015" ~ "6010",
+			# Grand Forks, ND
+			code == "2985" ~ "2990",
+			# Elmira, NY
+			code == "2335" ~ "2330",
+			# Florence, SC
+			code == "2655" ~ "2660",
+			# Naples, FL
+			code == "5345" ~ "5340",
+			# Glens Falls, NY
+			code == "2975" ~ "2970",
+			# Jacksonville, NC
+			code == "3605" ~ "3600",
+			# Pittsburg
+			code == "6282" ~ "6280",
+			# Parkersburg/Marietta, WV/OH
+			code == "6025" ~ "6020", 
+			# Panama City, FL
+			code == "6015" ~ "6010",
+			# Florence, SC
+			code == "2655" ~ "2660",
+			# Glenn Falls, NY
+			code == "2975" ~ "2970", 
+			# Grand Forks, ND
+			code == "2985" ~ "2990",
+			# El Paso
+			code == "2320" ~ "2310",
+			# Elkhart, IN 
+			code == "2330" ~ "2320",
+			# Jacksonville Florida
+			area == 7274545618.47 ~ "3590",
+			# Santa Barbara, CA
+			code == "7480" ~ "7470",
+			TRUE ~ code
 		)
+	) %>% 
+	select(-area)
 
 # Collapse to Combined Statistical Areas
 ma_1990 <- ma %>% 
@@ -408,9 +444,9 @@ ma_1990 <- ma %>%
 	mutate(
 		csa = case_when(
 			# Detroit 
-			code %in% c("0440", "2160", "2640") ~ "2162",
+			code %in% c("0440", "2160") ~ "2162",
 			# Seattle-Tacoma-Bremerton, WA
-			code %in% c("1150", "5910", "7600", "8200") ~ "7602",
+			code %in% c("7600", "8200") ~ "7602",
 			# Dallas-Fort Worth, TX
 			code %in% c("1920", "2800") ~ "1922",
 			# Cleveland-Akron, OH
@@ -418,139 +454,575 @@ ma_1990 <- ma %>%
 			# Miami-Fort Lauderdale, FL
 			code %in% c("2680", "5000") ~ "4992",
 			# Denver-Boulder-Greeley, CO
-			code %in% c("2080", "2081", "3060") ~ "2082",
+			code %in% c("2080", "2081") ~ "2082",
 			# Milwaukee-Racine, WI
 			code %in% c("5080", "6600") ~ "5082",
 			# Philadelphia-Wilmington-Atlantic City, PA-NJ-DE-MD
-			code %in% c("0560", "6160", "8760", "9160") ~ "6162",
+			code %in% c("6160", "8760", "9160") ~ "6162",
 			# Los Angeles-Riverside-Orange County, CA
 			code %in% c("4480", "4481", "4482", "6780", "8730") ~ "4472",
 			# Boston
-			code %in% c("1120", "1200", "2600", "1121", "1122", "4760", "5350", "6450", "9240") ~ "1122",
+			code %in% c("1120", "1200", "1121", "1122", "1123", "5350") ~ "1122",
 			# Portland
-			code %in% c("6640", "7080") ~ "6442", 
-			
-		
+			code %in% c("6440") ~ "6442", 
+			# Houston-Galveston-Brazoria, TX
+			code %in% c("3360", "2920", "1145") ~ "3362",
+			# New Haven
+			code %in% c("1160", "5480") ~ "5480",
+			# Buffalo, NY 
+			code %in% c("1280", "1281") ~ "1280",
+			# Chicago
+			code %in% c("1600", "1601", "1602", "1603", "1604", "3800") ~ "1602",
+			# Dallas, TX
+			code %in% c("1920", "1921") ~ "1922",
+			# Anderson, SC
+			code %in% c("3160", "3161") ~ "3160",
+			# Cincinnati-Hamilton, OH
+			code %in% c("1640", "3200") ~ "1640",
+			# Hartford, CT
+			code %in% c("3280", "3281", "3282", "3282", "3283") ~ "3282",
+			# Houstan, TX
+			code %in% c("3360", "3361") ~ "3362",
+			# Cleveland, OH
+			code %in% c("1680", "0080", "4440") ~ "1692",
+			# New York, NY
+			code %in% c("5190", "5600", "5601", "5602", "5603", "5604", "5605", "5760", "5950", "8040", "8480", "1930") ~ "5602",
+			# Pittsburgh, PA
+			code %in% c("6280", "6281") ~ "6280",
+			# Portland, OR
+			code %in% c("6440", "6441") ~ "6442",
+			# Providence, RI
+			code %in% c("6480", "6481", "6482") ~ "6482",
+			# San Francisco, CA
+			code %in% c("7360", "7361", "7362", "7400", "7480", "7500") ~ "7362",
 			TRUE ~ code 
 		)
 	) %>% 
 	group_by(year, csa) %>% 
 	summarize(log_ma = mean(log_ma)) %>%
 	mutate(year = 1990) %>% 
+	select(year, code = csa, log_ma) %>%
+	filter(!(code %in% c(
+		"5790", # Ocala FL
+		"6240" # Pine Bluff FL
+	)))
+
+
+ma_1990 <- full_join(
+		msa_1990, 
+		ma_1990,
+		by = "code"
+	) %>%
+	select(code, year, log_ma, geometry)
+
+
+## 2000 ------------------------------------------------------------------------
+
+
+msa_2000 <- sf::read_sf("data/shapefiles/MSA_2000/") %>% 
+	rmapshaper::ms_simplify(keep = 0.01) %>% 
+	st_transform(st_crs(msa_1950)) %>% 
+	select(code = MSACMSA, geometry, area = SHAPE_AREA) %>% 
+	# Not in Ipums
+	filter(!(code %in% c(
+		# Anchorage, Alaska
+		"0380",
+		# Honolulu, HI SMSA
+		"3320"
+	))) %>% 
+	mutate(
+		code = case_when(
+			# Burlington, VT
+			code == "1305" ~ "1310",
+			# Panama City, FL
+			code == "6015" ~ "6010",
+			# Elmira, NY
+			code == "2335" ~ "2330",
+			# Florence, SC
+			code == "2655" ~ "2660",
+			# Glenn Falls, NY
+			code == "2975" ~ "2970", 
+			# Grand Forks, ND
+			code == "2985" ~ "2990",
+			# Jacksonville, NC
+			code == "3605" ~ "3600",
+			# Naples, FL
+			code == "5345" ~ "5340",
+			# Panama City
+			code == "6015" ~ "6010",
+			# El Paso
+			code == "2320" ~ "2310",
+			# Jacksonville Florida
+			area == 7274545618.47 ~ "3590",
+			# Santa Barbara, CA
+			code == "7480" ~ "7470",
+			# Elkhart, IN 
+			code == "2330" ~ "2320",
+			TRUE ~ code
+		)
+	) %>% 
+	select(-area)
+
+# Collapse to Combined Statistical Areas
+ma_2000 <- ma %>% 
+	filter(year == 2000) %>% 
+	mutate(
+		csa = case_when(
+			# Houston-Galveston-Brazoria, TX
+			code %in% c("3360", "2920", "1145") ~ "3362",
+			# Cincinnati-Hamilton, OH
+			code %in% c("1640", "3200") ~ "1642",
+			# Cleveland-Akron, OH
+			code %in% c("0080", "1680") ~ "1692",
+			# Dallas-Fort Worth, TX
+			code %in% c("1920", "2800") ~ "1922",
+			# Denver-Boulder-Greeley, CO
+			code %in% c("2080", "2081", "3060") ~ "2082",
+			# Detroit 
+			code %in% c("0440", "2160", "2640") ~ "2162",
+			# Philadelphia-Wilmington-Atlantic City, PA-NJ-DE-MD
+			code %in% c("6160", "8760", "9160", "0560") ~ "6162",
+			# Los Angeles-Riverside-Orange County, CA
+			code %in% c("4480", "4481", "4482", "6780", "8730") ~ "4472",
+			# Miami-Fort Lauderdale, FL
+			code %in% c("2680", "5000") ~ "4992",
+			# Milwaukee-Racine, WI
+			code %in% c("5080", "6600") ~ "5082",
+			# Portland
+			code %in% c("6440", "7080") ~ "6442", 
+			# Sacramento
+			code %in% c("9270", "6920") ~ "6922",
+			# Seattle-Tacoma-Bremerton, WA
+			code %in% c("7600", "8200", "1150", "5910") ~ "7602",
+			# Washington-Baltimore
+			code %in% c("0720", "3180", "8840") ~ "8872",
+			# Boston
+			code %in% c("1120", "1200", "1121", "1122", "1123", "5350", "2600", "4760", "5400", "6450", "9240") ~ "1122",
+			# Chicago
+			code %in% c("1600", "1601", "1602", "1603", "1604", "3800", "3740") ~ "1602",
+			# Dallas, TX
+			code %in% c("1920", "1921") ~ "1922",
+			# New York, NY
+			code %in% c("5190", "5600", "5601", "5602", "5603", "5604", "5605", "5760", "5950", "8040", "8480", "2281", "5660", "8880", "1930", "1160", "5480") ~ "5602",
+			# Houstan, TX
+			code %in% c("3360", "3361") ~ "3362",
+			# Norfolk-Newsport Beach
+			code %in% c("5720", "5721") ~ "5720",
+			# San Francisco, CA
+			code %in% c("7360", "7361", "7362", "7400", "7480", "7500") ~ "7362",
+			
+			TRUE ~ code 
+		)
+	) %>% 
+	group_by(year, csa) %>% 
+	summarize(log_ma = mean(log_ma)) %>%
+	mutate(year = 2000) %>% 
+	select(year, code = csa, log_ma)
+	
+
+ma_2000 <- full_join(
+		msa_2000, 
+		ma_2000,
+		by = "code"
+	) %>%
+	select(code, year, log_ma, geometry)
+
+## 2005 ------------------------------------------------------------------------
+
+# Collapse to Combined Statistical Areas
+ma_2005 <- ma %>% 
+	filter(year == 2005) %>% 
+	mutate(
+		csa = case_when(
+			# Houston-Galveston-Brazoria, TX
+			code %in% c("3360", "2920", "1145") ~ "3362",
+			# Cincinnati-Hamilton, OH
+			code %in% c("1640", "3200") ~ "1642",
+			# Cleveland-Akron, OH
+			code %in% c("0080", "1680") ~ "1692",
+			# Dallas-Fort Worth, TX
+			code %in% c("1920", "2800") ~ "1922",
+			# Denver-Boulder-Greeley, CO
+			code %in% c("2080", "2081", "3060") ~ "2082",
+			# Detroit 
+			code %in% c("0440", "2160", "2640") ~ "2162",
+			# Philadelphia-Wilmington-Atlantic City, PA-NJ-DE-MD
+			code %in% c("6160", "8760", "9160", "0560") ~ "6162",
+			# Los Angeles-Riverside-Orange County, CA
+			code %in% c("4480", "4481", "4482", "6780", "8730") ~ "4472",
+			# Miami-Fort Lauderdale, FL
+			code %in% c("2680", "5000") ~ "4992",
+			# Milwaukee-Racine, WI
+			code %in% c("5080", "6600") ~ "5082",
+			# Portland
+			code %in% c("6440", "7080") ~ "6442", 
+			# Sacramento
+			code %in% c("9270", "6920") ~ "6922",
+			# Seattle-Tacoma-Bremerton, WA
+			code %in% c("7600", "8200", "1150", "5910") ~ "7602",
+			# Washington-Baltimore
+			code %in% c("0720", "3180", "8840") ~ "8872",
+			# Boston
+			code %in% c("1120", "1200", "1121", "1122", "1123", "5350", "2600", "4760", "5400", "6450", "9240") ~ "1122",
+			# Chicago
+			code %in% c("1600", "1601", "1602", "1603", "1604", "3800", "3740") ~ "1602",
+			# Dallas, TX
+			code %in% c("1920", "1921") ~ "1922",
+			# New York, NY
+			code %in% c("5190", "5600", "5601", "5602", "5603", "5604", "5605", "5760", "5950", "8040", "8480", "2281", "5660", "8880", "1930", "1160", "5480") ~ "5602",
+			# Houstan, TX
+			code %in% c("3360", "3361") ~ "3362",
+			# Norfolk-Newsport Beach
+			code %in% c("5720", "5721") ~ "5720",
+			# San Francisco, CA
+			code %in% c("7360", "7361", "7362", "7400", "7480", "7500") ~ "7362",
+			
+			TRUE ~ code 
+		)
+	) %>% 
+	group_by(year, csa) %>% 
+	summarize(log_ma = mean(log_ma)) %>%
+	mutate(year = 2005) %>% 
 	select(year, code = csa, log_ma)
 
 
-full_join(
-	msa_1990, 
-	ma_1990,
-	by = "code"
-) %>% view()
-
-view(anti_join(
-	msa_1990, 
-	ma_1990,
-	by = "code"
-))
-
-view(anti_join(
-	ma_1990,
-	msa_1990, 
-	by = "code"
-))
-
-plot(st_geometry(temp))
-
-#
-
-msa_2000 <- sf::read_sf("data/shapefiles/MSA_2000/")
+ma_2005 <- full_join(
+		msa_2000, 
+		ma_2005,
+		by = "code"
+	) %>%
+	select(code, year, log_ma, geometry)
 
 
+## 2010 ------------------------------------------------------------------------
 
-#
+# Collapse to Combined Statistical Areas
+ma_2010 <- ma %>% 
+	filter(year == 2010) %>% 
+	mutate(
+		csa = case_when(
+			# Houston-Galveston-Brazoria, TX
+			code %in% c("3360", "2920", "1145") ~ "3362",
+			# Cincinnati-Hamilton, OH
+			code %in% c("1640", "3200") ~ "1642",
+			# Cleveland-Akron, OH
+			code %in% c("0080", "1680") ~ "1692",
+			# Dallas-Fort Worth, TX
+			code %in% c("1920", "2800") ~ "1922",
+			# Denver-Boulder-Greeley, CO
+			code %in% c("2080", "2081", "3060") ~ "2082",
+			# Detroit 
+			code %in% c("0440", "2160", "2640") ~ "2162",
+			# Philadelphia-Wilmington-Atlantic City, PA-NJ-DE-MD
+			code %in% c("6160", "8760", "9160", "0560") ~ "6162",
+			# Los Angeles-Riverside-Orange County, CA
+			code %in% c("4480", "4481", "4482", "6780", "8730") ~ "4472",
+			# Miami-Fort Lauderdale, FL
+			code %in% c("2680", "5000") ~ "4992",
+			# Milwaukee-Racine, WI
+			code %in% c("5080", "6600") ~ "5082",
+			# Portland
+			code %in% c("6440", "7080") ~ "6442", 
+			# Sacramento
+			code %in% c("9270", "6920") ~ "6922",
+			# Seattle-Tacoma-Bremerton, WA
+			code %in% c("7600", "8200", "1150", "5910") ~ "7602",
+			# Washington-Baltimore
+			code %in% c("0720", "3180", "8840") ~ "8872",
+			# Boston
+			code %in% c("1120", "1200", "1121", "1122", "1123", "5350", "2600", "4760", "5400", "6450", "9240") ~ "1122",
+			# Chicago
+			code %in% c("1600", "1601", "1602", "1603", "1604", "3800", "3740") ~ "1602",
+			# Dallas, TX
+			code %in% c("1920", "1921") ~ "1922",
+			# New York, NY
+			code %in% c("5190", "5600", "5601", "5602", "5603", "5604", "5605", "5760", "5950", "8040", "8480", "2281", "5660", "8880", "1930", "1160", "5480") ~ "5602",
+			# Houstan, TX
+			code %in% c("3360", "3361") ~ "3362",
+			# Norfolk-Newsport Beach
+			code %in% c("5720", "5721") ~ "5720",
+			# San Francisco, CA
+			code %in% c("7360", "7361", "7362", "7400", "7480", "7500") ~ "7362",
+			
+			TRUE ~ code 
+		)
+	) %>% 
+	group_by(year, csa) %>% 
+	summarize(log_ma = mean(log_ma)) %>%
+	mutate(year = 2010) %>% 
+	select(year, code = csa, log_ma)
 
 
+ma_2010 <- full_join(
+		msa_2000, 
+		ma_2010,
+		by = "code"
+	) %>%
+	select(code, year, log_ma, geometry)
 
 
-ma_1940 <- ma %>% filter(year == 1940)
+## 2015 ------------------------------------------------------------------------
 
+msa_2015 <- sf::read_sf("data/shapefiles/CBSA_2015/") %>%
+	rmapshaper::ms_simplify(keep = 0.01) %>%
+	st_transform(st_crs(msa_1950)) %>% 
+	select(code = CBSAFP, geometry)
 
-anti <- anti_join(msa_1950, ma_1940, by = c("msa" = "code"))
+ma_2015 <- ma %>%
+	filter(year == 2015) %>% 
+	mutate(
+		# Combined Statistical Area
+		csa = case_when(
+			# LA and Irvine
+			code %in% c("11244", "31080") ~ "31080",
+			# Boston, Cambridge, and Rockingham County NH
+			code %in% c("15764", "40484", "14460") ~ "14460",
+			# Philly, Camden, NJ, and Wilmington
+			code %in% c("15804", "33874", "48864", "37980") ~ "37980",
+			# Chicago, Elgin, Kenosha County, WI, and Gary, IN
+			code %in% c("20994", "29404", "23844", "16980") ~ "16980",
+			# Miami Fort Lauderdale, and West Palm, FL
+			code %in% c("22744", "48424", "33100") ~ "33100",
+			# Dallas and Fort Worth
+			code %in% c("23104", "19100") ~ "19100",
+			# NYC, Newark, and Jersey City
+			code %in% c("35084", "35004", "20524", "35620") ~ "35620",
+			# SF, Oakland, and San Rafael, CA
+			code %in% c("36084", "41860", "42034") ~ "41860",
+			# DC and Silver Spring, MD 
+			code %in% c("43524", "47900") ~ "47900",
+			# Seattle and Tacoma, WA
+			code %in% c("45104", "42660") ~ "42660",
+			# Detroit and Warren
+			code %in% c("47664", "19820") ~ "19820",
+			TRUE ~ code 
+		)
+	) %>% 
+	group_by(year, csa) %>% 
+	summarize(log_ma = mean(log_ma)) %>%
+	ungroup() %>% 
+	mutate(year = 2015) %>% 
+	select(year, code = csa, log_ma)
 
-ggplot() +
-	geom_sf(data = anti %>% st_as_sf())
-	
-
-anti_join(ma_1940, msa_1950, by = c("code" = "msa")) %>% view()
-
-
-
-
+ma_2015 <- left_join(ma_2015, msa_2015, by = "code") %>% 
+	st_as_sf() %>% st_transform(st_crs(msa_1950))
 
 
 ## Prepare geometries ----------------------------------------------------------
 
-msa_shp <- sf::read_sf("data/shapefiles/msa_2000/US_msacmsa_2000.shp") %>% 
-	rmapshaper::ms_simplify(keep = 0.01) %>% 
-	select(msa = MSACMSA, geometry)
-
 
 states <- tigris::states(class = "sf") %>% 
 	rmapshaper::ms_simplify(keep = 0.025) %>% 
-	filter(as.numeric(STATEFP) < 58 & NAME != "Alaska" & NAME != "Hawaii") %>% 
-	st_transform(st_crs(msa_shp)) %>% 
+	filter(as.numeric(STATEFP) < 58 & NAME != "Alaska" & NAME != "Hawaii" & STATEFP != 11) %>% 
+	st_transform(st_crs(msa_1950)) %>% 
 	select(state_fips = STATEFP, geometry)
 
-us <- states %>% summarize()
+us <- states %>% summarise()
 
-msa_by_state <- st_intersection(msa_shp, states)
+## Non-urban 
+nonurban_1940 <- st_difference(states, msa_1950 %>% summarize()) %>%
+	mutate(state_fips = as.numeric(state_fips)) %>% 
+	left_join(., ma_nonurban %>% filter(year == 1940), by = "state_fips") %>%
+	select(code, year, log_ma, geometry)
 
-nonurban <- st_difference(states, msa_shp %>% summarize()) %>% 
-	mutate(msa = "0000")
+nonurban_1950 <- st_difference(states, msa_1950 %>% summarize()) %>%
+	mutate(state_fips = as.numeric(state_fips)) %>% 
+	left_join(., ma_nonurban %>% filter(year == 1950), by = "state_fips") %>% 	
+	select(code, year, log_ma, geometry)
 
-msa_and_nonurban <- bind_rows(msa_by_state, nonurban)
+nonurban_1960 <- st_difference(states, msa_1960 %>% summarize()) %>%
+	mutate(state_fips = as.numeric(state_fips)) %>% 
+	left_join(., ma_nonurban %>% filter(year == 1960), by = "state_fips") %>% 	
+	select(code, year, log_ma, geometry)
 
+nonurban_1970 <- st_difference(states, msa_1970 %>% summarize()) %>%
+	mutate(state_fips = as.numeric(state_fips)
+	) %>% 
+	left_join(., ma_nonurban %>% filter(year == 1970), by = "state_fips") %>% 	
+	select(code, year, log_ma, geometry)
 
+nonurban_1980 <- st_difference(states, msa_1980 %>% summarize()) %>%
+	mutate(state_fips = as.numeric(state_fips)) %>% 
+	left_join(., ma_nonurban %>% filter(year == 1980), by = "state_fips") %>% 	
+	select(code, year, log_ma, geometry)
 
+nonurban_1990 <- st_difference(states, msa_1990 %>% summarize())  %>%
+	mutate(state_fips = as.numeric(state_fips)) %>% 
+	left_join(., ma_nonurban %>% filter(year == 1990), by = "state_fips") %>% 	
+	select(code, year, log_ma, geometry)
 
+nonurban_2000 <- st_difference(states, msa_2000 %>% summarize())  %>%
+	mutate(state_fips = as.numeric(state_fips)) %>% 
+	left_join(., ma_nonurban %>% filter(year == 2000), by = "state_fips") %>% 	
+	select(code, year, log_ma, geometry)
 
+nonurban_2005 <- st_difference(states, msa_2000 %>% summarize())  %>%
+	mutate(state_fips = as.numeric(state_fips)) %>% 
+	left_join(., ma_nonurban %>% filter(year == 2005), by = "state_fips") %>% 	
+	select(code, year, log_ma, geometry)
 
+nonurban_2010 <- st_difference(states, msa_2000 %>% summarize())  %>%
+	mutate(state_fips = as.numeric(state_fips)) %>% 
+	left_join(., ma_nonurban %>% filter(year == 2010), by = "state_fips") %>% 	
+	select(code, year, log_ma, geometry)
 
+nonurban_2015 <- st_difference(states, ma_2015 %>% st_make_valid() %>% st_buffer(0) %>% summarize())  %>%
+	mutate(state_fips = as.numeric(state_fips)) %>% 
+	left_join(., ma_nonurban %>% filter(year == 2015), by = "state_fips") %>% 	
+	select(code, year, log_ma, geometry)
 
+ma_1940_all <- bind_rows(ma_1940, nonurban_1940) %>% st_as_sf()
+ma_1950_all <- bind_rows(ma_1950, nonurban_1950) %>% st_as_sf()
+ma_1960_all <- bind_rows(ma_1960, nonurban_1960) %>% st_as_sf()
+ma_1970_all <- bind_rows(ma_1970, nonurban_1970) %>% st_as_sf()
+ma_1980_all <- bind_rows(ma_1980, nonurban_1980) %>% st_as_sf()
+ma_1990_all <- bind_rows(ma_1990, nonurban_1990) %>% st_as_sf()
+ma_2000_all <- bind_rows(ma_2000, nonurban_2000) %>% st_as_sf()
+ma_2005_all <- bind_rows(ma_2005, nonurban_2005) %>% st_as_sf()
+ma_2010_all <- bind_rows(ma_2010, nonurban_2010) %>% st_as_sf()
+ma_2015_all <- bind_rows(ma_2015, nonurban_2015) %>% st_as_sf()
 
+ma_allyrs <- bind_rows(ma_1940_all, ma_1950_all, ma_1960_all, ma_1970_all, ma_1980_all, ma_1990_all, ma_2000_all, ma_2005_all, ma_2010_all, ma_2015_all)
 
-
-anti <- anti_join(ma, msa_and_nonurban, by = c("state_fips", "code" = "msa"))
-
-
-# 
-
-
-ma_shp <- left_join(ma, msa_and_nonurban, by = c("state_fips", "code" = "msa")) %>% 
-	st_as_sf()
 
 
 ## Plot: Market Access over Time -----------------------------------------------
 
-ggplot() + 
-	geom_sf(data = ma_shp %>% filter(year != 2005 & year != 2015), 
-			aes(fill = log_ma), color = NA) +
-	geom_sf()
+(ma_over_time_plot <- ggplot() + 
+ 	geom_sf(data = ma_allyrs %>% filter(!is.na(year)), aes(fill = log_ma), color = NA) +
+ 	geom_sf(data= us, fill = NA, color= "grey30", size= 0.2) + 
+ 	facet_wrap(~ year, ncol = 5) +
+ 	# Remove Coordinates, leaving just the map
+ 	coord_sf(datum = NA) +
+ 	labs(
+ 		fill = "Mean of Log of Market Access"
+ 	) +
+ 	theme_kyle() + 
+ 	# Put Legend on Bottom
+ 	scale_fill_distiller(type = "div", palette = "Spectral") +
+ 	# scale_fill_viridis_c() + 
+ 	# scale_fill_gradientn(colors = sf.colors()) +
+ 	guides(fill = guide_colorbar(title.position = "top", nrow = 1)) +
+ 	theme(
+ 		legend.position = "bottom",
+ 		legend.key.width = unit(1, "cm")
+ 	))
+
+ggsave(
+	"paper/figures/ma_over_time.jpg", ma_over_time_plot, 
+	dpi = 300, width = 4800/300, height = 2400/300
+)
+
+## Plot: Market Access Deviation over Time -------------------------------------
+ma_norm <- ma_allyrs %>% 
+	group_by(year) %>% 
+	mutate(log_ma = log_ma - mean(log_ma)) %>% 
+	ungroup() %>% 
+	filter(!is.na(year))
+
+(ma_deviations_over_time_plot <- ggplot() + 
+	geom_sf(data = ma_norm, aes(fill = log_ma), color = NA) +
 	geom_sf(data= us, fill = NA, color= "grey30", size= 0.2) + 
-	facet_wrap(~ year, ncol = 4) +
+	facet_wrap(~ year, ncol = 5) +
 	# Remove Coordinates, leaving just the map
 	coord_sf(datum = NA) +
 	labs(
-		fill = "Log of Market Access"
+		fill = "Deviations from Yearly\nMean of Log of Market Access"
 	) +
 	theme_kyle() + 
 	# Put Legend on Bottom
-	scale_fill_viridis_c() + 
+	scale_fill_distiller(type = "div", palette = "Spectral", limits = c(-4, 4)) +
+	# scale_fill_viridis_c() + 
+	# scale_fill_gradientn(colors = sf.colors()) +
 	guides(fill = guide_colorbar(title.position = "top", nrow = 1)) +
-	theme(legend.position = "bottom")
+	theme(
+		legend.position = "bottom",
+		legend.key.width = unit(1, "cm")
+	))
 
+ggsave(
+	"paper/figures/ma_deviations_over_time.jpg", ma_deviations_over_time_plot, 
+	dpi = 300, width = 4800/300, height = 2400/300
+)
 
 ## Plot: Change in Log MA 1940-2010 --------------------------------------------
 
+ma_change <- ma_allyrs %>%
+	filter(year == 1940 | year == 2010) %>% 
+	mutate(
+		code = case_when(
+			# Houston-Galveston-Brazoria, TX
+			code == "3362" ~ "3360",
+			# Cincinnati-Hamilton, OH
+			code == "1642" ~ "1640",
+			# Cleveland-Akron, OH
+			code == "1692" ~ "1680",
+			# Dallas-Fort Worth, TX
+			code == "1922" ~ "1920",
+			# Denver-Boulder-Greeley, CO
+			code == "2082" ~ "2080",
+			# Detroit 
+			code == "2162" ~ "2160",
+			# Philadelphia-Wilmington-Atlantic City, PA-NJ-DE-MD
+			code == "6162" ~ "6160",
+			# Los Angeles-Riverside-Orange County, CA
+			code == "4472" ~ "4480",
+			# Miami-Fort Lauderdale, FL
+			code == "4992" ~ "5000",
+			# Milwaukee-Racine, WI
+			code == "5082" ~ "5080",
+			# Portland
+			code == "6442" ~ "6440", 
+			# Sacramento
+			code == "6922" ~ "6920",
+			# Seattle-Tacoma-Bremerton, WA
+			code == "7602" ~ "7600",
+			# Washington-Baltimore
+			code == "8872" ~ "8840",
+			# Boston
+			code == "1122" ~ "1120",
+			# Chicago
+			code == "1602" ~ "1600",
+			# Dallas, TX
+			code == "1922" ~ "1920",
+			# New York, NY
+			code == "5602" ~ "5600",
+			# Houstan, TX
+			code == "3362" ~ "3360",
+			# Norfolk-Newsport Beach
+			code == "5722" ~ "5720",
+			# San Francisco, CA
+			code == "7362" ~ "7360",
+			TRUE ~ code
+		)
+	) %>% 
+	complete(code, year) %>% 
+	group_by(code) %>% 
+	mutate(log_ma = log_ma - first(log_ma)) %>% 
+	filter(year == 2010) %>%
+	ungroup() %>%
+	st_as_sf()
 
+(ma_change_plot <- ggplot() + 
+	geom_sf(data = ma_change, aes(fill = log_ma), color = NA) +
+	geom_sf(data= us, fill = NA, color= "grey30", size= 0.2) + 
+	# Remove Coordinates, leaving just the map
+	coord_sf(datum = NA) +
+	labs(
+		fill = "Change in Log of\nMarket Access, 1940-2010"
+	) +
+	theme_kyle() + 
+	# Put Legend on Bottom
+	scale_fill_distiller(palette = "PuBu", direction = -1) +
+	# scale_fill_viridis_c() + 
+	# scale_fill_gradientn(colors = sf.colors()) +
+	guides(fill = guide_colorbar(title.position = "top", nrow = 1)) +
+	theme(
+		legend.position = "bottom",
+		legend.key.width = unit(1, "cm")
+	))
 
-
+ggsave(
+	"paper/figures/ma_1940_to_2010.jpg", ma_change_plot, 
+	dpi = 300, width = 4800/300, height = 2400/300
+)
