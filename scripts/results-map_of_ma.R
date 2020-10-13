@@ -3,6 +3,9 @@
 ## Kyle Butts, CU Boulder Economics 
 ## 
 ## Creates maps of Market Access over time (Facet Wrap) and a % change in MA from 1940 to 2010
+##
+## Files to run before:
+## - data-marketaccess.do
 ## -----------------------------------------------------------------------------
 
 library(tidyverse)
