@@ -1,0 +1,49 @@
+\ifx\undefined\bysame
+\newcommand{\bysame}{\leavevmode\hbox to\leftmargin{\hrulefill\,\,}}
+\fi
+\begin{thebibliography}{xx}
+
+\harvarditem[Baum-Snow and Pavan]{Baum-Snow and
+  Pavan}{2012}{Baum-Snow_Pavan_2012}
+{ Baum-Snow, N. and R.~Pavan}, ``Understanding the City Size Wage Gap,'' {\it
+  The Review of Economic Studies}, Jan 2012, {\it 79} (1), 88–127.
+
+\harvarditem[Boustan et al.]{Boustan, Bunten and
+  Hearey}{2013}{Boustan_Bunten_Hearey_2013}
+{ Boustan, Leah~Platt, Devin~Michelle Bunten, and Owen Hearey}, ``Urbanization
+  in the United States, 1800-2000,'' Working Paper 19041, National Bureau of
+  Economic Research May 2013.
+
+\harvarditem[Combes et al.]{Combes, Duranton and
+  Gobillon}{2008}{Combes_Duranton_Gobillon_2008}
+{ Combes, Pierre-Philippe, Gilles Duranton, and Laurent Gobillon}, ``Spatial
+  wage disparities: Sorting matters!,'' {\it Journal of Urban Economics}, Mar
+  2008, {\it 63} (2), 723–742.
+
+\harvarditem[Donaldson and Hornbeck]{Donaldson and
+  Hornbeck}{2016}{Donaldson_Hornbeck_2016}
+{ Donaldson, Dave and Richard Hornbeck}, ``Railroads and American Economic
+  Growth: A “Market Access” Approach,'' {\it The Quarterly Journal of
+  Economics}, May 2016, {\it 131} (2), 799–858.
+
+\harvarditem[Eaton and Kortum]{Eaton and Kortum}{2002}{Eaton_Kortum_2002}
+{ Eaton, Jonathan and Samuel Kortum}, ``Technology, Geography, and Trade,''
+  {\it Econometrica}, Sep 2002, {\it 70} (5), 1741–1779.
+
+\harvarditem[Glaeser and Maré]{Glaeser and Maré}{2001}{Glaeser_Mare_2001}
+{ Glaeser, Edward L. and David C. Maré}, ``Cities and Skills,'' {\it Journal
+  of Labor Economics}, Apr 2001, {\it 19} (2), 316–342.
+
+\harvarditem[Jaworski and Kitchens]{Jaworski and
+  Kitchens}{2019}{Jaworski_Kitchens_2019}
+{ Jaworski, Taylor and Carl~T. Kitchens}, ``National Policy for Regional
+  Development: Historical Evidence from Appalachian Highways,'' {\it The Review
+  of Economics and Statistics}, 2019, {\it 101} (5), 777--790.
+
+\harvarditem[Redding and Venables]{Redding and
+  Venables}{2004}{Redding_Venables_2004}
+{ Redding, Stephen and Anthony~J. Venables}, ``Economic geography and
+  international inequality,'' {\it Journal of International Economics}, Jan
+  2004, {\it 62} (1), 53–82.
+
+\end{thebibliography}

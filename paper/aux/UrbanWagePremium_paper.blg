@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2020)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: UrbanWagePremium_paper.aux
+The style file: aernobold.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: Growth.bib
+You've used 8 entries,
+            2984 wiz_defined-function locations,
+            721 strings with 5813 characters,
+and the built_in function-call counts, 7542 in all, are:
+= -- 1238
+> -- 406
+< -- 124
++ -- 126
+- -- 72
+* -- 507
+:= -- 1665
+add.period$ -- 8
+call.type$ -- 8
+change.case$ -- 56
+chr.to.int$ -- 8
+cite$ -- 8
+duplicate$ -- 88
+empty$ -- 233
+format.name$ -- 214
+if$ -- 1905
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 7
+newline$ -- 30
+num.names$ -- 96
+pop$ -- 112
+preamble$ -- 1
+purify$ -- 64
+quote$ -- 0
+skip$ -- 0
+stack$ -- 0
+substring$ -- 268
+swap$ -- 31
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 32
+warning$ -- 0
+while$ -- 87
+width$ -- 0
+write$ -- 146
