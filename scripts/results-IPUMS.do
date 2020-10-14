@@ -14,11 +14,12 @@ clear all
 
 *global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
 global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+global gh "~/Documents/Projects/urban-wage-premium"
 
 ********************************************************************************
 
-	use "$project/dta/urban_wage_with_ma.dta", clear
-	* use "$project/dta/urban_wage_premium_data.dta", clear
+	use "$project/data/dta/urban_wage_with_ma.dta", clear
+	* use "$project/data/dta/urban_wage_premium_data.dta", clear
 	
 *-> fix income top codes
 	* https://usa.ipums.org/usa-action/variables/INCWAGE#codes_section
@@ -65,8 +66,8 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 
 *-> generate MSA and non-MSA size
 
-	qui replace msa = statefip if msa==.
-	egen msasize = total(perwt), by(msa)
+	qui replace code = statefip if code==.
+	egen msasize = total(perwt), by(code)
 	qui g ln_msasize = log(msasize)
 	
 *-> additional variables for regressions
@@ -115,6 +116,7 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 	
 	
 	esttab matrix(results, fmt(%10.0fc 2 %10.2fc %10.2fc %10.0fc %10.0fc %10.0fc %10.0fc ))  ///
+		using "$gh/paper/results/summary_stats/summary.tex" ///
 		, replace ///
 		tex plain fragment /// 
 		nomtitle nonumbers collabel(none) ///
@@ -123,7 +125,7 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 		
 
 	
-*-> make summary figure 
+*-> Replicate Boustan figure
 	
 	preserve
 	
@@ -216,23 +218,23 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 			legend(region(lcolor(white)) rows(1) size(tiny) order(1 "urban raw" 2 "urban only" ///
 			3 "urban w/ controls" 4 "urban w/ market access") title("{bf:Urban Wage Premium:}", ///
 			size(tiny) pos(9) color(black))) xtitle("") l1title("Urban Wage Premium (in percent)", size(small))
-	gr export "$project/paper/figures/urbanpremium_IPUMS.pdf",as(pdf) replace
+	gr export "$gh/paper/figures/urbanpremium_IPUMS.pdf",as(pdf) replace
 	restore
 
 	
 	* Export results to table
-	if(1 == 2){		
-		estout est1* using "$project/paper/results/results-IPUMS/premium_no_ma.tex" ///
+	if(1 == 1){		
+		estout est1* using "$gh/paper/results/results-IPUMS/premium_no_ma.tex" ///
 			, replace type style(tex) collabels(none) mlabels(none) eqlabels(none) ///
 			varwidth(25) cells(b(fmt(4)) se(par fmt(4))) stats(N, fmt(%12.0fc) labels("\hline N")) /// 
 			keep(urban) varlabels(urban "Urban")	
 		
-		estout est1* using "$project/paper/results/results-IPUMS/premium_no_ma_controls.tex" ///
+		estout est1* using "$gh/paper/results/results-IPUMS/premium_no_ma_controls.tex" ///
 			, replace type style(tex) collabels(none) mlabels(none) eqlabels(none) ///
 			varwidth(25) cells(b(fmt(4)) se(par fmt(4))) stats(N, fmt(%12.0fc) labels("\hline N")) /// 
 			keep(urban) varlabels(urban "Urban")	
 
-		 estout est3* using "$project/paper/results/results-IPUMS/premium_ma.tex" ///
+		 estout est3* using "$gh/paper/results/results-IPUMS/premium_ma.tex" ///
 			, replace type style(tex) collabels(none) mlabels(none) eqlabels(none) ///
 			varwidth(10) modelwidth(8) cells(b(fmt(3)) se(par fmt(3))) stats(N, fmt(%12.0fc) labels("\hline N")) /// 
 			keep(urban ln_ma) varlabels(urban "Urban" ln_ma "$\log(MA)$")	
@@ -303,7 +305,7 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 			legend(region(lcolor(white)) rows(1) size(tiny) order(1 "urban raw" 2 "urban only" ///
 			3 "urban w/ controls" 4 "urban w/ market access") title("{bf:Urban Wage Premium:}", ///
 			size(tiny) pos(9) color(black))) xtitle("") l1title("Urban Wage Premium (in percent)", size(small))
-	gr export "$project/paper/figures/urbanpremium_IPUMS.pdf",as(pdf) replace
+	gr export "$gh/paper/figures/urbanpremium_IPUMS.pdf",as(pdf) replace
 	restore	
 	
 	
