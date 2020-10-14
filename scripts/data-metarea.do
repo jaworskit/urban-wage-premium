@@ -10,7 +10,8 @@ clear all
 ********************************************************************************
 
 * global project "/Users/taylorjaworski/Dropbox/Papers/EH/LongRunMarketAccess/"
-global project "/Users/kylebutts/Dropbox/UrbanWagePremium/"
+global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+global gh "~/Documents/Projects/urban-wage-premium"
 
 ********************************************************************************
 
@@ -19,10 +20,15 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium/"
 	qui import excel "$project/data/urbanareas/metarea_names.xlsx", first clear
 	qui save "$project/data/urbanareas/metarea_names.dta", replace
 
+*-> Load in ipums
+	
+	import delimited "$project/data/urbanareas/msa_in_ipums.csv", clear
+	qui gen in_ipums = 1
+	qui save "$project/data/urbanareas/msa_in_ipums.dta", replace
+	
 *-> Simplify data
 
-	foreach t in "1940_1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
-		
+	foreach t in "1940_1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" {
 		* Edited from https://usa.ipums.org/usa/volii/county_comp2b.shtml
 		import excel "$project/data/urbanareas/msa_county_fips_kyle_2020-10-08.xlsx", first clear
 
@@ -35,6 +41,16 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium/"
 		
 	}
 
+	foreach t in "2015" {
+		* From http://data.nber.org/cbsa-msa-fips-ssa-county-crosswalk/
+		import delimited "$project/data/urbanareas/cbsatocountycrosswalk`t'.csv", clear
+		
+		qui drop if cbsa==.
+		rename (fipscounty cbsa cbsaname) (fips code metarea)
+		keeporder fips code metarea
+		qui save "$project/data/urbanareas/metarea_`t'.dta", replace
+	}
+	
 *-> 1940-1950
 		
 	clear
@@ -76,5 +92,18 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium/"
 	keeporder year fips code metarea
 	sort year fips code metarea
 	* duplicates drop year fips, force
+	
+	
+*-> Add indicator for metro areas found in IPUMS data
+	merge m:1 code year using "$project/data/urbanareas/msa_in_ipums.dta"
+	qui keep if _merge != 2 
+	qui replace in_ipums = 0 if missing(in_ipums)
+	drop _merge
+	
+	
+	gen statefip = floor(fips/1000)
+	* drop Hawaii and Alaska
+	qui drop if statefip == 2 | statefip == 15
+	
 	qui save "$project/data/urbanareas/metarea_final.dta", replace
 	
