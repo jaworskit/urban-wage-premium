@@ -16,7 +16,10 @@ library(rmapshaper)
 library(tigris)
 library(patchwork)
 
-setwd("~/Dropbox/UrbanWagePremium/")
+gh <- "~/Documents/Projects/urban-wage-premium"
+dropbox <- "~/Dropbox/UrbanWagePremium/" 
+
+setwd(dropbox)
 
 # Custom Theme 
 source("https://gist.githubusercontent.com/kylebutts/7dc66a01ec7e499faa90b4f1fd46ef9f/raw/ea949343b6f486d7453b12465b8f375b8b67093f/theme_kyle.R")
@@ -815,7 +818,7 @@ ma_2015 <- left_join(ma_2015, msa_2015, by = "code") %>%
 
 
 states <- tigris::states(class = "sf") %>% 
-	rmapshaper::ms_simplify(keep = 0.025) %>% 
+	# rmapshaper::ms_simplify(keep = 0.025) %>% 
 	filter(as.numeric(STATEFP) < 58 & NAME != "Alaska" & NAME != "Hawaii" & STATEFP != 11) %>% 
 	st_transform(st_crs(msa_1950)) %>% 
 	select(state_fips = STATEFP, geometry)
@@ -912,7 +915,7 @@ ma_allyrs <- bind_rows(ma_1940_all, ma_1950_all, ma_1960_all, ma_1970_all, ma_19
  	))
 
 ggsave(
-	"paper/figures/ma_over_time.jpg", ma_over_time_plot, 
+	glue("{gh}/paper/figures/ma_over_time.jpg"), ma_over_time_plot, 
 	dpi = 300, width = 4800/300, height = 2400/300
 )
 
@@ -944,7 +947,7 @@ ma_norm <- ma_allyrs %>%
 	))
 
 ggsave(
-	"paper/figures/ma_deviations_over_time.jpg", ma_deviations_over_time_plot, 
+	glue("{gh}/paper/figures/ma_deviations_over_time.jpg"), ma_deviations_over_time_plot, 
 	dpi = 300, width = 4800/300, height = 2400/300
 )
 
@@ -1026,6 +1029,6 @@ ma_change <- ma_allyrs %>%
 	))
 
 ggsave(
-	"paper/figures/ma_1940_to_2010.jpg", ma_change_plot, 
+	glue("{gh}/paper/figures/ma_1940_to_2010.jpg"), ma_change_plot, 
 	dpi = 300, width = 4800/300, height = 2400/300
 )

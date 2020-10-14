@@ -14,7 +14,8 @@ clear all
 ********************************************************************************
 
 * global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
- global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+global gh "~/Documents/Projects/urban-wage-premium"
 
 ********************************************************************************
 
@@ -48,7 +49,7 @@ clear all
 	qui sort fips year
 	duplicates drop fips year ma, force
 	
-	gen statefip = floor(fips/1000)
+	qui gen statefip = floor(fips/1000)
 	
 	qui save "$project/data/marketaccess/dta/MA_allyears.dta", replace
 	
@@ -65,6 +66,7 @@ clear all
 	
 	* drop Hawaii and Alaska
 	qui drop if floor(fips/1000) == 2 | floor(fips/1000) == 15
+	drop state county
 	
 	qui save "$project/data/dta/temp/population_1940_2010.dta", replace
 	
@@ -72,10 +74,12 @@ clear all
 *-> MA county to MSA crosswalk
 
 	qui use "$project/data/dta/temp/population_1940_2010.dta", clear
+	
 	* rm "$project/dta/temp/population_1940_2010.dta"
 
 	* Merge with County FIPS to MSA Crosswalk
 	merge 1:m fips year using "$project/data/urbanareas/metarea_final.dta"
+	replace statefip = floor(fips/1000) if missing(statefip)
 	
 	* _merge == 2 is because there are many counties without an MSA
 	drop _merge
