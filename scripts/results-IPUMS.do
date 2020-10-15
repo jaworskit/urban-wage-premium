@@ -12,9 +12,10 @@ clear all
 
 ********************************************************************************
 
-*global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
-global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
-global gh "~/Documents/Projects/urban-wage-premium"
+global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
+global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
+*global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+*global gh "~/Documents/Projects/urban-wage-premium"
 
 ********************************************************************************
 
@@ -122,9 +123,6 @@ global gh "~/Documents/Projects/urban-wage-premium"
 		nomtitle nonumbers collabel(none) ///
 		mlabels(none) eqlabels(none)
 		
-		
-
-	
 *-> Replicate Boustan figure
 	
 	preserve
@@ -142,13 +140,13 @@ global gh "~/Documents/Projects/urban-wage-premium"
 		scalar urban_est0_`year' = `=r(mean)'
 		}
 	*gr tw (scatter urbanpremium year, c(l) lc(black) mfc(white) mc(black))
-	*gr export "$project/paper/figures/urbanpremium_IPUMS.pdf",as(pdf) replace
+	*gr export "$gh/paper/figures/urbanpremium_IPUMS.pdf",as(pdf) replace
 	
 	restore
 	
 *-> run regressions
 	
-	est clear
+	*est clear
 	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
 		
 		display "** `year' ******************************************"
