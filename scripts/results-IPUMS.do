@@ -49,6 +49,24 @@ global gh "~/Documents/Projects/urban-wage-premium"
 	qui g ln_weeklywage = log(incwage/weeks)
 	qui by year, sort: sum weeklywage
 
+*-> generate log(average housing price) variable by city
+
+	qui replace valueh = . if valueh==0 | valueh==9999999 | valueh==9999998
+	qui g houses = perwt*(valueh!=.)
+	qui g housingvalue = perwt*valueh
+	egen total_houses = total(houses), by(year metarea)
+	egen total_housingvalue = total(housingvalue), by(year metarea)
+	qui g average_price = total_housingvalue/total_houses
+	qui g ln_price = log(average_price)
+	drop total_houses total_housingvalue average_price housingvalue houses valueh
+	*qui replace houseprice = houseprice*16.81 if year==1940
+	*qui replace houseprice = houseprice*7.98 if year==1960
+	*qui replace houseprice = houseprice*6.18 if year==1970
+	*qui replace houseprice = houseprice*3.00 if year==1980
+	*qui replace houseprice = houseprice*1.82 if year==1990
+	*qui replace houseprice = houseprice*1.38 if year==2000
+	*qui replace houseprice = houseprice*1.00 if year==2010
+	
 *-> use CPI to adjust to 2015 dollars 
 
 	qui replace totalincome = totalincome*16.81 if year == 1940
@@ -71,14 +89,14 @@ global gh "~/Documents/Projects/urban-wage-premium"
 	qui g ln_msasize = log(msasize)
 	
 *-> additional variables for regressions
+
 	qui g white = (race==1)
-	qui g agegroup = int(age/5)
-	
+	qui g agegroup = int(age/5)	
 	qui g ln_ma = log(ma)
 	qui g ln_ma_weighted = log(ma_weighted)
-	
-	
+		
 *-> Label Variables	
+
 	label variable ma "Market Access"
 	label variable weeklywage "Weekly Wage, 2015 \$"
 	label variable white "=1, if White"
