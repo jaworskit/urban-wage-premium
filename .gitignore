@@ -21,6 +21,13 @@
 *.blg
 *.bbl
 *.bdg_latexmk
+
+## Build tool auxiliary files:
+*.fdb_latexmk
+*.synctex
+*.synctex(busy)
 *.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
 
-
+.Rproj.user
