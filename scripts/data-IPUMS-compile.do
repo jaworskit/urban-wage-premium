@@ -2,7 +2,7 @@ cls
 clear all
 
 global ipums "/Users/taylorjaworski/Dropbox/Data/Census/IPUMS"
-global project "/Users/taylorjaworski/Dropbox/Papers/EH/LongRunMarketAccess/"
+global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
 * global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 
 
@@ -79,7 +79,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/LongRunMarketAccess/"
 				
 				*save 1940 data
 					
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2
+					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl
 					qui save "$project/dta/temp/census_1940_temp.dta", replace
 				
 					}
@@ -132,7 +132,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/LongRunMarketAccess/"
 				
 				*save 1950 data
 				
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2
+					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 bpl
 					qui save "$project/dta/temp/census_1950_temp.dta", replace
 						
 					}
@@ -141,7 +141,13 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/LongRunMarketAccess/"
 		
 			if `year' > 1950 {
 			
-				qui use "$ipums/`year'/`year'.dta", clear
+				if `year' == 1970 {
+					qui use "$ipums/`year'/1970_wo_migrate.dta", clear
+					}
+				if `year' != 1970 {
+					qui use "$ipums/`year'/`year'.dta", clear
+					}
+				
 			
 				**keep age 25 - 65
 				
@@ -183,7 +189,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/LongRunMarketAccess/"
 				
 				*save 1960-2010 data
 					
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2
+					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl
 					qui save "$project/dta/temp/census_`year'_temp.dta", replace
 					
 				}
@@ -246,7 +252,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/LongRunMarketAccess/"
 					if `year'==2015 {
 						rename met2013 metarea
 						}
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2
+					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl
 					qui save "$project/dta/temp/census_`year'_temp.dta", replace
 				
 				}
@@ -302,17 +308,34 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/LongRunMarketAccess/"
 		qui replace totalincome = totalincome*1.38 if year==2000
 		qui replace totalincome = totalincome*1.00 if year==2010
 		
-	
+	*->housing
+		
+		qui replace valueh = . if valueh==0 | valueh==9999999 | valueh==9999998
+		qui g houses = perwt*(valueh!=.)
+		qui g housingvalue = perwt*valueh
+		egen total_houses = total(houses), by(year metarea)
+		egen total_housingvalue = total(housingvalue), by(year metarea)
+		qui g average_houseprice = total_housingvalue/total_houses
+		qui replace houseprice = houseprice*16.81 if year==1940
+		qui replace houseprice = houseprice*7.98 if year==1960
+		qui replace houseprice = houseprice*6.18 if year==1970
+		qui replace houseprice = houseprice*3.00 if year==1980
+		qui replace houseprice = houseprice*1.82 if year==1990
+		qui replace houseprice = houseprice*1.38 if year==2000
+		qui replace houseprice = houseprice*1.00 if year==2010
+		
+	*-> 
 		
 		qui g urban = (metarea!=0)
 		qui keep if sex==1
 		qui drop if ind1950==1
 		
-	collapse (sum) totalweeks totalincome perwt, by(year urban)
+	collapse (sum) totalweeks totalincome perwt houses housingvalue, by(year urban)
 	
 		qui g weeklywage = totalincome/perwt
+		qui g houseprice = housingvalue/houses
 		
-		reshape wide weeklywage totalweeks totalincome perwt, i(year) j(urban)
+		reshape wide weeklywage houseprice totalweeks totalincome perwt, i(year) j(urban)
 		
 		qui g urbanpremium = log(weeklywage1/weeklywage0)
 		
