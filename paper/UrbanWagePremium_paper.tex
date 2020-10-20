@@ -122,7 +122,7 @@ Our measure of the iceberg trade costs to ship from county $c$ to county $d$ in 
     \end{split}
 \end{align} 
     
-To solve the system of non-linear equations derived from the model requires detailed trade cost, $\tau{cd}, from every origin to each destination. We approximate the origin-destination trade costs in each year by measuring travel costs through the contemporary highway network. Our measure of trade costs relies on measuring the distance and time traveled through the highway network, which is then monetized using hourly wages and fuel cost in each period, as highlighted above. To measure the time and distance post 2000 (2005 and 2015), we rely on the detailed shapefiles maintained by the federal government. For years prior to 2000 we georeference atlases produced by Rand McNally in each decade 1940-1990, as the federal government did not begin maintaining its database until 1994. To create a time consistent network, we begin with the 2000 version of the Federal Highway Administration's shapefiles. Then, for each decade, we overlay scans of each Rand McNally atlas and edit the federal shapefile. Specifically, we delete road segments that were constructed between the current map year and 2000, and re-code segments that have been reclassified over time (i.e., segments of the US Highway network that became interstates, or paved roads that were previously gravel or dirt). We perform this procedure iteratively for each decade back to 1940. One advantage of this approach is that it locates roads based on modern GPS technologies to ensure accurate placement throughout time. \footnote{One drawback is that this approach may ignore roads that were important prior to the modern stock of infrastructure.} We then follow the process outlined in \cite{Jaworski_Kitchens_2019} to measure the point to point distance travel time through the network each decade. That is, we represent each location by its geographic centroid, connected to the network by a set of access roads. We assign a travel speed to each segment in the network according to its classification (state, federal, interstate) and surface (dirt, gravel, paved), according to the parameters in \ref{table:road_param}. We then solve for the least cost route through the network for all pairwise combinations of origins and destinations.\footnote{More details on how the trade costs are calculated can be found in Section III of \citet{Jaworski_Kitchens_2019}.}    
+To solve the system of non-linear equations derived from the model requires detailed trade cost, $\tau{cd}$, from every origin to each destination. We approximate the origin-destination trade costs in each year by measuring travel costs through the contemporary highway network. Our measure of trade costs relies on measuring the distance and time traveled through the highway network, which is then monetized using hourly wages and fuel cost in each period, as highlighted above. To measure the time and distance post 2000 (2005 and 2015), we rely on the detailed shapefiles maintained by the federal government. For years prior to 2000 we georeference atlases produced by Rand McNally in each decade 1940-1990, as the federal government did not begin maintaining its database until 1994. To create a time consistent network, we begin with the 2000 version of the Federal Highway Administration's shapefiles. Then, for each decade, we overlay scans of each Rand McNally atlas and edit the federal shapefile. Specifically, we delete road segments that were constructed between the current map year and 2000, and re-code segments that have been reclassified over time (i.e., segments of the US Highway network that became interstates, or paved roads that were previously gravel or dirt). We perform this procedure iteratively for each decade back to 1940. One advantage of this approach is that it locates roads based on modern GPS technologies to ensure accurate placement throughout time. \footnote{One drawback is that this approach may ignore roads that were important prior to the modern stock of infrastructure.} We then follow the process outlined in \cite{Jaworski_Kitchens_2019} to measure the point to point distance travel time through the network each decade. That is, we represent each location by its geographic centroid, connected to the network by a set of access roads. We assign a travel speed to each segment in the network according to its classification (state, federal, interstate) and surface (dirt, gravel, paved), according to the parameters in \ref{table:road_param}. We then solve for the least cost route through the network for all pairwise combinations of origins and destinations.\footnote{More details on how the trade costs are calculated can be found in Section III of \citet{Jaworski_Kitchens_2019}.}    
 
 % Summary Statistics
 \begin{table}[tb]
@@ -130,27 +130,29 @@ To solve the system of non-linear equations derived from the model requires deta
     \label{table:road_param}
 
 % (CK)  I don't know how to use .TEX to make Tables here are the classes: Interstate (65,70); US Highway - Paved (45, 55); US Highway - Gravel (35,50); US Highway - Dirt (30, 45); State Highway - Paved (25, 45); State Highway - Gravel (20,40); State Highway - Dirt (15, 35); Access Road (10, 10)
-    \resizebox{\linewidth}{!}{
-        \centering
-
-        \begin{tabular}{@{\extracolsep{5pt}}lccrrrrrr}
+    \begin{center}
+        \begin{tabular}{@{\extracolsep{5pt}}lcc}
         \toprule  
-        & & & & & \multicolumn{2}{c}{Urban Weekly} & \multicolumn{2}{c}{Nonurban Weekly} \\
-        & & & \multicolumn{2}{c}{$\log$(Market Access)} & \multicolumn{2}{c}{Wage (2015 \$)} & \multicolumn{2}{c}{Wage (2015 \$)} \\
-        \cline{4-5} \cline{6-7} \cline{8-9}
-        Year & N & \% Urban & Mean & SD & Mean & SD & Mean & SD \\ \hline 
+        \textbf{Class of Road} & \textbf{Speed limit} & \textbf{Speed limit} \\
 
-        \input{results/summary_stats/summary.tex}
+        \midrule
+        Interstate & 65 & 70 \\ 
+        US Highway (Paved) & 45 & 55 \\
+        US Highway (Gravel) & 35 & 50 \\
+        US Highway (Dirt) & 30 & 45 \\
+        State Highway (Paved) & 25 & 45 \\
+        State Highway (Gravel) & 20 & 40 \\
+        State Highway (Dirt) & 15 & 35 \\
+        Access Road & 10 & 10 \\
 
         \bottomrule
 
         \end{tabular}
-    
-    }
+    \end{center}
     
     \vspace{2mm}
     {\footnotesize
-        \textit{Notes:} Summary statistics weights individuals by their person weight. Weekly wage is reported in 2015 \$. Market access is calculated from solving $\text{MA}_{c} = \rho \sum_d \tau_{cd}^{-\theta} \text{MA}_d^{-1} Y_d,$ where transportation costs, $\tau_{cd}$, are calculated as described by Equation \ref{eq:trade_cost}. 
+        \textit{Notes:} 
     }
 \end{table}
 
@@ -378,7 +380,25 @@ For a given year, a metro area's market access is the geometric average of the c
 \subsection{Robustness Checks}
 % --------------------------------------------------
 
+% --------------------------------------------------
+\subsubsection{MA Weighted by Population}
+% --------------------------------------------------
 
+For some metro areas, there is a central county and more counties at the peripheral, less populated counties. In this case, our simple average may understate the market access in a city, so we check for this by averaging across counties weighted by the counties population share. The results in Figure \ref{fig:premium_over_time_weighted} show that the shape of the black line with circle markers is very similar to Figure \ref{fig:premium_over_time}. 
+
+\begin{figure}[tb]
+    \caption{Urban Wage Premium 1940-2015 with Weighted Market Access}
+    \label{fig:premium_over_time_weighted}
+    {\centering
+        \resizebox{\columnwidth}{!}{
+            \includegraphics{figures/urbanpremium_IPUMS_ma_weighted.pdf}
+        } 
+    }
+
+    {\footnotesize
+        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:reg}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of the weighted market access.
+    }
+\end{figure}
 
 
 

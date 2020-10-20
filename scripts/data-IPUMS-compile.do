@@ -1,9 +1,9 @@
 cls
 clear all
 
-global ipums "/Users/taylorjaworski/Dropbox/Data/Census/IPUMS"
-global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
-* global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+* global ipums "/Users/taylorjaworski/Dropbox/Data/Census/IPUMS"
+* global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
+global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 
 
 ********************************************************************************
@@ -28,15 +28,15 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 					
 						*qui keep if empstatd == 10 
 						
-						qui save "$project/dta/temp/1940_reg`r'_temp.dta", replace
+						qui save "$project/data/dta/temp/1940_reg`r'_temp.dta", replace
 					
 					}
 				
 				clear 	
 				forvalues r = 1/4 {
 				
-					qui append using "$project/dta/temp/1940_reg`r'_temp.dta"
-					rm "$project/dta/temp/1940_reg`r'_temp.dta"
+					qui append using "$project/data/dta/temp/1940_reg`r'_temp.dta"
+					rm "$project/data/dta/temp/1940_reg`r'_temp.dta"
 					
 					}	
 				
@@ -44,7 +44,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 				
 					*0) merge occ1950 -> occ2010
 					
-						qui merge n:1 occ1950 using "$project/dta/occ1950_occ2010_crosswalk.dta"
+						qui merge n:1 occ1950 using "$project/data/dta/occ1950_occ2010_crosswalk.dta"
 						qui gen occ2010 = occ2010_temp 
 						qui drop if _m == 2
 						qui drop occ2010_temp _m
@@ -54,7 +54,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 						qui gen occ2010_st = string(occ2010,"%04.0f") //gen occupation code stringed
 						qui drop occ2010
 						rename occ2010_st occ2010
-						qui merge n:1 occ2010 using "$project/dta/occ_soc_crosswalk.dta" //merge in soc crosswalk
+						qui merge n:1 occ2010 using "$project/data/dta/occ_soc_crosswalk.dta" //merge in soc crosswalk
 						qui drop if _m == 2
 						qui drop _m
 						qui drop if soc2010 == "."
@@ -80,7 +80,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 				*save 1940 data
 					
 					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl
-					qui save "$project/dta/temp/census_1940_temp.dta", replace
+					qui save "$project/data/dta/temp/census_1940_temp.dta", replace
 				
 					}
 		*-> 1950
@@ -107,7 +107,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 						qui gen occ2010_st = string(occ2010,"%04.0f") //gen occupation code stringed
 						drop occ2010
 						rename occ2010_st occ2010
-						qui merge n:1 occ2010 using "$project/dta/occ_soc_crosswalk.dta" //merge in soc crosswalk
+						qui merge n:1 occ2010 using "$project/data/dta/occ_soc_crosswalk.dta" //merge in soc crosswalk
 						qui drop if _m == 2
 						drop _m
 						qui drop if soc2010 == "."
@@ -133,7 +133,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 				*save 1950 data
 				
 					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 bpl
-					qui save "$project/dta/temp/census_1950_temp.dta", replace
+					qui save "$project/data/dta/temp/census_1950_temp.dta", replace
 						
 					}
 					
@@ -164,7 +164,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 						qui gen occ2010_st = string(occ2010,"%04.0f") //gen occupation code stringed
 						qui drop occ2010
 						rename occ2010_st occ2010
-						qui merge n:1 occ2010 using "$project/dta/occ_soc_crosswalk.dta" //merge in soc crosswalk
+						qui merge n:1 occ2010 using "$project/data/dta/occ_soc_crosswalk.dta" //merge in soc crosswalk
 						qui drop if _m == 2
 						qui drop _m
 						qui drop if soc2010 == "."
@@ -190,7 +190,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 				*save 1960-2010 data
 					
 					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl
-					qui save "$project/dta/temp/census_`year'_temp.dta", replace
+					qui save "$project/data/dta/temp/census_`year'_temp.dta", replace
 					
 				}
 			
@@ -215,7 +215,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 				*0) merge occ1950 -> occ2010
 					
 					if `year'==2005 | `year' ==2010 {
-					qui merge n:1 occ1950 using "$project/dta/occ1950_occ2010_crosswalk.dta"
+					qui merge n:1 occ1950 using "$project/data/dta/occ1950_occ2010_crosswalk.dta"
 					qui gen occ2010 = occ2010_temp 
 					qui drop if _m == 2
 					drop occ2010_temp _m
@@ -225,7 +225,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 					qui gen occ2010_st = string(occ2010,"%04.0f") //gen occupation code stringed
 					drop occ2010
 					rename occ2010_st occ2010
-					qui merge n:1 occ2010 using "$project/dta/occ_soc_crosswalk.dta" //merge in soc crosswalk
+					qui merge n:1 occ2010 using "$project/data/dta/occ_soc_crosswalk.dta" //merge in soc crosswalk
 					qui drop if _m == 2
 					drop _m
 					qui drop if soc2010 == "."
@@ -253,7 +253,7 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 						rename met2013 metarea
 						}
 					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl
-					qui save "$project/dta/temp/census_`year'_temp.dta", replace
+					qui save "$project/data/dta/temp/census_`year'_temp.dta", replace
 				
 				}
 				
@@ -263,18 +263,18 @@ global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/tran
 		
 		clear
 		foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {	
-			qui append using "$project/dta/temp/census_`year'_temp.dta"
-			rm "$project/dta/temp/census_`year'_temp.dta"
+			qui append using "$project/data/dta/temp/census_`year'_temp.dta"
+			rm "$project/data/dta/temp/census_`year'_temp.dta"
 		}
 		
 		qui replace occupation = "17" if occupation=="15" 
 		qui replace occupation = "13" if occupation=="23" 
 		
-		qui save "$project/dta/urban_wage_premium_data.dta", replace
+		qui save "$project/data/dta/urban_wage_premium_data.dta", replace
 		
 ********************************************************************************
 
-		use "$project/dta/urban_wage_premium_data.dta", clear
+		use "$project/data/dta/urban_wage_premium_data.dta", clear
 		
 	*->fix income top codes
 		

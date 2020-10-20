@@ -12,10 +12,10 @@ clear all
 
 ********************************************************************************
 
-global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
-global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
-*global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
-*global gh "~/Documents/Projects/urban-wage-premium"
+*global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
+*global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
+global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+global gh "~/Documents/Projects/urban-wage-premium"
 
 ********************************************************************************
 
@@ -55,8 +55,8 @@ global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
 	qui replace valueh = . if valueh==0 | valueh==9999999 | valueh==9999998
 	qui g houses = perwt*(valueh!=.)
 	qui g housingvalue = perwt*valueh
-	egen total_houses = total(houses), by(year metarea)
-	egen total_housingvalue = total(housingvalue), by(year metarea)
+	egen total_houses = total(houses), by(year code)
+	egen total_housingvalue = total(housingvalue), by(year code)
 	qui g average_price = total_housingvalue/total_houses
 	qui g ln_price = log(average_price)
 	drop total_houses total_housingvalue average_price housingvalue houses valueh
@@ -99,12 +99,19 @@ global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
 *-> Label Variables	
 
 	label variable ma "Market Access"
+	label variable ma_weighted "Market Access (Weighted)"
 	label variable weeklywage "Weekly Wage, 2015 \$"
 	label variable white "=1, if White"
 	label variable urban "=1, if in Urban Area"
+
+	
+
+	
+********************************************************************************
+* Results
+********************************************************************************		
 	
 *-> Summary Table
-
 	
 	qui g wage_urban = .
 	replace wage_urban = weeklywage if urban == 1
@@ -126,10 +133,12 @@ global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
 		
 		matrix year_`year' = `year'
 		
-		matrix define row_`year' = (n_`year', mean_urban_`year', mean_ln_ma_`year', sd_ln_ma_`year', mean_wage_urban_`year', sd_wage_urban_`year', mean_wage_nonurban_`year', sd_wage_nonurban_`year')
+		matrix define row_`year' = (n_`year', mean_urban_`year', mean_ln_ma_`year', sd_ln_ma_`year', /// 
+			mean_wage_urban_`year', sd_wage_urban_`year', mean_wage_nonurban_`year', sd_wage_nonurban_`year')
 	}
 	
-	matrix define results = (row_1940 \ row_1950 \ row_1960 \ row_1970 \ row_1980 \ row_1990 \ row_2000 \ row_2005 \ row_2010 \ row_2015) 
+	matrix define results = (row_1940 \ row_1950 \ row_1960 \ row_1970 \ row_1980 /// 
+		\ row_1990 \ row_2000 \ row_2005 \ row_2010 \ row_2015) 
 	
 	matrix rownames results = 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015
 	
@@ -156,7 +165,8 @@ global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
 	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
 		qui sum urbanpremium if year == `year'
 		scalar urban_est0_`year' = `=r(mean)'
-		}
+	}
+		
 	*gr tw (scatter urbanpremium year, c(l) lc(black) mfc(white) mc(black))
 	*gr export "$gh/paper/figures/urbanpremium_IPUMS.pdf",as(pdf) replace
 	
@@ -185,6 +195,22 @@ global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
 		
 	}
 		
+	* Display estimates and proportion of premium explained by market access
+	if(1 == 2){
+		foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+			disp "** `year' ******************************************"
+			disp "** urban raw: `= urban_est0_`year''"
+			disp "** urban only: `= urban_est1_`year''"
+			disp "** urban w/ controls: `= urban_est2_`year''"
+			disp "** urban w/ market access: `= urban_est3_`year''"
+			disp ""
+			disp "** % premium explained by ma: `= (urban_est2_`year' - urban_est3_`year')/(urban_est2_`year')'"
+			disp ""
+		}
+	}
+		
+*-> Figure: Urban Premium over time
+
 	preserve
 	drop _all 
 	set obs 10
@@ -212,19 +238,7 @@ global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
 		
 	}
 	
-	* Display estimates and proportion of premium explained by market access
-	if(1 == 2){
-		foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
-			disp "** `year' ******************************************"
-			disp "** urban raw: `= urban_est0_`year''"
-			disp "** urban only: `= urban_est1_`year''"
-			disp "** urban w/ controls: `= urban_est2_`year''"
-			disp "** urban w/ market access: `= urban_est3_`year''"
-			disp ""
-			disp "** % premium explained by ma: `= (urban_est2_`year' - urban_est3_`year')/(urban_est2_`year')'"
-			disp ""
-		}
-	}
+
 	
 	gr tw 	(scatter urban_est0 year, c(l) m(s) lc(gs10) mfc(white) mc(gs10) lp(dash)) ///
 			(scatter urban_est1 year, c(l) m(d) lc(black) mfc(white) mc(black) lp(dash)) ///
@@ -259,6 +273,12 @@ global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
 	
 	
 	
+********************************************************************************
+* Robustness Checks
+********************************************************************************	
+
+	
+	
 *-> Robustness Check: MA averages weighted by population
 	
 	est clear
@@ -277,15 +297,10 @@ global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
 			qui reghdfe ln_weeklywage urban ln_ma_weighted [aw=perwt] if year==`year', cluster(metarea) a(agegroup educ white)
 			qui eststo est3_`year'
 			scalar urban_est3_`year' = _b[urban]
-			
-		** With Market Access 
-			
-			* qui reghdfe ln_weeklywage urban ln_ma white [aw=perwt] if year == `year', cluster(metarea) a(agegroup educ)
-			* qui eststo est3_`year'
 
 		display "**************************************************"
 		
-		}
+	}
 		
 	preserve
 	drop _all 
@@ -306,37 +321,37 @@ global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
 	qui g urban_est2 = .
 	qui g urban_est3 = .
 	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
-		
 		qui replace urban_est0 = `=urban_est0_`year'' if year==`year'
 		qui replace urban_est1 = `=urban_est1_`year'' if year==`year'
 		qui replace urban_est2 = `=urban_est2_`year'' if year==`year'
-		qui replace urban_est3 = `=urban_est3_`year'' if year==`year'
+		qui replace urban_est3 = `=urban_est3_`year'' if year==`year'	
+	}
 		
-		}
 	gr tw 	(scatter urban_est0 year, c(l) m(s) lc(gs10) mfc(white) mc(gs10) lp(dash)) ///
 			(scatter urban_est1 year, c(l) m(d) lc(black) mfc(white) mc(black) lp(dash)) ///
 			(scatter urban_est2 year, c(l) m(t) lc(black) mfc(white) mc(black) lp(dash)) ///
 			(scatter urban_est3 year, c(l) m(o) lc(black) mfc(black) mc(black) lp(solid)) ///
 			, graphregion(color(white)) ylabel(0(.1).3,nogrid labsize(small) format(%12.1fc)) yscale(range(0 .35)) ///
 			legend(region(lcolor(white)) rows(1) size(tiny) order(1 "urban raw" 2 "urban only" ///
-			3 "urban w/ controls" 4 "urban w/ market access") title("{bf:Urban Wage Premium:}", ///
+			3 "urban w/ controls" 4 "urban w/ weighted market access") title("{bf:Urban Wage Premium:}", ///
 			size(tiny) pos(9) color(black))) xtitle("") l1title("Urban Wage Premium (in percent)", size(small))
-	gr export "$gh/paper/figures/urbanpremium_IPUMS.pdf",as(pdf) replace
+			
+	gr export "$gh/paper/figures/urbanpremium_IPUMS_ma_weighted.pdf",as(pdf) replace
 	restore	
 	
 	
 	
 	
+*-> Robustness Check: MSA size
+est clear
+foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
 	
-	est clear
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+	display "** `year' ******************************************"
+	
+		reg ln_weeklywage ln_msasize [aw=perwt] if year==`year', cluster(msa)
 		
-		display "** `year' ******************************************"
+		reg ln_weeklywage ln_msasize ln_ma [aw=perwt] if year==`year', cluster(msa)
 		
-			reg ln_weeklywage ln_msasize [aw=perwt] if year==`year', cluster(msa)
-			
-			reg ln_weeklywage ln_msasize ln_ma [aw=perwt] if year==`year', cluster(msa)
-			
-			}
+		}
 			
 	
