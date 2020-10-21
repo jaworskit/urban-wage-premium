@@ -56,20 +56,45 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-As of 2019, over 82 percent of Americans live in urban areas, up from just under 40 percent in 1900. What explains the drastic movement of population over the 20th and 21st Centuries? For one, agricultural technology improved, lessoning labor demand in rural areas %[Citations].
+As of 2019, over 82 percent of Americans live in urban areas, up from just under 40 percent in 1900. 
+What explains the drastic movement of population over the 20th and 21st Centuries? 
+For one, agricultural technology improved, changing the demand for inputs and altering patters of crop specialization, freeing labor from the land \citet{caselli2001us} \citet{michaels2012urbanization} \citet{olmstead2001reshaping} \citet{griliches1963sources} \citet{jung2020long}. 
 
-At the same time, cities have become better places to live and are more productive. Early in US history, cities were dirty, unhealthy places that required a wage premium to attract workers to face risks associated with infectious diseases such as cholera, typhoid, yellow fever, and smallpox %[Citations, things like Troesken, etc.].
+At the same time, cities have become healtier places to live and more productive.
+Early in US history, cities were dirty, unhealthy places that required a wage premium to attract workers to face risks associated with infectious diseases such as cholera, typhoid, yellow fever, and smallpox \citet{cutler2005role}\citet{beach2016typhoid} \citet{ferrie2008water} \citet{alsan2019watersheds} \citet{anderson2020re}. 
 
-As urban health improved, the need to attract workers with high wages subsided. While the amenity improvements theoretically dampen urban wage growth, cities have become incredibly productive places. As productivity has increased, the marginal revenue product of workers has increased, resulting in wage increases despite the improved city level amenities.  
+As urban health improved, the need to attract workers with high wages subsided. While the amenity improvements theoretically dampen urban wage growth, cities have become incredibly productive places. 
+As productivity has increased, the marginal revenue product of workers has increased, resulting in wage increases despite the improved city level amenities.  
 
-The urban wage premium has become an empirical fact, widely documented in the urban economics literature (see XYZ for reviews)%[Citations, probably rosenthal and strange 2004 and other survey articles]. 
-While documented repeatedly, the drivers of the urban wage premium are not fully understood. On the one hand, cities may attract workers that are more skilled \citet{Combes_Duranton_Gobillon_2008}. For example cite{Yankow_2006} documents that up to two-thirds of the urban wage premium is driven by differences in worker skills. Even after controlling forindividual characteristics, the wage premium  persists. Many authors have pointed to agglomeration economies to explain the remaining gap\citet{Glaeser_Mare_2001} \citet{wheaton2002urban}.\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{@article{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} Agglomeration economies are an attractive explanation, yet determining the underlying mechanism that contributes to agglomeration is difficult. Indeed a large literature has sought to explain the causes and mechanisms of agglomeration. 
+The urban wage premium has become an empirical fact, widely documented in the urban economics literature (see for example \citet{rosenthal2004evidence} for a review). 
+While documented repeatedly, the drivers of the urban wage premium are not fully understood. 
+On the one hand, cities may attract workers that are more skilled \citet{Combes_Duranton_Gobillon_2008}. 
+For example cite{Yankow_2006} documents that up to two-thirds of the urban wage premium is driven by differences in worker skills. 
+Even after controlling forindividual characteristics, the wage premium persists. 
+Many authors have pointed to agglomeration economies to explain the remaining gap\citet{Glaeser_Mare_2001} \citet{wheaton2002urban}.\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{@article{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} 
+Agglomeration economies are an attractive explanation, yet determining the underlying mechanism that contributes to agglomeration is difficult. 
+Indeed a large literature has sought to explain the causes and mechanisms of agglomeration. 
 In studying the urban wage premium, there is also a concern that the wage premium reflects firm survival, rather than agglomeration, although the existing evidence thus far points to agglomeration \citet{combes2012productivity};\citet{behrens2014productive}.
 
 
 %%While one may think that worker-firm match quality could be a driver of the wage gap due to thicker labor markets, work by cite{Baum-Snow_Pavan_2012} shows that this is not the case. Their work documents that the wage premium is driven by wage intercepts and returns to experience that differ across city size in the context of a labor search model.  %%I think I am interpretting Baum-Snow and Pavan correctly. 
 
-According to \citet{marshall1920industry} physical proximity and connections to firms are a driver of agglomeration. Similarly, \citet{duranton2004micro} and \citet{head2004empirics} stress how trade costs may shape agglomeration and industrial location, and thus may partially explain the observed urban wage premium. In this paper, we document how changes in market access impacts the estimated urban wage premium in the United States between 1940 and 2015. Empirically we combine individual level wage data from the 1940 complete count census, PUMS of subsequent censuses, and American Community Surveys and regress the wages on a set of individual characteristics and location and time fixed effects. This set of regressions enables us to partial out the portion of the wage gap due to endogenous migration and differences in the skill composition in urban areas, while at the same time, netting out common firm survival trends that conttibute to the wage gap. We then construct a measure of market access from newly digitized maps of the US Highway Network published by Rand McNally.   
+According to \citet{marshall1920industry} physical proximity and connections to firms are a driver of agglomeration. 
+Similarly, \citet{duranton2004micro} and \citet{head2004empirics} stress how trade costs may shape agglomeration and industrial location, and thus may partially explain the observed urban wage premium. 
+In this paper, we document how changes in market access impact the estimated urban wage premium in the United States between 1940 and 2015. 
+Empirically we begin by estimating regressions of individual level wages on a set of individual characteristics and location and time fixed effects. 
+This set of regressions enables us to partial out the portion of the wage gap due to underlying differences in the skill-education-experience composition of workers between urban and rural areas, while at the same time, netting out common firm survival trends that conttibute to the wage gap. 
+Similar to prior work, we find that individual characteristics account for approximately half of the urban wage premium and become increasingly important after 1980.  
+We then construct a measure of market access following \citet{Donaldson_Hornbeck_2016} and \citet{Jaworski_Kitchens_2019} at the MSA level drawing on newly digitized atlases of the US Highway Network each decade 1940-2010. 
+Our measure of market access allows us to consider how changes in a cities location in the network affects the wage premium.
+We find that after controlling for market access, the urban wage premium is cut in half. %%Note, it looks like the no control and control results are the same in the results files. This can't be right, so the drop in the coefficient should be smaller after the correct coefficients are stored. 
+We interpret this finding as evidence that changes in trade costs that affect specialization patterns alter the demand for skills, explaining about a quarter of the overall urban wage premium.  
+Our finding is consistent with hypothesis put forth by \citet{duranton2004micro} and \citet{head2004empirics} that firm industrial location decisions explain a portion of the wage premium. 
+
+While we consider the role that individual characteristics have on the urban wage premium, there is an underlying concern that individuals sort into specific cities based on unobservables, for instance, unobservable amenities or unobserved productivity differences.
+
+Next, we consider the role that unobserved 
+
 
 
 \begin{itemize}
@@ -129,7 +154,6 @@ To solve the system of non-linear equations derived from the model requires deta
     \caption{Road Classifications and Speed Parameters}
     \label{table:road_param}
 
-% (CK)  I don't know how to use .TEX to make Tables here are the classes: Interstate (65,70); US Highway - Paved (45, 55); US Highway - Gravel (35,50); US Highway - Dirt (30, 45); State Highway - Paved (25, 45); State Highway - Gravel (20,40); State Highway - Dirt (15, 35); Access Road (10, 10)
     \begin{center}
         \begin{tabular}{@{\extracolsep{5pt}}lcc}
         \toprule  
