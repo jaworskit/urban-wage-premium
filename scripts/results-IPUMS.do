@@ -19,93 +19,7 @@ global gh "~/Documents/Projects/urban-wage-premium"
 
 ********************************************************************************
 
-	use "$project/data/dta/urban_wage_with_ma.dta", clear
-	* use "$project/data/dta/urban_wage_premium_data.dta", clear
-	
-*-> fix income top codes
-	* https://usa.ipums.org/usa-action/variables/INCWAGE#codes_section
-	qui drop if incwage==0
-	qui drop if incwage==999998 & year==1940
-	qui replace incwage = 1.5*05001 if incwage>=05001 & year==1940
-	qui replace incwage = 1.5*10000 if incwage>=10000 & year==1950
-	qui replace incwage = 1.5*25000 if incwage>=25000 & year==1960
-	qui replace incwage = 1.5*50000 if incwage>=50000 & year==1970
-	qui replace incwage = 1.5*75000 if incwage==75000 & year==1980
-	
-*-> fix weeks
-	qui g weeks = .
-	qui replace weeks = 33 if wkswork2==3
-	qui replace weeks = 44 if wkswork2==4
-	qui replace weeks = 47 if wkswork2==5
-	qui replace weeks = 51 if wkswork2==6
-	
-*-> generate "total" variables
-
-	qui g totalweeks = perwt*weeks
-	qui g totalincome = perwt*incwage
-
-*-> generate log(weekly wage) variable
-
-	qui g weeklywage = (incwage/weeks)
-	qui g ln_weeklywage = log(incwage/weeks)
-	qui by year, sort: sum weeklywage
-
-*-> generate log(average housing price) variable by city
-
-	qui replace valueh = . if valueh==0 | valueh==9999999 | valueh==9999998
-	qui g houses = perwt*(valueh!=.)
-	qui g housingvalue = perwt*valueh
-	egen total_houses = total(houses), by(year code)
-	egen total_housingvalue = total(housingvalue), by(year code)
-	qui g average_price = total_housingvalue/total_houses
-	qui g ln_price = log(average_price)
-	drop total_houses total_housingvalue average_price housingvalue houses valueh
-	*qui replace houseprice = houseprice*16.81 if year==1940
-	*qui replace houseprice = houseprice*7.98 if year==1960
-	*qui replace houseprice = houseprice*6.18 if year==1970
-	*qui replace houseprice = houseprice*3.00 if year==1980
-	*qui replace houseprice = houseprice*1.82 if year==1990
-	*qui replace houseprice = houseprice*1.38 if year==2000
-	*qui replace houseprice = houseprice*1.00 if year==2010
-	
-*-> use CPI to adjust to 2015 dollars 
-
-	qui replace totalincome = totalincome*16.81 if year == 1940
-	qui replace totalincome = totalincome*9.92 if year == 1950
-	qui replace totalincome = totalincome*7.98 if year == 1960
-	qui replace totalincome = totalincome*6.18 if year == 1970
-	qui replace totalincome = totalincome*3.00 if year == 1980
-	qui replace totalincome = totalincome*1.82 if year == 1990
-	qui replace totalincome = totalincome*1.38 if year == 2000
-	qui replace totalincome = totalincome*1.00 if year == 2010
-	
-	qui g urban = (metarea > 0)
-	qui keep if sex == 1
-	qui drop if ind1950 == 1
-
-*-> generate MSA and non-MSA size
-
-	qui replace code = statefip if code==.
-	egen msasize = total(perwt), by(code)
-	qui g ln_msasize = log(msasize)
-	
-*-> additional variables for regressions
-
-	qui g white = (race==1)
-	qui g agegroup = int(age/5)	
-	qui g ln_ma = log(ma)
-	qui g ln_ma_weighted = log(ma_weighted)
-		
-*-> Label Variables	
-
-	label variable ma "Market Access"
-	label variable ma_weighted "Market Access (Weighted)"
-	label variable weeklywage "Weekly Wage, 2015 \$"
-	label variable white "=1, if White"
-	label variable urban "=1, if in Urban Area"
-
-	
-
+use "$project/data/dta/urban_wage_with_ma.dta", clear
 	
 ********************************************************************************
 * Results
@@ -281,7 +195,7 @@ global gh "~/Documents/Projects/urban-wage-premium"
 	
 *-> Robustness Check: MA averages weighted by population
 	
-	est clear
+
 	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
 		
 		display "** `year' ******************************************"
@@ -332,11 +246,12 @@ global gh "~/Documents/Projects/urban-wage-premium"
 			(scatter urban_est2 year, c(l) m(t) lc(black) mfc(white) mc(black) lp(dash)) ///
 			(scatter urban_est3 year, c(l) m(o) lc(black) mfc(black) mc(black) lp(solid)) ///
 			, graphregion(color(white)) ylabel(0(.1).3,nogrid labsize(small) format(%12.1fc)) yscale(range(0 .35)) ///
-			legend(region(lcolor(white)) rows(1) size(tiny) order(1 "urban raw" 2 "urban only" ///
-			3 "urban w/ controls" 4 "urban w/ weighted market access") title("{bf:Urban Wage Premium:}", ///
+			legend(region(lcolor(white)) rows(1) size(tiny) /// 
+			order(1 "urban raw" 2 "urban only" 3 "urban w/ controls" 4 "urban w/ weighted market access") /// 
+			title("{bf:Urban Wage Premium:}", ///
 			size(tiny) pos(9) color(black))) xtitle("") l1title("Urban Wage Premium (in percent)", size(small))
 			
-	gr export "$gh/paper/figures/urbanpremium_IPUMS_ma_weighted.pdf",as(pdf) replace
+	gr export "$gh/paper/figures/urbanpremium_IPUMS_ma_weighted.pdf", as(pdf) replace
 	restore	
 	
 	
