@@ -72,9 +72,9 @@ As productivity has increased, the marginal revenue product of workers has incre
 The urban wage premium has become an empirical fact, widely documented in the urban economics literature (see for example \citet{rosenthal2004evidence} for a review). 
 While documented repeatedly, the drivers of the urban wage premium are not fully understood. 
 On the one hand, cities may attract workers that are more skilled \citet{Combes_Duranton_Gobillon_2008}. 
-For example cite{Yankow_2006} documents that up to two-thirds of the urban wage premium is driven by differences in worker skills. 
+For example \citet{Yankow_2006} documents that up to two-thirds of the urban wage premium is driven by differences in worker skills. 
 Even after controlling forindividual characteristics, the wage premium persists. 
-Many authors have pointed to agglomeration economies to explain the remaining gap\citet{Glaeser_Mare_2001} \citet{wheaton2002urban}.\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{@article{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} 
+Many authors have pointed to agglomeration economies to explain the remaining gap\citet{Glaeser_Mare_2001} \citet{wheaton2002urban}.\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} 
 Agglomeration economies are an attractive explanation, yet determining the underlying mechanism that contributes to agglomeration is difficult. 
 Indeed a large literature has sought to explain the causes and mechanisms of agglomeration. 
 In studying the urban wage premium, there is also a concern that the wage premium reflects firm survival, rather than agglomeration, although the existing evidence thus far points to agglomeration \citet{combes2012productivity};\citet{behrens2014productive}.
@@ -111,26 +111,6 @@ Indeed, after controlling for many sources of selection, we find that the unexpl
 In what follows, we describe how the urban wage premium has changed over time. 
  
 
-
-
-\begin{itemize}
-	\item Introduction
-	
-	\item Historical Background
-	
-	\item Data and Summary Statistics
-	
-	\item Empirical Analysis and Results
-	\begin{itemize}
-		\item Urban wage premium, number of workers, and market access
-		\begin{itemize}
-			\item relative to housing values			
-		\end{itemize}
-		
-		\item Urban skill premium, number of workers, and market access
-		
-	\end{itemize}
-\end{itemize}
 	
 % --------------------------------------------------
 \section{Historical Background}
@@ -148,7 +128,7 @@ Since 1940, there have been major changes to the federal and state highway netwo
 First, over 1 million new miles of road have been added to the network, although much of this mileage is maintained by local governments and is for local travel.\footnote{https://www.fhwa.dot.gov/policyinformation/statistics/2018/vmt421c.cfm} 
 Of the 1 million new miles, approximately 50 thousand were built or upgraded to create the Interstate Highway System (IHS), which drastically increased travel speeds between places in the network.
 In addition to the construction of the IHS, other upgrades to state and non-IHS Federal-Aid Highways occurred, such as improved allignments, upgraded surfacing, and road widening.\footnote{Examples of non IHS improvements include the construction of the Appalachian Development Highway System, improvements to the Strategic Highway Network (STRAHNET), the Florida Turnpike, Texas Farm to Market (FM) Roads, among many others}   
-Today there are over 220,000 miles in the National Highway System, reflecting expansions and improvements of both the IHS and the US Highway network.\footbote{https://www.fhwa.dot.gov/policyinformation/statistics/2018/hm14.cfm} 
+Today there are over 220,000 miles in the National Highway System, reflecting expansions and improvements of both the IHS and the US Highway network.\footnote{https://www.fhwa.dot.gov/policyinformation/statistics/2018/hm14.cfm} 
 
 %%Thinking of talking about the IHS plans to connect cities and then not worry about urban congestion. Don't want to drag on talking about the IHS. 
  
@@ -189,7 +169,7 @@ Our measure of the iceberg trade costs to ship from county $c$ to county $d$ in 
 To solve the system of non-linear equations derived from the model requires detailed trade cost, $\tau{cd}$, from every origin to each destination. We approximate the origin-destination trade costs in each year by measuring travel costs through the contemporary highway network. Our measure of trade costs relies on measuring the distance and time traveled through the highway network, which is then monetized using hourly wages and fuel cost in each period, as highlighted above. To measure the time and distance post 2000 (2005 and 2015), we rely on the detailed shapefiles maintained by the federal government. For years prior to 2000 we georeference atlases produced by Rand McNally in each decade 1940-1990, as the federal government did not begin maintaining its database until 1994. To create a time consistent network, we begin with the 2000 version of the Federal Highway Administration's shapefiles. Then, for each decade, we overlay scans of each Rand McNally atlas and edit the federal shapefile. Specifically, we delete road segments that were constructed between the current map year and 2000, and re-code segments that have been reclassified over time (i.e., segments of the US Highway network that became interstates, or paved roads that were previously gravel or dirt). We perform this procedure iteratively for each decade back to 1940. One advantage of this approach is that it locates roads based on modern GPS technologies to ensure accurate placement throughout time. \footnote{One drawback is that this approach may ignore roads that were important prior to the modern stock of infrastructure.} We then follow the process outlined in \cite{Jaworski_Kitchens_2019} to measure the point to point distance travel time through the network each decade. That is, we represent each location by its geographic centroid, connected to the network by a set of access roads. We assign a travel speed to each segment in the network according to its classification (state, federal, interstate) and surface (dirt, gravel, paved), according to the parameters in \ref{table:road_param}. We then solve for the least cost route through the network for all pairwise combinations of origins and destinations.\footnote{More details on how the trade costs are calculated can be found in Section III of \citet{Jaworski_Kitchens_2019}.}    
 
 % Summary Statistics
-\begin{table}[tb]
+\begin{table}[htb]
     \caption{Road Classifications and Speed Parameters}
     \label{table:road_param}
 
@@ -228,7 +208,7 @@ To aggregate market access to Urban areas, we created a crosswalk of counties wi
 % --------------------------------------------------
 
 % Summary Statistics
-\begin{table}[tb]
+\begin{table}[htb]
     \caption{Summary Statistics}
     \label{table:summ}
 
@@ -264,7 +244,7 @@ While the southern and western states have experienced relative gains in market 
 For example, North Dakota in 2015 has about the same level of market access that New York City had in 1940. 
 
 
-\begin{figure}[tb]
+\begin{figure}[htb]
     \caption{Log of Market Access Deviations from Yearly Mean: 1940-2015}
     \label{fig:ma_dev_over_time}
     {\centering
@@ -278,7 +258,7 @@ For example, North Dakota in 2015 has about the same level of market access that
     }
 \end{figure}
 
-\begin{figure}[tb]
+\begin{figure}[htb]
     \caption{Log of Market Access over Time: 1940-2015}
     \label{fig:ma_over_time}
     {\centering
@@ -312,7 +292,7 @@ Moving into a regression framework, we run versions of the following specificati
 \end{equation}
 where $X_i$ is a set of controls consisting of age in 5-year bins, education levels, and an indicator for being White. Our estimate of $\beta_1$ is the percent increase in wages that workers in urban areas have on average which we call the urban wage premium. The first regression only includes an indicator for living in an urban area without the log of market access or controls $X_i$. This is the regression based version of the \citet{Boustan_Bunten_Hearey_2013} approach. However, there can be demographic differences between urban and rural areas that contribute to wage differentials and so we add controls for education, race, and age in the following specifications. 
 
-\begin{figure}[tb]
+\begin{figure}[htb]
     \caption{Urban Wage Premium 1940-2015}
     \label{fig:premium_over_time}
     {\centering
@@ -339,7 +319,7 @@ When controlling for the transportation advantage of cities and demographic diff
 This result suggests that between 25.9\% to 47.7\% of the urban wage premium is explained by a relatively strong position in the transportation network.\footnote{The \% change in the urban wage indicator between the specification including controls and the specification inlcuding controls and market access is 47.7\% for 1940, 30.7\% for 1950, 35.9\% for 1960, 46.2\% for 1970, 35.4\% for 1980, 37.4\% for 1990, 26.1\% for 2000, 25.8\% for 2005, 33.1\% for 2010, and 27.4\% for 2015.} In particular, it appears that early in our sample, the differences in access to transportation network was large between urban and nonurban areas. This matches the fact that historical highway networks focused on connecting large cities and starting around 1955 began connecting many more places which increased market access for less populous areas (as evidenced by Figure \ref{fig:ma_dev_over_time}). 
 
 % MA Regression
-\begin{table}[tb]
+\begin{table}[htb]
     \caption{Urban Wage Premium Estimates by Survey Year}
     \label{table:ma_reg}
 
@@ -380,6 +360,7 @@ This result suggests that between 25.9\% to 47.7\% of the urban wage premium is 
 % --------------------------------------------------
 \newpage \appendix
 \renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
 % --------------------------------------------------
 
 
@@ -389,7 +370,9 @@ This result suggests that between 25.9\% to 47.7\% of the urban wage premium is 
 \setcounter{figure}{0}
 % --------------------------------------------------
 
-\begin{table}[tb]
+Full results of our regression estimates in Figure \ref{fig:ma_over_time} can be found in Table \ref{table:ma_reg_all}. In Panel A corresponding to the dotted line with diamonds in Figure \ref{fig:ma_over_time}, this set of regressions only have an indicator for living in an Urban Area. In Panel B corresponding to the dotted line with traingle markers in Figure \ref{fig:ma_over_time}, this regression adds controls for age in 5-year bins, education levels, and an indicator for being White. Lastly, Panel C replicates the full regression including controls and the log of market acces which is the same as Table \ref{table:ma_reg}. 
+
+\begin{table}[htb]
     \caption{All Urban Wage Premium Estimates by Survey Year}
     \label{table:ma_reg_all}
 
@@ -449,12 +432,37 @@ For a given year, a metro area's market access is the geometric average of the c
 
 For some metro areas, there is a central county and more counties at the peripheral, less populated counties. In this case, our simple average may understate the market access in a city, so we check for this by averaging across counties weighted by the counties population share. The results in Figure \ref{fig:premium_over_time_weighted} show that the shape of the black line with circle markers is very similar to Figure \ref{fig:premium_over_time}. 
 
-\begin{figure}[tb]
+\begin{figure}[htb]
     \caption{Urban Wage Premium 1940-2015 with Weighted Market Access}
     \label{fig:premium_over_time_weighted}
     {\centering
         \resizebox{\columnwidth}{!}{
             \includegraphics{figures/urbanpremium_IPUMS_ma_weighted.pdf}
+        } 
+    }
+
+    {\footnotesize
+        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:reg}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of the weighted market access.
+    }
+\end{figure}
+
+
+
+% --------------------------------------------------
+\subsubsection{MSA Selection Over Time}
+% --------------------------------------------------
+
+Over decades as places grew in size, more and more places became classified as urban areas and these areas tended to be smaller than long-standing MSAs. There could be concern that the observed decline in the urban wage premium
+as smaller cities are added over time, the observed decline in the urban wage premium is driven by the addition of smaller cities over time. Figure \ref{fig:premium_constant_msa} shows this is not the case.
+
+To create this, we keep all MSAs that exist in the entire sample from 1940 - 2015 (removing those that are added over time and the few that are lost over time). Observations are dropped for individuals identified in an MSA that does not exist for the entire sample. There still remains the issue that MSAs tend to grow over time incorporating less densly populated areas over time which we are unable to fix because the survey data does not feature exact locations of individuals.
+
+\begin{figure}[htb]
+    \caption{Urban Wage Premium 1940-2015 with Weighted Market Access}
+    \label{fig:premium_msa_in_all_yrs}
+    {\centering
+        \resizebox{\columnwidth}{!}{
+            \includegraphics{figures/urbanpremium_IPUMS_msa_in_all_yrs.pdf}
         } 
     }
 
