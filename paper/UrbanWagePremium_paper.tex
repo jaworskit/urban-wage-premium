@@ -272,10 +272,6 @@ For example, North Dakota in 2015 has about the same level of market access that
     }
 \end{figure}
 
-@Question: For the map, there are some msas that are in the list we have but not showing up in the ipums data, should I use them still in the map?
-
-@Question: Should there be a robustness check to prevent selection over time. If smaller and smaller MSAs are added, then we would expect a decline in wage premium even if the original cities' premium perhaps is growing. 
-Also, it could be that our market access variable is picking up, in part, differences in the urban wage premium based on city size.
 
 
 
@@ -292,7 +288,7 @@ Moving into a regression framework, we run versions of the following specificati
 \end{equation}
 where $X_i$ is a set of controls consisting of age in 5-year bins, education levels, and an indicator for being White. Our estimate of $\beta_1$ is the percent increase in wages that workers in urban areas have on average which we call the urban wage premium. The first regression only includes an indicator for living in an urban area without the log of market access or controls $X_i$. This is the regression based version of the \citet{Boustan_Bunten_Hearey_2013} approach. However, there can be demographic differences between urban and rural areas that contribute to wage differentials and so we add controls for education, race, and age in the following specifications. 
 
-\begin{figure}[htb]
+\begin{figure}[h]
     \caption{Urban Wage Premium 1940-2015}
     \label{fig:premium_over_time}
     {\centering
@@ -446,6 +442,32 @@ For some metro areas, there is a central county and more counties at the periphe
     }
 \end{figure}
 
+
+% --------------------------------------------------
+\subsubsection{MA Without Own GDP}
+% --------------------------------------------------
+
+Since our measure of market access is increasing in a county's own size, there could be concern that our measure is not only measuring the county's access to the transportation network, but also the size of the county itself. \citet{d'costa_2014} finds evidence that the urban wage premium indeed is growing in city size. This would mean market access is absorbing some of the premium associated with being in a largely populated area and would be biasing our estimates of the wage premium towards zero. To avoid this, for all counties in an MSA, we construct a measure of market access that removes all counties from the summation that fall within the same MSA: 
+\begin{equation}
+    \label{eq:ma_removeown}
+    \text{MA}_{c} = \rho \sum_{d \not \in \text{MSA}(c)} \tau_{cd}^{-\theta} \text{MA}_d^{-1} Y_d,
+\end{equation}
+
+The results are in Figure \ref{fig:premium_over_time_removeown}. 
+
+\begin{figure}[htb]
+    \caption{Urban Wage Premium 1940-2015 with Remove Own Market Access}
+    \label{fig:premium_over_time_removeown}
+    {\centering
+        \resizebox{\columnwidth}{!}{
+            \includegraphics{figures/urbanpremium_IPUMS_removeown.pdf}
+        } 
+    }
+
+    {\footnotesize
+        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:reg}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of the weighted market access constructed according to Equation \ref{eq:ma_removeown}.
+    }
+\end{figure}
 
 
 % --------------------------------------------------

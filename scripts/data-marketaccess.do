@@ -53,6 +53,39 @@ global gh "~/Documents/Projects/urban-wage-premium"
 	
 	qui save "$project/data/marketaccess/dta/MA_allyears.dta", replace
 	
+*-> Load market access (robustness: remove own-MSA gdp)
+	
+	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
+		
+		if `year' == 2005 {
+			qui import delimited using "$project/data/matlab/output/MA2000_cost1_removeown.csv", clear
+		} 
+		else if `year' == 2015 {
+			qui import delimited using "$project/data/matlab/output/MA2010_cost1_removeown.csv", clear
+		} 
+		else {
+			qui import delimited using "$project/data/matlab/output/MA`year'_cost1_removeown.csv", clear
+		}
+		
+		qui rename v1 fips
+		qui rename v2 ma_removeown 
+		qui gen year = `year'
+		
+		qui save "$project/data/marketaccess/dta/MA`year'_removeown.dta", replace
+	}
+	
+	clear 
+	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
+		qui append using "$project/data/marketaccess/dta/MA`year'_removeown.dta"
+	}
+	
+	qui sort fips year
+	duplicates drop fips year ma_removeown, force
+	
+	qui gen statefip = floor(fips/1000)
+	
+	qui save "$project/data/marketaccess/dta/MA_allyears_removeown.dta", replace
+	
 	
 *-> Load county population
 
@@ -86,24 +119,32 @@ global gh "~/Documents/Projects/urban-wage-premium"
 		
 	* Merge with county-level market access	
 	merge m:1 fips year using "$project/data/marketaccess/dta/MA_allyears.dta"
+	drop _merge
 	
 	* A few fips codes are missing ma (330 obs.; Virginia is messed up)
 	drop if missing(ma)
 	
+	* Merge with county-level market access (robustness remove own)
+	merge m:1 fips year using "$project/data/marketaccess/dta/MA_allyears_removeown.dta"
+	drop _merge
+	
+	* A few fips codes are missing ma (330 obs.; Virginia is messed up)
+	drop if missing(ma_removeown)
+	
 	* For missing, code = statefip when we collpase by code
 	replace code = statefip*100000 if missing(code)
-
 	
 	** Take mean within msa and within rural-state
 	* Without weighting by population
 	preserve
-	qui collapse (mean) ma, by(code year)
+	qui collapse (mean) ma ma_removeown, by(code year)
 	qui save "$project/data/dta/temp/pop_unweighted.dta", replace
 	restore 
 	
 	* Weighting by population 
-	qui collapse (mean) ma [fw= population], by(code year)
+	qui collapse (mean) ma ma_removeown [fw= population], by(code year)
 	rename ma ma_weighted
+	rename ma_removeown ma_weighted_removeown
 	
 	* Merge msa weighted and unweighted
 	merge 1:1 code year using "$project/data/dta/temp/pop_unweighted.dta"
@@ -112,9 +153,13 @@ global gh "~/Documents/Projects/urban-wage-premium"
 	
 	label variable ma "Market Access (averaged across counties)"
 	label variable ma_weighted "Market Access (averaged across counties, weighted by cnty population)"
-	keeporder code year ma ma_weighted
+	label variable ma_removeown "Market Access (averaged across counties, removed own-MSA)"
+	label variable ma_weighted_removeown "Market Access (averaged across counties, weighted by cnty population, removed own-MSA)"
+	keeporder code year ma ma_weighted ma_removeown ma_weighted_removeown
 	sort code year
 	
+	
+	* Save
 	qui replace code = 0 if code == .
 	
 	qui save "$project/data/dta/msa_market_access.dta", replace
@@ -287,11 +332,15 @@ global gh "~/Documents/Projects/urban-wage-premium"
 	qui g agegroup = int(age/5)	
 	qui g ln_ma = log(ma)
 	qui g ln_ma_weighted = log(ma_weighted)
+	qui g ln_ma_removeown = log(ma_removeown)
+	qui g ln_ma_weighted_removeown = log(ma_weighted_removeown)
 		
 *-> Label Variables	
 
 	label variable ma "Market Access"
 	label variable ma_weighted "Market Access (Weighted)"
+	label variable ma_removeown "Market Access"
+	label variable ma_weighted_removeown "Market Access (Weighted)"
 	label variable weeklywage "Weekly Wage, 2015 \$"
 	label variable white "=1, if White"
 	label variable urban "=1, if in Urban Area"

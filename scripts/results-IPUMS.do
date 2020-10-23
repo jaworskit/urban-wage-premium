@@ -66,6 +66,8 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 		
 *-> Replicate Boustan figure
 	
+	display "** Boustan Replication *****************************"
+	
 	preserve
 	
 	collapse (sum) totalweeks totalincome perwt, by(year urban)
