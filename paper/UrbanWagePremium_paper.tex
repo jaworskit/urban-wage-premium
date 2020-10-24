@@ -176,38 +176,38 @@ Our measure of the iceberg trade costs to ship from county $c$ to county $d$ in 
     \end{split}
 \end{align} 
     
-To solve the system of non-linear equations derived from the model requires detailed trade cost, $\tau{cd}$, from every origin to each destination. We approximate the origin-destination trade costs in each year by measuring travel costs through the contemporary highway network. Our measure of trade costs relies on measuring the distance and time traveled through the highway network, which is then monetized using hourly wages and fuel cost in each period, as highlighted above. To measure the time and distance post 2000 (2005 and 2015), we rely on the detailed shapefiles maintained by the federal government. For years prior to 2000 we georeference atlases produced by Rand McNally in each decade 1940-1990, as the federal government did not begin maintaining its database until 1994. To create a time consistent network, we begin with the 2000 version of the Federal Highway Administration's shapefiles. Then, for each decade, we overlay scans of each Rand McNally atlas and edit the federal shapefile. Specifically, we delete road segments that were constructed between the current map year and 2000, and re-code segments that have been reclassified over time (i.e., segments of the US Highway network that became interstates, or paved roads that were previously gravel or dirt). We perform this procedure iteratively for each decade back to 1940. One advantage of this approach is that it locates roads based on modern GPS technologies to ensure accurate placement throughout time. \footnote{One drawback is that this approach may ignore roads that were important prior to the modern stock of infrastructure.} We then follow the process outlined in \cite{Jaworski_Kitchens_2019} to measure the point to point distance travel time through the network each decade. That is, we represent each location by its geographic centroid, connected to the network by a set of access roads. We assign a travel speed to each segment in the network according to its classification (state, federal, interstate) and surface (dirt, gravel, paved), according to the parameters in \ref{table:road_param}. We then solve for the least cost route through the network for all pairwise combinations of origins and destinations.\footnote{More details on how the trade costs are calculated can be found in Section III of \citet{Jaworski_Kitchens_2019}.}    
+To solve the system of non-linear equations derived from the model requires detailed trade cost, $\tau{cd}$, from every origin to each destination. We approximate the origin-destination trade costs in each year by measuring travel costs through the contemporary highway network. Our measure of trade costs relies on measuring the distance and time traveled through the highway network, which is then monetized using hourly wages and fuel cost in each period, as highlighted above. To measure the time and distance post 2000 (2005 and 2015), we rely on the detailed shapefiles maintained by the federal government. For years prior to 2000 we georeference atlases produced by Rand McNally in each decade 1940-1990, as the federal government did not begin maintaining its database until 1994. To create a time consistent network, we begin with the 2000 version of the Federal Highway Administration's shapefiles. Then, for each decade, we overlay scans of each Rand McNally atlas and edit the federal shapefile. Specifically, we delete road segments that were constructed between the current map year and 2000, and re-code segments that have been reclassified over time (i.e., segments of the US Highway network that became interstates, or paved roads that were previously gravel or dirt). We perform this procedure iteratively for each decade back to 1940. One advantage of this approach is that it locates roads based on modern GPS technologies to ensure accurate placement throughout time.\footnote{One drawback is that this approach may ignore roads that were important prior to the modern stock of infrastructure.} We then follow the process outlined in \cite{Jaworski_Kitchens_2019} to measure the point to point distance travel time through the network each decade. That is, we represent each location by its geographic centroid, connected to the network by a set of access roads. We assign a travel speed to each segment in the network according to its classification (state, federal, interstate) and surface (dirt, gravel, paved).\footnote{The speed limits used in this paper are Interstate - 65;  US Highway (Paved) - 45; US Highway (Gravel) - 35; US Highway (Dirt) - 30; State Highway (Paved) - 25; State Highway (Gravel) - 20; State Highway (Dirt) - 15; Access Road - 10. \citet{Jaworski_Kitchens_2019} show that the measure of market access is robust to other speed limits.} We then solve for the least cost route through the network for all pairwise combinations of origins and destinations.\footnote{More details on how the trade costs are calculated can be found in Section III of \citet{Jaworski_Kitchens_2019}.}    
 
-% Summary Statistics
-\begin{table}[htb]
-    \caption{Road Classifications and Speed Parameters}
-    \label{table:road_param}
-
-    \begin{center}
-        \begin{tabular}{@{\extracolsep{5pt}}lcc}
-        \toprule  
-        \textbf{Class of Road} & \textbf{Speed limit} & \textbf{Speed limit} \\
-
-        \midrule
-        Interstate & 65 & 70 \\ 
-        US Highway (Paved) & 45 & 55 \\
-        US Highway (Gravel) & 35 & 50 \\
-        US Highway (Dirt) & 30 & 45 \\
-        State Highway (Paved) & 25 & 45 \\
-        State Highway (Gravel) & 20 & 40 \\
-        State Highway (Dirt) & 15 & 35 \\
-        Access Road & 10 & 10 \\
-
-        \bottomrule
-
-        \end{tabular}
-    \end{center}
-    
-    \vspace{2mm}
-    {\footnotesize
-        \textit{Notes:} 
-    }
-\end{table}
+% Speed Limits
+% \begin{table}[htb]
+%     \caption{Road Classifications and Speed Parameters}
+%     \label{table:road_param}
+%
+%     \begin{center}
+%         \begin{tabular}{@{\extracolsep{5pt}}lcc}
+%         \toprule  
+%         \textbf{Class of Road} & \textbf{Speed limit} & \textbf{Speed limit} \\
+%
+%         \midrule
+%         Interstate & 65 & 70 \\ 
+%         US Highway (Paved) & 45 & 55 \\
+%         US Highway (Gravel) & 35 & 50 \\
+%         US Highway (Dirt) & 30 & 45 \\
+%         State Highway (Paved) & 25 & 45 \\
+%         State Highway (Gravel) & 20 & 40 \\
+%         State Highway (Dirt) & 15 & 35 \\
+%         Access Road & 10 & 10 \\
+%
+%         \bottomrule
+%
+%         \end{tabular}
+%     \end{center}
+%   
+%     \vspace{2mm}
+%     {\footnotesize
+%         \textit{Notes:} 
+%     }
+% \end{table}
 
 The market access variable summarizes a county c's access to the transportation network by taking an average of other counties' market size weighted by both the trade cost to ship to that market and by all other counties access to that market ($\text{MA}_{d}^{-1}$). Therefore a county $c$'s market access is large when it has access to large markets that other counties have little access to.
 
