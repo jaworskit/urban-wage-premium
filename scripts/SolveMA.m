@@ -5,8 +5,9 @@ function [ma] = SolveMA(Y, tau, theta, Counties)
     manew = zeros(Counties,1);
     
     while (sqrt(sum((manew-matemp).^2)) > Tol)
-       manew = Tol*sum((tau .^ -theta) .* ((ones(Counties,1) .* matemp ).^ -1) .* (ones(Counties,1) * Y)',1 ); 
        matemp = manew; 
+       manew = Tol*sum((tau .^ -theta) .* ((ones(Counties,1) .* matemp ).^ -1) .* (ones(Counties,1) * Y)',1 ); 
+       %matemp = manew; 
     end
     
     ma = matemp;
