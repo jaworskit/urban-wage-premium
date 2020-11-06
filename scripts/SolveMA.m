@@ -1,6 +1,6 @@
 function [ma] = SolveMA(Y, tau, theta, Counties)
 
-    Tol = .01;
+    Tol = .1;
     %Tol = 10^-5;
 
     matemp = ones(Counties,1);
