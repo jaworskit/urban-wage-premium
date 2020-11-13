@@ -1,6 +1,6 @@
 function [ma] = SolveMA(Y, tau, theta, Counties)
 
-    Tol = 1;
+    Tol = .1;
 
     matemp = ones(Counties,1);
     manew = sum( (tau .^ -theta) .* (ones(Counties,1) * Y), 2);

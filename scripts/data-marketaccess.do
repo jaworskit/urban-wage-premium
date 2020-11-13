@@ -13,9 +13,10 @@ clear all
 
 ********************************************************************************
 
-* global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
-global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
-global gh "~/Documents/Projects/urban-wage-premium"
+global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
+*global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
+*global gh "~/Documents/Projects/urban-wage-premium"
 
 ********************************************************************************
 

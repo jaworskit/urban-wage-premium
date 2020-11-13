@@ -12,10 +12,10 @@ clear all
 
 ********************************************************************************
 
-*global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
-*global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
-global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
-global gh "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
+global gh "/Users/taylorjaworski/Projects/urban-wage-premium/"
+*global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+*global gh "/Users/kylebutts/Documents/Projects/urban-wage-premium"
 
 ********************************************************************************
 
@@ -64,9 +64,9 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 		nomtitle nonumbers collabel(none) ///
 		mlabels(none) eqlabels(none)
 		
-*-> Replicate Boustan figure
+*-> Replicate Boustan et al figure
 	
-	display "** Boustan Replication *****************************"
+	display "** Boustan et al Replication *****************************"
 	
 	preserve
 	

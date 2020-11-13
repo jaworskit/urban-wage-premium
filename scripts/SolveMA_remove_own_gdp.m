@@ -15,5 +15,6 @@ function [ma] = SolveMA_remove_own_gdp(Y, same_msa, tau, theta, Counties)
     end
     
     ma = manew*1000;
-
+    ma = manew';
+    
 end
