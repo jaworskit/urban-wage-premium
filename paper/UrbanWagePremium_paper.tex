@@ -146,13 +146,14 @@ The remaining 220 thousand miles of road in 1940 were state highways, of which j
 Since 1940, federal and state highway networks have improved dramatically. 
 First, over 1 million new miles of road were added to the network, although much of this mileage is maintained by local governments and is for local travel.\footnote{https://www.fhwa.dot.gov/policyinformation/statistics/2018/vmt421c.cfm} 
 Of the 1 million new miles, approximately 50 thousand were built or upgraded to create the Interstate Highway System (IHS), which drastically increased travel speeds between places in the network.
+As highlighted in \citet{michaels2008effect}, the IHS construction was especially active in the 1960s and 1970s. 
 In addition to the construction of the IHS, other upgrades to state and non-IHS Federal-Aid Highways occurred.\footnote{Examples of non IHS improvements include the construction of the Appalachian Development Highway System, improvements to the Strategic Highway Network (STRAHNET), the Florida Turnpike, Texas Farm to Market (FM) Roads, among many others}
 These smaller improvements include straightening road allighments, upgrading road surfaces, road widening, and urban bypasses; all of which increase travel speeds.
 In the post WWII era, there has also been an effort to use road construction as a local development tool.   
 Today there are over 220,000 miles in the National Highway System, reflecting expansions and improvements of both the IHS and the US Highway network.\footnote{https://www.fhwa.dot.gov/policyinformation/statistics/2018/hm14.cfm} 
 
 The improvements to the highway network have had meaningful impacts on travel times in the United States. 
-In Figure \ref{fig:travelTime}, we highlight how the average travel time between all county pairs in the United States has changed between 1940 and 2010. 
+In Figure \ref{fig:travelTime}, we highlight how the average travel time between all county pairs (4.6 million unique routes) in the United States has changed between 1940 and 2010. 
 
 \begin{figure}[htb]
     \caption{Average Travel Time in Hours 1940-2010}
@@ -253,7 +254,7 @@ Since 1980, the urban wage premium has increased; in 2015 the premium was 26 per
 % --------------------------------------------------
 \subsection{Market Access Data}
 % --------------------------------------------------
-To construct our measure of market access, we begin by drawing on recently digitized data by Jaowrski and Kitchens of historic highways. 
+To construct our measure of market access, we begin by drawing on recently digitized data by Jaworski and Kitchens of historic highways. 
 For the years 2000, 2005, and 2015, we rely on the detailed shapefiles maintained by the federal government. 
 For years prior to 2000, we georeference atlases produced by Rand McNally in each decade 1940-1990, as the federal government did not begin maintaining its database until 1994. 
 To create a time consistent network, we begin with the 2000 version of the Federal Highway Administration's shapefiles. 
@@ -261,12 +262,12 @@ Then, for each decade, we overlay scans of each decade's Rand McNally atlas and 
 Specifically, we delete road segments that were constructed between the current map year and 2000, and re-code segments that have been reclassified over time (i.e., segments of the US Highway network that became interstates, or paved roads that were previously gravel or dirt). 
 We perform this procedure iteratively for each decade back to 1940. 
 One advantage of this approach is that it locates roads based on modern GPS technologies to ensure accurate placement throughout time.\footnote{One drawback is that this approach may ignore roads that were important prior to the modern stock of infrastructure.} 
-We then follow the process outlined in \cite{Jaworski_Kitchens_2019} to measure the point to point distance travel time through the network each decade. 
-That is, we represent each location by its geographic centroid, connected to the network by a set of access roads. 
+We then follow the process outlined in \cite{Jaworski_Kitchens_2019} to measure the distance and travel time through the network each decade for alorigin-destination pairs. 
+Specifically, we represent each location by its geographic centroid, connected to the network by a set of access roads. 
 We assign a travel speed to each segment in the network according to its classification (state, federal, interstate) and surface (dirt, gravel, paved).\footnote{The speed limits used in this paper are Interstate - 65;  US Highway (Paved) - 45; US Highway (Gravel) - 35; US Highway (Dirt) - 30; State Highway (Paved) - 25; State Highway (Gravel) - 20; State Highway (Dirt) - 15; Access Road - 10. \citet{Jaworski_Kitchens_2019} show that the measure of market access is robust to other speed limits.} 
+We then solve for the least cost route through the network for all pairwise combinations of origins and destinations.
 
-We then solve for the least cost route through the network for all pairwise combinations of origins and destinations.%\footnote{More details on how the trade costs are calculated can be found in Section III of \citet{Jaworski_Kitchens_2019}.}    
-The measures of distance and travel time are then used as inputs to measure the county-to-county trade costs, $\tau_{cd}$. 
+The measures of distance and travel time are then used as inputs to measure the origin-destination trade costs, $\tau_{cd}$. 
 Formally, 
 \begin{align} 
     \label{eq:trade_cost}
@@ -277,7 +278,7 @@ Formally,
 \end{align} 
 where the cost per mile is based on the cost per gallon and the number of miles traveled per gallon and we the hourly wage for a truck driver.
  
-To construct a measure of market access, we follow the inter-regional trade literature developed in in \citet{Eaton_Kortum_2002}, \citet{Redding_Venables_2004}, and \citet{Donaldson_Hornbeck_2016}.\footnote{The particular trade model used is described in \citet{Jaworski_Kitchens_2019}.} 
+To construct a measure of market access, we follow the inter-regional trade literature developed in \citet{Eaton_Kortum_2002}, \citet{Redding_Venables_2004}, and \citet{Donaldson_Hornbeck_2016}.\footnote{The particular trade model used is described in \citet{Jaworski_Kitchens_2019}.} 
 A county $c$'s market access, $\text{MA}_c$, is given by this system of non-linear equations 
 \begin{equation}
     \label{eq:ma}
@@ -285,38 +286,6 @@ A county $c$'s market access, $\text{MA}_c$, is given by this system of non-line
 \end{equation}
 where $\theta$ is the trade elasticity with respect to trade costs, $\rho$ is a constant from the theoretical model, and $Y_d$ is the income of county $d$ measured by GDP. 
    
-
-
-% Speed Limits
-% \begin{table}[htb]
-%     \caption{Road Classifications and Speed Parameters}
-%     \label{table:road_param}
-%
-%     \begin{center}
-%         \begin{tabular}{@{\extracolsep{5pt}}lcc}
-%         \toprule  
-%         \textbf{Class of Road} & \textbf{Speed limit} & \textbf{Speed limit} \\
-%
-%         \midrule
-%         Interstate & 65 & 70 \\ 
-%         US Highway (Paved) & 45 & 55 \\
-%         US Highway (Gravel) & 35 & 50 \\
-%         US Highway (Dirt) & 30 & 45 \\
-%         State Highway (Paved) & 25 & 45 \\
-%         State Highway (Gravel) & 20 & 40 \\
-%         State Highway (Dirt) & 15 & 35 \\
-%         Access Road & 10 & 10 \\
-%
-%         \bottomrule
-%
-%         \end{tabular}
-%     \end{center}
-%   
-%     \vspace{2mm}
-%     {\footnotesize
-%         \textit{Notes:} 
-%     }
-% \end{table}
 
 The market access variable summarizes a county c's access to the transportation network by taking an average of other counties' market size weighted by both the trade cost to ship to that market and by all other counties access to that market ($\text{MA}_{d}^{-1}$). 
 Therefore a county $c$'s market access is large when it has access to large markets that other counties have little access to.
@@ -335,11 +304,6 @@ In Figure \ref{fig:ma_dev_over_time} we show the within-year deviations of the l
 The figure shows that over time, market access in non-urban areas has grown relative to urban areas, particularly in the southern and western United States. 
 On the other hand, large cities in the 1940 had very large market access relative to the national average and this relative advantage declines over time from about 4 log points to about 2 log points above the mean. 
 The deviation in log market access from the national average highlights the variation in market access used in our regressions below. 
-
-%While the southern and western states have experienced relative gains in market access compared to the northeast, market access has increased everywhere throughout the 2nd half of the 20th Century. 
- %While Figure \ref{fig:ma_dev_over_time} showed that non-urban areas had relative growth in market access, this figure highlights that market access has been growing consistently through the 20th century in all areas. 
-%For example, North Dakota in 2015 has about the same level of market access that New York City had in 1940. 
-
 
 \begin{figure}[htb]
     \caption{Log of Market Access Deviations from Yearly Mean: 1940-2015}
@@ -375,17 +339,65 @@ The deviation in log market access from the national average highlights the vari
 % --------------------------------------------------
 \section{Estimation and Results}
 % --------------------------------------------------
-We begin by estimating the following empirical relationship, which closely follows  \citet{Boustan_Bunten_Hearey_2013} : 
+For an initial understanding of the urban wage premium, we take the ratio between the average urban weekly wage and the nonurban weekly wage for each survey year. 
+This ratio replicates the method used in \citet{Boustan_Bunten_Hearey_2013} to calculate the urban wage premium. 
+We highlight the unadjusted urban wage premium in Panel A of \ref{table:ma_reg_all}.
+Moving across the row, we document the U-shape in which the urban wage premium starts around 30\% in 1940, decreases between 1950 and 1980 to just over 20\% and then increases again to over 25\% after 2000 is consistent with results found in the literature.\footnote{Our resuts match the shape over time found in Figure 3 of \citet{Boustan_Bunten_Hearey_2013}. 
+Our estimate in 2000 is smaller in magnitude than the estimate of 32\% from \citet{Glaeser_Mare_2001}. 
+The increase between 1980 and 2000 matches \citet{Baum-Snow_Pavan_2012}.}
 
-
-For an initial understanding of the urban wage premium, for each survey year we take the ratio between the average urban weekly wage and the nonurban weekly wage. This ratio replicates the method used in \citet{Boustan_Bunten_Hearey_2013} to calculate the urban wage premium. In Figure \ref{fig:premium_over_time}, the grey line with square markers shows the results of this exercise. The U-shape in which the urban wage premium starts around 30\% in 1940, decreases between 1950 and 1980 to just over 20\% and then increases again to over 25\% after 2000 is consistent with results found in the literature.\footnote{Our resuts match the shape over time found in Figure 3 of \citet{Boustan_Bunten_Hearey_2013}. Our estimate in 2000 is a few percentage points lower than the estimate of 32\% from \citet{Glaeser_Mare_2001}. The increase between 1980 and 2000 matches \citet{Baum-Snow_Pavan_2012}.}
-
-Moving into a regression framework, we run versions of the following specification seperately for each survey year: 
+As noted, these patterns reflect a combination of differences in productivity, the endogenous selection of labor into urban areas, differential returns to experience and other potential factors, such as agglomeration economies. 
+To better understand how these different channels impact the raw urban wage premium, we move to a regression framework. 
+Specifically, we estimate a set of regressions for each survey year as follows: 
 \begin{equation}
     \label{eq:reg}
-    \log(\text{Weekly Wage}_i) = \beta_0 + \beta_1 \text{Urban}_i + \beta_2 \log(\text{Market Access}_{MSA(i)}) + \delta X_{i} + \varepsilon_i,
+    \log(\text{Weekly Wage}_i) = \beta_0 + \beta_1 \text{Urban}_i + \beta_2 \log(\text{Market Access}_{MSA(i)}) + \delta X_{i} + \varepsilon_i.
 \end{equation}
-where $X_i$ is a set of controls consisting of age in 5-year bins, education levels, and an indicator for being White. Our estimate of $\beta_1$ is the percent increase in wages that workers in urban areas have on average which we call the urban wage premium. The first regression only includes an indicator for living in an urban area without the log of market access or controls $X_i$. This is the regression based version of the \citet{Boustan_Bunten_Hearey_2013} approach. However, there can be demographic differences between urban and rural areas that contribute to wage differentials and so we add controls for education, race, and age in the following specifications. 
+
+Here $Urban_i$ is an indicator variable that takes the value of 1 if an individual resides in an MSA and is zero otherwise. 
+In the absence of controls, $\beta_1$ captures the unadjusted urban wage premium. 
+To limit the scope that endogenous sorting has on the urban wage premium, we control for a set of individual-level variables.
+These individual-level covariates, $X_i$, includes a set of 5-year age bins, education level, and an indicator for race.
+We report the adjusted urban wage premium estimates in Panel B of \ref{table:ma_reg_all}.
+As in \citet{Yankow_2006} and \citet{Glaeser_Mare_2001}
+
+    \caption{All Urban Wage Premium Estimates by Survey Year}
+    \label{table:ma_reg_all}
+
+    \resizebox{\linewidth}{!}{
+        \centering
+
+        \begin{tabular}{@{\extracolsep{5pt}}lrrrrrrrrrr}
+        \toprule
+
+        & \textbf{1940} & \textbf{1950} & \textbf{1960} & \textbf{1970} & \textbf{1980} & \textbf{1990} & \textbf{2000} & \textbf{2005} & \textbf{2010} & \textbf{2015} \\
+        \cline{2-11}
+
+        \multicolumn{11}{l}{\textbf{Panel A: Urban only}} \\
+        \input{results/results-IPUMS/premium_no_ma.tex}
+        
+
+        \midrule
+        \multicolumn{11}{l}{\textbf{Panel B: Urban with Controls}} \\
+        \input{results/results-IPUMS/premium_no_ma_controls.tex}
+
+
+        \midrule
+        \multicolumn{11}{l}{\textbf{Panel C: Urban, Controls, and Market Access}} \\
+        \input{results/results-IPUMS/premium_ma.tex}
+
+        \bottomrule
+        \end{tabular}
+    
+    }
+    
+    \vspace{2mm}
+
+
+In Figure \ref{fig:premium_over_time}, the grey line with square markers shows the results of this exercise.
+
+
+
 
 \begin{figure}[h]
     \caption{Urban Wage Premium 1940-2015}
@@ -468,37 +480,7 @@ This result suggests that between 25.9\% to 47.7\% of the urban wage premium is 
 Full results of our regression estimates in Figure \ref{fig:ma_over_time} can be found in Table \ref{table:ma_reg_all}. In Panel A corresponding to the dotted line with diamonds in Figure \ref{fig:ma_over_time}, this set of regressions only have an indicator for living in an Urban Area. In Panel B corresponding to the dotted line with traingle markers in Figure \ref{fig:ma_over_time}, this regression adds controls for age in 5-year bins, education levels, and an indicator for being White. Lastly, Panel C replicates the full regression including controls and the log of market acces which is the same as Table \ref{table:ma_reg}. 
 
 \begin{table}[htb]
-    \caption{All Urban Wage Premium Estimates by Survey Year}
-    \label{table:ma_reg_all}
 
-    \resizebox{\linewidth}{!}{
-        \centering
-
-        \begin{tabular}{@{\extracolsep{5pt}}lrrrrrrrrrr}
-        \toprule
-
-        & \textbf{1940} & \textbf{1950} & \textbf{1960} & \textbf{1970} & \textbf{1980} & \textbf{1990} & \textbf{2000} & \textbf{2005} & \textbf{2010} & \textbf{2015} \\
-        \cline{2-11}
-
-        \multicolumn{11}{l}{\textbf{Panel A: Urban only}} \\
-        \input{results/results-IPUMS/premium_no_ma.tex}
-        
-
-        \midrule
-        \multicolumn{11}{l}{\textbf{Panel B: Urban with Controls}} \\
-        \input{results/results-IPUMS/premium_no_ma_controls.tex}
-
-
-        \midrule
-        \multicolumn{11}{l}{\textbf{Panel C: Urban, Controls, and Market Access}} \\
-        \input{results/results-IPUMS/premium_ma.tex}
-
-        \bottomrule
-        \end{tabular}
-    
-    }
-    
-    \vspace{2mm}
     {\footnotesize
         \textit{Notes:} Each cell is the coefficient estimate corresponding to the regression for the survey year indicated by the column label. The dependent variable is log weekly earning and each regression includes an indicator for living in an urban area. Panel A just includes the Urban indicator; Panel B includes controls for age in 5-year bins, education levels, and an indicator for being White; Panel C includes the above controls and our measure of market access. All regressions are weighted by the IPUMS person weights. Standard errors are in parenthesis and are clustered at the MSA-Nonurban State level 
     }
@@ -592,6 +574,38 @@ To create this, we keep all MSAs that exist in the entire sample from 1940 - 201
     }
 \end{figure}
 
+
+
+% Speed Limits
+ \begin{table}[htb]
+     \caption{Road Classifications and Speed Parameters}
+     \label{table:road_param}
+
+     \begin{center}
+         \begin{tabular}{@{\extracolsep{5pt}}lcc}
+         \toprule  
+         \textbf{Class of Road} & \textbf{Speed limit} & \textbf{Speed limit} \\
+
+         \midrule
+         Interstate & 65 & 70 \\ 
+         US Highway (Paved) & 45 & 55 \\
+         US Highway (Gravel) & 35 & 50 \\
+         US Highway (Dirt) & 30 & 45 \\
+         State Highway (Paved) & 25 & 45 \\
+         State Highway (Gravel) & 20 & 40 \\
+         State Highway (Dirt) & 15 & 35 \\
+         Access Road & 10 & 10 \\
+
+         \bottomrule
+
+         \end{tabular}
+     \end{center}
+   
+     \vspace{2mm}
+     {\footnotesize
+         \textit{Notes:} 
+     }
+ \end{table}
 
 
 
