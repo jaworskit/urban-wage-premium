@@ -175,7 +175,7 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 			varwidth(25) cells(b(fmt(4)) se(par fmt(4))) stats(N, fmt(%12.0fc) labels("\hline N")) /// 
 			keep(urban) varlabels(urban "Urban")	
 		
-		estout est1* using "$gh/paper/results/results-IPUMS/premium_no_ma_controls.tex" ///
+		estout est2* using "$gh/paper/results/results-IPUMS/premium_no_ma_controls.tex" ///
 			, replace type style(tex) collabels(none) mlabels(none) eqlabels(none) ///
 			varwidth(25) cells(b(fmt(4)) se(par fmt(4))) stats(N, fmt(%12.0fc) labels("\hline N")) /// 
 			keep(urban) varlabels(urban "Urban")	
