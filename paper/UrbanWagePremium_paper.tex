@@ -1,7 +1,42 @@
-\documentclass[12pt,twoside]{article}
-\usepackage{paperstyle}  % Loads my formatting 
-\usepackage{booktabs}
+%\documentclass[12pt,twoside]{article}
+%\usepackage{paperstyle}  % Loads my formatting 
+%\usepackage{booktabs}
 %\usepackage{tweaklist}  % I use this package as well; you may need to download
+%\usepackage{natbib}
+
+
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{dsfont}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage[onehalfspacing]{setspace}
+\usepackage[unicode=true,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 0},pdfborderstyle={},backref=false,colorlinks=true]
+ {hyperref}
+\usepackage{verbatim}
+\usepackage{appendix}
+\usepackage{mathtools}
+\usepackage{url}
+\usepackage[authoryear]{natbib}
+\usepackage{tikz}
+\usepackage{booktabs} %Package with \toprule, \midrule, \bottomrule
+\usepackage{placeins} %Package with \FloatBarrier command
+\usepackage{physics}
+\usepackage[en-US]{datetime2}
+\usepackage{parskip}
+\usepackage{bbm}
+\usepackage{bm}
+%\usepackage{subfloat}
+\usepackage{afterpage}
+\usepackage{threeparttable}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{url}
+
 
 %% Shortcut commands
 %\newcommand{\proptitle}[1]{\color{TaylorBlue} \textnormal{(#1):}}
@@ -63,7 +98,7 @@ The urban wage premium has become an empirical fact, widely documented in the ur
 The literature has closely explored the role of high productivity individuals sorting into cities \citep{Combes_Duranton_Gobillon_2008}. 
 For example \citet{Yankow_2006} documents that up to two-thirds of the urban wage premium is driven by differences in worker skills. 
 The literature has also closely studied the role of differential returns to experience in urban areas as a source of the wage premium \citep{Baum-Snow_Pavan_2012}
-Outside of human capital explanations, researchers have explored the role of agglomeration economies and firm survival to explain the remaining gap \citep{Glaeser_Mare_2001 wheaton2002urban combes2012productivity behrens2014productive}.\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} 
+Outside of human capital explanations, researchers have explored the role of agglomeration economies and firm survival to explain the remaining gap \citep{Glaeser_Mare_2001, wheaton2002urban, combes2012productivity, behrens2014productive}.\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} 
 Agglomeration economies are an attractive explanation, yet determining the underlying mechanism that contributes to agglomeration is difficult. 
 Indeed a large literature has sought to explain the causes and mechanisms of agglomeration. 
 
@@ -116,9 +151,9 @@ We then describe our data and empirical strategy.
 % --------------------------------------------------
 As of 2019 over 82 percent of Americans live in urban areas, up from just under 40 percent in 1900. 
 Many factors explain the rise and growth of cities throughout the 20th Century. 
-First, both biological and mechanical innovations in agriculture altered patterns of crop specialization and the optimal mix of labor and capital, freeing both land and labor for alternate uses \citep{caselli2001us michaels2012urbanization olmstead2001reshaping griliches1963sources jung2020long}. 
+First, both biological and mechanical innovations in agriculture altered patterns of crop specialization and the optimal mix of labor and capital, freeing both land and labor for alternate uses \citep{caselli2001us, michaels2012urbanization, olmstead2001reshaping, griliches1963sources, jung2020long}. 
 Second, negative health externalities due to crowding in cities has been largely mitiagated through public health efforts. 
-Early in US history, cities were dirty, unhealthy places that required a wage premium to attract workers to face risks associated with infectious diseases such as cholera, typhoid, yellow fever, and smallpox \citep{cutler2005role beach2016typhoid ferrie2008water alsan2019watersheds anderson2020re}. 
+Early in US history, cities were dirty, unhealthy places that required a wage premium to attract workers to face risks associated with infectious diseases such as cholera, typhoid, yellow fever, and smallpox \citep{cutler2005role, beach2016typhoid, ferrie2008water, alsan2019watersheds, anderson2020re}. 
 As urban health improved, the need to attract workers with high wages subsided, however, as population density increased, so too did rents.
 Finally, there have been drastic changes in transportation that have facilitated the growth of cities. 
 
@@ -339,15 +374,16 @@ The deviation in log market access from the national average highlights the vari
 % --------------------------------------------------
 \section{Estimation and Results}
 % --------------------------------------------------
-For an initial understanding of the urban wage premium, we take the ratio between the average urban weekly wage and the nonurban weekly wage for each survey year. 
-This ratio replicates the method used in \citet{Boustan_Bunten_Hearey_2013} to calculate the urban wage premium. 
-We highlight the unadjusted urban wage premium in Panel A of \ref{table:ma_reg_all}.
-Moving across the row, we document the U-shape in which the urban wage premium starts around 30\% in 1940, decreases between 1950 and 1980 to just over 20\% and then increases again to over 25\% after 2000 is consistent with results found in the literature.\footnote{Our resuts match the shape over time found in Figure 3 of \citet{Boustan_Bunten_Hearey_2013}. 
-Our estimate in 2000 is smaller in magnitude than the estimate of 32\% from \citet{Glaeser_Mare_2001}. 
-The increase between 1980 and 2000 matches \citet{Baum-Snow_Pavan_2012}.}
+We begin by computing the ratio between the average urban weekly wage and the non-urban weekly wage for each survey year. 
+This ratio captures the raw, unadjusted urban wage premium and follows the method used in \citet{Boustan_Bunten_Hearey_2013} to calculate the urban wage premium. 
+In Panel A of \ref{table:ma_reg_all} we highlight the unadjusted urban wage premium.
+Moving across the row, we document the U-shape pattern that emerged over the second half of the 20th Century. 
+The urban wage premium starts around 30\% in 1940, decreases between 1950 and 1980 to just over 20\% and then increases again to over 25\% after 2000 is consistent with results found in the literature.\footnote{Our results match the shape over time found in Figure 3 of \citet{Boustan_Bunten_Hearey_2013}. 
+Relative to prior work, our unadjusted difference for the year 2000 is smaller in magnitude than the estimate of 32\% from \citet{Glaeser_Mare_2001}. 
+Despite this difference, our data generate a similar pattern to others documented in the literature, such as the increase between 1980 and 2000 described in \citet{Baum-Snow_Pavan_2012}.}
 
-As noted, these patterns reflect a combination of differences in productivity, the endogenous selection of labor into urban areas, differential returns to experience and other potential factors, such as agglomeration economies. 
-To better understand how these different channels impact the raw urban wage premium, we move to a regression framework. 
+The unadjusted urban premium reflects a combination of differences in productivity, the endogenous selection of labor into urban areas, differential returns to experience and other potential factors, such as agglomeration economies. 
+To better understand how these different channels impact the urban wage premium, we move to a regression framework. 
 Specifically, we estimate a set of regressions for each survey year as follows: 
 \begin{equation}
     \label{eq:reg}
@@ -358,8 +394,23 @@ Here $Urban_i$ is an indicator variable that takes the value of 1 if an individu
 In the absence of controls, $\beta_1$ captures the unadjusted urban wage premium. 
 To limit the scope that endogenous sorting has on the urban wage premium, we control for a set of individual-level variables.
 These individual-level covariates, $X_i$, includes a set of 5-year age bins, education level, and an indicator for race.
-We report the adjusted urban wage premium estimates in Panel B of \ref{table:ma_reg_all}.
-As in \citet{Yankow_2006} and \citet{Glaeser_Mare_2001}
+
+We report the urban wage premium estimates after controlling for individual characteristics in Panel B of \ref{table:ma_reg_all}.
+Our estimates suggest that in 1940, the individual-level controls explain about 1/8 of the unadjusted urban wage premium. 
+In 2015, the individual-level controls explain about 1/3 of the urban premium. 
+Across all years in the sample, we find that individual-level observables explain between 8\% and 33\% of the urban wage premium, with the individual characteristics explaining a larger portion of the premium since 1980.
+As \citet{Yankow_2006} and \citet{Combes_Duranton_Gobillon_2008} point out, there may be unobservable individual attributes that are correlated with the urban indicator. 
+Thus, we should not try to provide a causal interpretation to these estimates. 
+Unlike prior literature, we do not observe the same individual multiple times, so we cannot include individual-specific fixed effects.
+In section XX, we revisit this issue by following a recently proposed method by \citet{altonji2018estimating}.  
+
+As noted, we are primarily interested in understanding how changes in Market Access impact the urban wage premium through potential agglomeration forces. 
+In Panel C of \ref{table:ma_reg_all} we report the urban coefficient and the coefficient on the MA variable. 
+When we include the MA variable, there are two things to note.
+First, MA has a direct and large effect on the wage.
+A xx increase in MA is associated with a 7.4-18.6 log point increase in the wage. 
+Secondly, the urban wage premium is cut by between 40 and 50 percent in almost every period.
+
 
     \caption{All Urban Wage Premium Estimates by Survey Year}
     \label{table:ma_reg_all}
@@ -386,6 +437,10 @@ As in \citet{Yankow_2006} and \citet{Glaeser_Mare_2001}
         \multicolumn{11}{l}{\textbf{Panel C: Urban, Controls, and Market Access}} \\
         \input{results/results-IPUMS/premium_ma.tex}
 
+ 	\midrule
+        \multicolumn{11}{l}{\textbf{Panel D: Urban, Controls, and Market Access, excluding own market}} \\
+        \input{results/results-IPUMS/premium_ma_omit.tex}
+
         \bottomrule
         \end{tabular}
     
@@ -394,11 +449,8 @@ As in \citet{Yankow_2006} and \citet{Glaeser_Mare_2001}
     \vspace{2mm}
 
 
-In Figure \ref{fig:premium_over_time}, the grey line with square markers shows the results of this exercise.
 
-
-
-
+We summarize our baseline findings in \ref{fig:premium_over_time}. 
 \begin{figure}[h]
     \caption{Urban Wage Premium 1940-2015}
     \label{fig:premium_over_time}
@@ -407,52 +459,39 @@ In Figure \ref{fig:premium_over_time}, the grey line with square markers shows t
             \includegraphics{figures/urbanpremium_IPUMS.pdf}
         } 
     }
-
     {\footnotesize
         \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:reg}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of market access.
     }
 \end{figure}
 
-The wages of individuals in Urban areas also benefit from the improved transportation network, so in the final specification, we add in the log of market access. After controlling for market access, the coefficient on Urban, $\beta_1$ should pick up on the non-transportation causes of the urban wage premium.\footnote{This includes the improved human capital development from \citet{Glaeser_Mare_2001} and improved firm-worker matching found in \citet{Baum-Snow_Pavan_2012}.} 
+Since our measure of market access is increasing in a county's own size, there could be concern that our measure is not only captures the county's access to the transportation network, but also the size of the county itself. 
+\citet{d'costa_2014} finds evidence that the urban wage premium indeed is growing in city size. 
+This would mean market access is absorbing a portion of the premium associated with being in a largely populated area and would attenuate our estimates of the wage premium towards zero. 
+To avoid this, for all counties in an MSA, we construct a measure of market access that removes all counties from the summation that fall within the same MSA. 
+This is similar to one of the approaches used by \cite{Donaldson_Hornbeck_2016} that omits counties within a given radius of the origin county.  
 
-Our estimates for the urban wage premium will be biased if there is sorting into cities by characteristics that affect wages but are distinct from age, race, and education. An example could be that workers sort into cities based on the industry they work in and differences in industrial wages can explain some of the remaining wage premium. \citet{Combes_Duranton_Gobillon_2008} show using panel data that individual fixed effects remove a sizeable portion of the variation in urban wage premium. Our time-series data is cross-sectional, so we can not use individual level fixed effects in our estimation. For our estimates to be causal, the exclusion restriction requires there to be no sorting beyond age, race, and education levels. 
+In Panel D of \ref{table:ma_reg_all} we report the point estimates for both the urban wage premium and market access.
+As in Panel C, there increases in market access are associated with direct increases in wages. 
+However, the urban wage premium coefficient is essentially unchanged from the estimates in Panel B. 
 
-The results from the regressions that do not include a measure of market access is found in Figure \ref{fig:premium_over_time} as the black lines with a diamond and a triangle marker. All regression tables can be found in Table \ref{table:ma_reg_all}. These lines show that the urban wage premium still decreases from a premium of around 30\% in 1940 through 1980. However, instead of the increase in the modern economy, our regression-based results show that the urban wage premium roughly levels off after 1980 at 20\% without controls and at around 16\% when controlling for age, education, and race. This result suggests that increased sorting of high-earning individuals into cities can explain the recent increase in urban wage premium found in the raw-measures. 
 
-The final specification includes market access in the regression of the log of weekly wage on an urban indicator variable. This specification controls for the benefits cities receive from being located in an advantageous location in the transportation network. If part of the wage premium is explained by better location in the transportation network, we expect the premium to decrease when including market access which summarizes the network. The estimates on the urban indicator are found in Figure \ref{fig:premium_over_time} as the black line with circle markers and in Table \ref{table:ma_reg}. 
+The results are in Figure \ref{fig:premium_over_time_removeown}. 
 
-When controlling for the transportation advantage of cities and demographic differences, we see the urban indicator in 1940 has decreased to about 15\% from the 30\% observed in specifications that don't include market access. There still exists, albeit a much smaller, decline in urban wage premium through the 80s which flattens out to an urban wage premium that floats around 10\% until at least 2015. 
-
-This result suggests that between 25.9\% to 47.7\% of the urban wage premium is explained by a relatively strong position in the transportation network.\footnote{The \% change in the urban wage indicator between the specification including controls and the specification inlcuding controls and market access is 47.7\% for 1940, 30.7\% for 1950, 35.9\% for 1960, 46.2\% for 1970, 35.4\% for 1980, 37.4\% for 1990, 26.1\% for 2000, 25.8\% for 2005, 33.1\% for 2010, and 27.4\% for 2015.} In particular, it appears that early in our sample, the differences in access to transportation network was large between urban and nonurban areas. This matches the fact that historical highway networks focused on connecting large cities and starting around 1955 began connecting many more places which increased market access for less populous areas (as evidenced by Figure \ref{fig:ma_dev_over_time}). 
-
-% MA Regression
-\begin{table}[htb]
-    \caption{Urban Wage Premium Estimates by Survey Year}
-    \label{table:ma_reg}
-
-    \resizebox{\linewidth}{!}{
-        \centering
-
-        \begin{tabular}{@{\extracolsep{5pt}}lrrrrrrrrrr}
-        \toprule
-
-        & \textbf{1940} & \textbf{1950} & \textbf{1960} & \textbf{1970} & \textbf{1980} & \textbf{1990} & \textbf{2000} & \textbf{2005} & \textbf{2010} & \textbf{2015} \\
-        \cline{2-11}
-
-        \input{results/results-IPUMS/premium_ma.tex}
-
-        \bottomrule
-        \end{tabular}
-    
+\begin{figure}[htb]
+    \caption{Urban Wage Premium 1940-2015 with Remove Own Market Access}
+    \label{fig:premium_over_time_removeown}
+    {\centering
+        \resizebox{\columnwidth}{!}{
+            \includegraphics{figures/urbanpremium_IPUMS_removeown.pdf}
+        } 
     }
-    
-    \vspace{2mm}
+
     {\footnotesize
-        \textit{Notes:} Each cell is the coefficient estimate corresponding to the regression for the survey year indicated by the column label. The dependent variable is log weekly earning and each regression includes an indicator for living in an urban area, our measure of log market access, and controls for age in 5-year bins, education levels, and an indicator for being White. All regressions are weighted by the IPUMS person weights. Standard errors are in parenthesis and are clustered at the MSA-Nonurban State level 
-        
-        (@QUESTION: Not sure how to word the standard errors. They cluster at the MSA level and also at the nonurban state level.)
+        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:reg}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of the weighted market access constructed according to Equation \ref{eq:ma_removeown}.
     }
-\end{table}
+\end{figure}
+
+
 
 
 
