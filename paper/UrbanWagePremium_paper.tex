@@ -1,6 +1,6 @@
-%\documentclass[12pt,twoside]{article}
-%\usepackage{paperstyle}  % Loads my formatting 
-%\usepackage{booktabs}
+\documentclass[12pt,twoside]{article}
+\usepackage{paperstyle}  % Loads my formatting 
+\usepackage{booktabs, threeparttable, adjustbox}
 %\usepackage{tweaklist}  % I use this package as well; you may need to download
 %\usepackage{natbib}
 
@@ -66,11 +66,14 @@
 \title{Urban Wage Premium\thanks{People to thank...}}
 \runningheads{}{}
 
-\author{\footnotesize\href{}{Kyle 
-	Butts}\\{\footnotesize Colorado} \and \footnotesize\href{http://jaworskit.github.io}{Taylor 
-	Jaworski}\\{\footnotesize Colorado \& NBER} \and \footnotesize\href{https://sites.google.com/site/kitchct/}{Carl 
+\author{\footnotesize
+    \href{https://www.kylebutts.com/}{Kyle 
+    Butts}\\{\footnotesize Colorado} \and 
+    \footnotesize\href{http://jaworskit.github.io}{Taylor 
+    Jaworski}\\{\footnotesize Colorado \& NBER} \and 
+    \footnotesize\href{https://sites.google.com/site/kitchct/}{Carl 
 	Kitchens}\\{\footnotesize Florida State \& NBER}
-   }
+}
 
 \date{\small \today}
 \maketitle
@@ -98,7 +101,7 @@ The urban wage premium has become an empirical fact, widely documented in the ur
 The literature has closely explored the role of high productivity individuals sorting into cities \citep{Combes_Duranton_Gobillon_2008}. 
 For example \citet{Yankow_2006} documents that up to two-thirds of the urban wage premium is driven by differences in worker skills. 
 The literature has also closely studied the role of differential returns to experience in urban areas as a source of the wage premium \citep{Baum-Snow_Pavan_2012}
-Outside of human capital explanations, researchers have explored the role of agglomeration economies and firm survival to explain the remaining gap \citep{Glaeser_Mare_2001, wheaton2002urban, combes2012productivity, behrens2014productive}.\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} 
+Outside of human capital explanations, researchers have explored the role of agglomeration economies and firm survival to explain the remaining gap (\citet{Glaeser_Mare_2001}, \citet{wheaton2002urban}, \citet{combes2012productivity}, \citet{behrens2014productive}).\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} 
 Agglomeration economies are an attractive explanation, yet determining the underlying mechanism that contributes to agglomeration is difficult. 
 Indeed a large literature has sought to explain the causes and mechanisms of agglomeration. 
 
@@ -151,9 +154,9 @@ We then describe our data and empirical strategy.
 % --------------------------------------------------
 As of 2019 over 82 percent of Americans live in urban areas, up from just under 40 percent in 1900. 
 Many factors explain the rise and growth of cities throughout the 20th Century. 
-First, both biological and mechanical innovations in agriculture altered patterns of crop specialization and the optimal mix of labor and capital, freeing both land and labor for alternate uses \citep{caselli2001us, michaels2012urbanization, olmstead2001reshaping, griliches1963sources, jung2020long}. 
+First, both biological and mechanical innovations in agriculture altered patterns of crop specialization and the optimal mix of labor and capital, freeing both land and labor for alternate uses (\citet{caselli2001us}, \citet{michaels2012urbanization}, \citet{olmstead2001reshaping}, \citet{griliches1963sources}, and \citet{jung2020long}). 
 Second, negative health externalities due to crowding in cities has been largely mitiagated through public health efforts. 
-Early in US history, cities were dirty, unhealthy places that required a wage premium to attract workers to face risks associated with infectious diseases such as cholera, typhoid, yellow fever, and smallpox \citep{cutler2005role, beach2016typhoid, ferrie2008water, alsan2019watersheds, anderson2020re}. 
+Early in US history, cities were dirty, unhealthy places that required a wage premium to attract workers to face risks associated with infectious diseases such as cholera, typhoid, yellow fever, and smallpox (\citet{cutler2005role}, \citet{beach2016typhoid}, \citet{ferrie2008water}, \citet{alsan2019watersheds}, and \citet{anderson2020re}). 
 As urban health improved, the need to attract workers with high wages subsided, however, as population density increased, so too did rents.
 Finally, there have been drastic changes in transportation that have facilitated the growth of cities. 
 
@@ -412,29 +415,29 @@ A xx increase in MA is associated with a 7.4-18.6 log point increase in the wage
 Secondly, the urban wage premium is cut by between 40 and 50 percent in almost every period.
 
 
+\begin{table}[htb]
     \caption{All Urban Wage Premium Estimates by Survey Year}
     \label{table:ma_reg_all}
 
-    \resizebox{\linewidth}{!}{
-        \centering
-
-        \begin{tabular}{@{\extracolsep{5pt}}lrrrrrrrrrr}
+    \begin{adjustbox}{width = 1.2\textwidth, center}
+    \begin{threeparttable}
+        \begin{tabular}{@{}@{\extracolsep{5pt}}lrrrrrrrrrr@{}}
         \toprule
 
         & \textbf{1940} & \textbf{1950} & \textbf{1960} & \textbf{1970} & \textbf{1980} & \textbf{1990} & \textbf{2000} & \textbf{2005} & \textbf{2010} & \textbf{2015} \\
-        \cline{2-11}
-
-        \multicolumn{11}{l}{\textbf{Panel A: Urban only}} \\
+        \cline{2-11}\\[-4mm]
+        
+        \multicolumn{11}{@{}l}{\large\textbf{Panel A: Urban only}} \\[2mm]
         \input{results/results-IPUMS/premium_no_ma.tex}
         
 
-        \midrule
-        \multicolumn{11}{l}{\textbf{Panel B: Urban with Controls}} \\
+        \midrule\\[-4mm]
+        \multicolumn{11}{@{}l}{\large\textbf{Panel B: Urban with Controls}} \\[2mm]
         \input{results/results-IPUMS/premium_no_ma_controls.tex}
 
 
-        \midrule
-        \multicolumn{11}{l}{\textbf{Panel C: Urban, Controls, and Market Access}} \\
+        \midrule\\[-4mm]
+        \multicolumn{11}{@{}l}{\large\textbf{Panel C: Urban, Controls, and Market Access}} \\[2mm]
         \input{results/results-IPUMS/premium_ma.tex}
 
  	\midrule
@@ -443,10 +446,14 @@ Secondly, the urban wage premium is cut by between 40 and 50 percent in almost e
 
         \bottomrule
         \end{tabular}
-    
-    }
-    
-    \vspace{2mm}
+
+        % Notes 
+        \begin{tablenotes}[flushleft]
+            \item \textit{Notes.} Each cell is the coefficient estimate corresponding to the regression for the survey year indicated by the column label. The dependent variable is log weekly earning and each regression includes an indicator for living in an urban area. Panel A just includes the Urban indicator; Panel B includes controls for age in 5-year bins, education levels, and an indicator for being White; Panel C includes the above controls and our measure of market access. All regressions are weighted by the IPUMS person weights. Standard errors are in parenthesis and are clustered at the MSA-Nonurban State level 
+        \end{tablenotes}
+    \end{threeparttable}
+    \end{adjustbox}
+\end{table}
 
 
 
@@ -518,13 +525,6 @@ The results are in Figure \ref{fig:premium_over_time_removeown}.
 
 Full results of our regression estimates in Figure \ref{fig:ma_over_time} can be found in Table \ref{table:ma_reg_all}. In Panel A corresponding to the dotted line with diamonds in Figure \ref{fig:ma_over_time}, this set of regressions only have an indicator for living in an Urban Area. In Panel B corresponding to the dotted line with traingle markers in Figure \ref{fig:ma_over_time}, this regression adds controls for age in 5-year bins, education levels, and an indicator for being White. Lastly, Panel C replicates the full regression including controls and the log of market acces which is the same as Table \ref{table:ma_reg}. 
 
-\begin{table}[htb]
-
-    {\footnotesize
-        \textit{Notes:} Each cell is the coefficient estimate corresponding to the regression for the survey year indicated by the column label. The dependent variable is log weekly earning and each regression includes an indicator for living in an urban area. Panel A just includes the Urban indicator; Panel B includes controls for age in 5-year bins, education levels, and an indicator for being White; Panel C includes the above controls and our measure of market access. All regressions are weighted by the IPUMS person weights. Standard errors are in parenthesis and are clustered at the MSA-Nonurban State level 
-    }
-\end{table}
-
 
 % --------------------------------------------------
 \section{MSA-level Market Access}\label{appendix:msa_ma}
@@ -567,7 +567,7 @@ For some metro areas, there is a central county and more counties at the periphe
 \subsubsection{MA Without Own GDP}
 % --------------------------------------------------
 
-Since our measure of market access is increasing in a county's own size, there could be concern that our measure is not only measuring the county's access to the transportation network, but also the size of the county itself. \citet{d'costa_2014} finds evidence that the urban wage premium indeed is growing in city size. This would mean market access is absorbing some of the premium associated with being in a largely populated area and would be biasing our estimates of the wage premium towards zero. To avoid this, for all counties in an MSA, we construct a measure of market access that removes all counties from the summation that fall within the same MSA: 
+Since our measure of market access is increasing in a county's own size, there could be concern that our measure is not only measuring the county's access to the transportation network, but also the size of the county itself. \citet{DCosta_Overman_2014} finds evidence that the urban wage premium indeed is growing in city size. This would mean market access is absorbing some of the premium associated with being in a largely populated area and would be biasing our estimates of the wage premium towards zero. To avoid this, for all counties in an MSA, we construct a measure of market access that removes all counties from the summation that fall within the same MSA: 
 \begin{equation}
     \label{eq:ma_removeown}
     \text{MA}_{c} = \rho \sum_{d \not \in \text{MSA}(c)} \tau_{cd}^{-\theta} \text{MA}_d^{-1} Y_d,

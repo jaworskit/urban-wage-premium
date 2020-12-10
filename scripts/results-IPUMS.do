@@ -64,7 +64,8 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 		nomtitle nonumbers collabel(none) ///
 		mlabels(none) eqlabels(none)
 		
-*-> Replicate Boustan et al figure
+		
+*-> Replicate Boustan et al figure's Urban Wage Premium Estimate
 	
 	display "** Boustan et al Replication *****************************"
 	
@@ -88,7 +89,8 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 	
 	restore
 	
-*-> run regressions
+	
+*-> Regression-based Urban Wage Premium estimates
 	
 	*est clear
 	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
