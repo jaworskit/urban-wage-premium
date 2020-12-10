@@ -329,6 +329,14 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 	restore	
 	
 	
+	* Export results to table
+	if(1 == 1){		
+
+		estout est3* using "$gh/paper/results/results-IPUMS/premium_ma_removeown.tex" ///
+			, replace type style(tex) collabels(none) mlabels(none) eqlabels(none) ///
+			varwidth(10) modelwidth(8) cells(b(fmt(3)) se(par fmt(3))) stats(N, fmt(%12.0fc) labels("\hline N")) /// 
+			keep(urban ln_ma_removeown) varlabels(urban "Urban" ln_ma_removeown "Remove-own $\log(MA)$")	
+	}
 	
 	
 	
