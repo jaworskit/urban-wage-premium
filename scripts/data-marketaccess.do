@@ -14,9 +14,11 @@ clear all
 ********************************************************************************
 
 global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
-*global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
-*global gh "~/Documents/Projects/urban-wage-premium"
+if c(username) == "kylebutts" {
+	global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+	global gh "~/Documents/Projects/urban-wage-premium"
+}
 
 ********************************************************************************
 
@@ -132,7 +134,7 @@ global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
 	* A few fips codes are missing ma (330 obs.; Virginia is messed up)
 	drop if missing(ma_removeown)
 	
-	* For missing, code = statefip when we collpase by code
+	* For non-MSA counties, code = statefip when we collpase by code
 	replace code = statefip*100000 if missing(code)
 	
 	** Take mean within msa and within rural-state
