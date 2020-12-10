@@ -12,10 +12,14 @@ clear all
 
 ********************************************************************************
 
-*global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
-*global gh "/Users/taylorjaworski/Documents/GitHub/urban-wage-premium/"
-global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
-global gh "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
+global gh "/Users/taylorjaworski/Projects/urban-wage-premium/"
+if c(username) == "kylebutts" {
+	global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+	global gh "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+}
+
+
 ********************************************************************************
 	
 ********************************************************************************
