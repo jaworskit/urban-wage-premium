@@ -82,7 +82,7 @@ This set of regressions enables us to partial out the portion of the wage gap du
 Similar to prior work, we find that individual characteristics account for approximately half of the urban wage premium and become increasingly important after 1980.  
 We then construct a measure of market access following \citet{Donaldson_Hornbeck_2016} and \citet{Jaworski_Kitchens_2019} at the MSA level drawing on newly digitized atlases of the US Highway Network each decade 1940-2010. 
 Our measure of market access allows us to consider how changes in a city's connectedness to other locations affects the wage premium.
-In general, we find that market access has a direct, positive impacts on wages, but the market access variable is uncorrelated with the urban variable, thus it has little to no impact on the urban wage premium. 
+In general, we find that market access (MA) has a direct, positive impacts on wages, but the market access variable is uncorrelated with the urban variable, thus it has little to no impact on the urban wage premium. 
 Importantly, we find that a portion of market access is collinear with urbanization, thus it is important to measure market access, net of the own market effect. 
 This should be clear as by definition market access captures local productivity, population desnity, and amenities. 
 Combined, the MA estimates highlight the importance of localized productivity differences, that we explore in more detail. 
@@ -95,10 +95,10 @@ This exercise relates to work by \citet{Yankow_2006}, who explores heterogeneity
 
 Finally, we seek to understand to what extent spatial sorting on unobservables, such as unobserved amenities or unobserved productivity, drives the urban wage premium. 
 To address concerns regarding selection on unobservables, we follow \citet{altonji2018estimating} and control for MSA level averages of individual characteristics in additional specifications.
-The inclusion of these MSA-level averages should, in theory, net out the influence of unobservable productivity, for example, due to hgiher returns to experience in urban areas, as described by \cite{Baum-Snow_Pavan_2012}.
+The inclusion of these MSA-level averages should, in theory, net out the influence of unobservable productivity, for example, due to higher returns to experience in urban areas, as described by \cite{Baum-Snow_Pavan_2012}.
 For example, consider the unobservable trait of working longer hours, as discussed in \citet{weinberg2004neighborhoods}. 
 If workers in a particular city work longer hours due to an unobserved and time varying preference for longer work days, then this may be reflected in the urban wage premium. 
-Controlling for the MSA-level averages nets out this type of sorting, however it may overcontrol by limiting other the scope for other mechanisms. 
+Controlling for the MSA-level averages nets out this type of sorting, however it may overcontrol by limiting the scope for other mechanisms. 
 In this case, controlling for observables to address unobserved preferences for longer hours may limit the scope of referrals from neighbors, as discussed in \citet{bayer2008place}.
 In addition to controlling for MSA-level averages of individual characteristics, we also estimate specifications where we control for MSA level housing values. 
 We add housing value controls to limit the impact that unobserved amenities or land use restrictions have on wages. 
@@ -420,7 +420,7 @@ Secondly, the urban wage premium is cut by between 40 and 50 percent in almost e
 
         % Notes 
         \begin{tablenotes}[flushleft]
-            \item \textit{Notes.} Each cell is the coefficient estimate corresponding to the regression for the survey year indicated by the column label. The dependent variable is log weekly earning and each regression includes an indicator for living in an urban area. Panel A just includes the Urban indicator; Panel B includes controls for age in 5-year bins, education levels, and an indicator for being White; Panel C includes the above controls and our measure of market access. All regressions are weighted by the IPUMS person weights. Standard errors are in parenthesis and are clustered at the MSA-Nonurban State level 
+            \item \textit{Notes.} Each cell is the coefficient estimate corresponding to the regression for the survey year indicated by the column label. The dependent variable is log weekly earning and each regression includes an indicator for living in an urban area. Panel A just includes the Urban indicator; Panel B includes controls for age in 5-year bins, education levels, and an indicator for being White; Panel C includes the above controls and our measure of market access; Panel D modifies the $\log(MA)$ measure by removing each unit's market access in equation \ref{eq:ma_removeown} in Appendix subsection \ref{sec:ma_remove_own} All regressions are weighted by the IPUMS person weights. Standard errors are in parenthesis and are clustered at the MSA-Nonurban State level 
         \end{tablenotes}
     \end{threeparttable}
     \end{adjustbox}
@@ -537,7 +537,7 @@ For some metro areas, there is a central county and more counties at the periphe
 
 
 % --------------------------------------------------
-\subsubsection{MA Without Own GDP}
+\subsubsection{MA Without Own GDP}\label{sec:ma_remove_own}
 % --------------------------------------------------
 
 Since our measure of market access is increasing in a county's own size, there could be concern that our measure is not only measuring the county's access to the transportation network, but also the size of the county itself. \citet{DCosta_Overman_2014} finds evidence that the urban wage premium indeed is growing in city size. This would mean market access is absorbing some of the premium associated with being in a largely populated area and would be biasing our estimates of the wage premium towards zero. To avoid this, for all counties in an MSA, we construct a measure of market access that removes all counties from the summation that fall within the same MSA: 
