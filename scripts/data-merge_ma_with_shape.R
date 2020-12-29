@@ -17,7 +17,7 @@ library(tigris)
 library(glue)
 
 gh <- "~/Documents/Projects/urban-wage-premium"
-dropbox <- "~/Dropbox/UrbanWagePremium/" 
+dropbox <- "~/Dropbox/UrbanWagePremium" 
 
 setwd(dropbox)
 
@@ -896,9 +896,26 @@ ma_allyrs %>%
 	st_transform(st_crs(4136)) %>% 
 	mutate(
 		centroid = st_point_on_surface(geometry),
-		long = st_coordinates(centroid)[,1],
-		lat = st_coordinates(centroid)[,2]
+		lon = st_coordinates(centroid)[,1],
+		lat = st_coordinates(centroid)[,2],
+		code = as.numeric(code)
 	) %>% 
 	as_tibble() %>% 
-	select(code, year, long, lat) %>%
-	write_csv(., file = glue("{dropbox}/data/crosswalk/msa_lat_long.csv"))
+	select(code, year, lon, lat) %>%
+	# Remove few duplicates
+	group_by(code,year) %>% filter(row_number() == 1) %>% ungroup() %>%
+	haven::write_dta(., path = glue("{dropbox}/data/crosswalk/msa_lat_long.dta"))
+
+
+states %>% 
+	st_transform(st_crs(4136)) %>% 
+	mutate(
+		centroid = st_point_on_surface(geometry),
+		lon = st_coordinates(centroid)[,1],
+		lat = st_coordinates(centroid)[,2],
+		code = as.numeric(state_fips) * 100000
+	) %>% 
+	as_tibble() %>% 
+	select(code, lon, lat) %>%
+	haven::write_dta(., path = glue("{dropbox}/data/crosswalk/state_lat_long.dta"))
+

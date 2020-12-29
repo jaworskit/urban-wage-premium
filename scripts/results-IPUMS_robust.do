@@ -340,19 +340,109 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 	
 	
 	
+
+********************************************************************************
+* Robustness Check: MA remove own MSA w/ Lat Lon Polynomial
+********************************************************************************	
 	
-	
-	
-	
-	
-*-> Robustness Check: MSA size
 est clear
-foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+use "$project/data/dta/urban_wage_with_ma.dta", clear
 	
-	display "** `year' ******************************************"
 	
-		reg ln_weeklywage ln_msasize [aw=perwt] if year==`year', cluster(msa)
+*-> Replicate Boustan figure
+	
+	display "** Boustan Replication *****************************"
+	
+	preserve
+	
+	collapse (sum) totalweeks totalincome perwt, by(year urban)
+
+	qui g weeklywage = totalincome/perwt
+	
+	reshape wide weeklywage totalweeks totalincome perwt, i(year) j(urban)
+	
+	qui g urbanpremium = log(weeklywage1 / weeklywage0)
+	
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+		qui sum urbanpremium if year == `year'
+		scalar urban_est0_`year' = `=r(mean)'
+	}
 		
-		reg ln_weeklywage ln_msasize ln_ma [aw=perwt] if year==`year', cluster(msa)
+	*gr tw (scatter urbanpremium year, c(l) lc(black) mfc(white) mc(black))
+	*gr export "$gh/paper/figures/urbanpremium_IPUMS.pdf",as(pdf) replace
+	
+	restore
+	
+*-> Robustness Check: MSA that are there the whole time
+
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
 		
-		}
+		display "** `year' ******************************************"
+		
+			qui reg ln_weeklywage urban [aw=perwt] if year==`year', cluster(metarea)
+			qui eststo est1_`year'
+			scalar urban_est1_`year' = _b[urban]
+			
+			qui reghdfe ln_weeklywage urban [aw=perwt] if year==`year', cluster(metarea) a(agegroup educ white)
+			qui eststo est2_`year'
+			scalar urban_est2_`year' = _b[urban]
+			
+			qui reghdfe ln_weeklywage urban ln_ma_removeown lat lon lat2 lon2 latlon lat3 lon3 lat2lon latlon2 [aw=perwt] if year==`year', cluster(metarea) a(agegroup educ white)
+			qui eststo est3_`year'
+			scalar urban_est3_`year' = _b[urban]
+
+		display "** Finished `year' *******************************"
+		
+	}
+		
+	preserve
+	drop _all 
+	set obs 10
+	qui g year = .
+	qui replace year = 1940 if _n==1
+	qui replace year = 1950 if _n==2
+	qui replace year = 1960 if _n==3
+	qui replace year = 1970 if _n==4
+	qui replace year = 1980 if _n==5
+	qui replace year = 1990 if _n==6
+	qui replace year = 2000 if _n==7
+	qui replace year = 2005 if _n==8
+	qui replace year = 2010 if _n==9
+	qui replace year = 2015 if _n==10
+	qui g urban_est0 = .
+	qui g urban_est1 = .
+	qui g urban_est2 = .
+	qui g urban_est3 = .
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+		qui replace urban_est0 = `=urban_est0_`year'' if year==`year'
+		qui replace urban_est1 = `=urban_est1_`year'' if year==`year'
+		qui replace urban_est2 = `=urban_est2_`year'' if year==`year'
+		qui replace urban_est3 = `=urban_est3_`year'' if year==`year'	
+	}
+		
+	gr tw 	(scatter urban_est0 year, c(l) m(s) lc(gs10) mfc(white) mc(gs10) lp(dash)) ///
+			(scatter urban_est1 year, c(l) m(d) lc(black) mfc(white) mc(black) lp(dash)) ///
+			(scatter urban_est2 year, c(l) m(t) lc(black) mfc(white) mc(black) lp(dash)) ///
+			(scatter urban_est3 year, c(l) m(o) lc(black) mfc(black) mc(black) lp(solid)) ///
+			, graphregion(color(white)) ylabel(0(.1).3,nogrid labsize(small) format(%12.1fc)) yscale(range(0 .35)) ///
+			legend(region(lcolor(white)) rows(1) size(tiny) /// 
+			order(1 "urban raw" 2 "urban only" 3 "urban w/ controls" 4 "urban w/ market access") /// 
+			title("{bf:Urban Wage Premium:}", ///
+			size(tiny) pos(9) color(black))) xtitle("") l1title("Urban Wage Premium (in percent)", size(small))
+			
+	gr export "$gh/paper/figures/urbanpremium_IPUMS_removeown_latlon.pdf", as(pdf) replace
+	restore	
+	
+	
+	* Export results to table
+	if(1 == 1){		
+
+		estout est3* using "$gh/paper/results/results-IPUMS/premium_ma_removeown_latlon.tex" ///
+			, replace type style(tex) collabels(none) mlabels(none) eqlabels(none) ///
+			varwidth(10) modelwidth(8) cells(b(fmt(3)) se(par fmt(3))) stats(N, fmt(%12.0fc) labels("\hline N")) /// 
+			keep(urban ln_ma_removeown) varlabels(urban "Urban" ln_ma_removeown "Remove-own $\log(MA)$")	
+	}
+	
+	
+	
+	
