@@ -89,6 +89,19 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 	restore
 	
 *-> run regressions
+	/*
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+		
+		qui g urban_`year' = urban*(year==`year')
+		
+		}
+	
+	reghdfe ln_weeklywage urban_* [aw=perwt], cluster(metarea) a(statefip year) noconstant
+	
+	reghdfe ln_weeklywage urban_* [aw=perwt], cluster(metarea) a(statefip year agegroup educ white) noconstant
+	
+	reghdfe ln_weeklywage urban_* ln_ma [aw=perwt], cluster(metarea) a(statefip year agegroup educ white) noconstant
+	*/
 	
 	*est clear
 	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
