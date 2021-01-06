@@ -14,9 +14,11 @@ clear all
 ********************************************************************************
 
 global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
-*global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
-*global gh "~/Documents/Projects/urban-wage-premium"
+if c(username) == "kylebutts" {
+	global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+	global gh "~/Documents/Projects/urban-wage-premium"
+}
 
 ********************************************************************************
 
@@ -54,6 +56,8 @@ global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
 	
 	qui save "$project/data/marketaccess/dta/MA_allyears.dta", replace
 	
+	
+	
 *-> Load market access (robustness: remove own-MSA gdp)
 	
 	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
@@ -88,6 +92,8 @@ global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
 	qui save "$project/data/marketaccess/dta/MA_allyears_removeown.dta", replace
 	
 	
+	
+	
 *-> Load county population
 
 	clear
@@ -103,6 +109,8 @@ global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
 	drop state county
 	
 	qui save "$project/data/dta/temp/population_1940_2010.dta", replace
+	
+	
 	
 	
 *-> MA county to MSA crosswalk
@@ -132,7 +140,7 @@ global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
 	* A few fips codes are missing ma (330 obs.; Virginia is messed up)
 	drop if missing(ma_removeown)
 	
-	* For missing, code = statefip when we collpase by code
+	* For non-MSA counties, code = statefip when we collpase by code
 	replace code = statefip*100000 if missing(code)
 	
 	** Take mean within msa and within rural-state
@@ -160,11 +168,23 @@ global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
 	sort code year
 	
 	
-	* Save
 	qui replace code = 0 if code == .
 	
-	qui save "$project/data/dta/msa_market_access.dta", replace
 	
+	
+*-> Merge in lat/long Data for MSAs and State
+
+	* Some missing because MSA shape files from IPUMS don't match perfectly
+	merge m:1 year code using "$project/data/crosswalk/msa_lat_long.dta"
+	drop _merge
+
+	merge m:1 code using "$project/data/crosswalk/state_lat_long.dta"
+	drop _merge
+	drop if code == .
+	
+	* Save
+	qui save "$project/data/dta/msa_market_access.dta", replace
+
 	
 *-> Housing 1950 Data
 	
@@ -335,6 +355,16 @@ global gh "/Users/taylorjaworski/Projects/urban-wage-premium"
 	qui g ln_ma_weighted = log(ma_weighted)
 	qui g ln_ma_removeown = log(ma_removeown)
 	qui g ln_ma_weighted_removeown = log(ma_weighted_removeown)
+	
+*-> Prepare polynomial of lat lon
+
+	qui g lat2 = lat^2
+	qui g lat3 = lat^3
+	qui g lon2 = lon^2
+	qui g lon3 = lon^3
+	qui g latlon = lat * lon
+	qui g lat2lon = lat^2 * lon 
+	qui g latlon2 = lat * lon^2
 		
 *-> Label Variables	
 

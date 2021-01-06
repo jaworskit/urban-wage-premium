@@ -15,6 +15,9 @@ library(rmapshaper)
 library(glue)
 library(stringr)
 
+library(Rcpp)
+library(RcppArmadillo)
+
 
 gh <- "~/Documents/Projects/urban-wage-premium"
 dropbox <- "~/Dropbox/UrbanWagePremium" 
@@ -23,10 +26,12 @@ shape <- "~/Dropbox/UrbanWagePremium/data/shapefiles/shapefiles_dissolved_networ
 setwd(dropbox)
 
 
-## Load Road Network ----------------------------------------------------------- 
+## Load 2010 Counties ----------------------------------------------------------
 
 # 1609.344 m = 1 mi 
 M_to_MI <- 1/1609.344
+
+matlab_fips <- read_csv(glue("{dropbox}/data/matlab/input/FIPS.csv"), col_names = "fips")
 
 counties <- read_sf(glue("{dropbox}/data/shapefiles/us_county_2010/counties_simplified.json")) %>%
 	select(state_fips = STATE, county_fips = COUNTY, geometry) %>% 
@@ -35,16 +40,22 @@ counties <- read_sf(glue("{dropbox}/data/shapefiles/us_county_2010/counties_simp
 	st_make_valid() %>%
 	st_transform(2163) %>%
 	mutate(
-		nodeID = 1000000 + as.numeric(paste0(state_fips, county_fips))
+		fips = as.numeric(paste0(state_fips, county_fips)),
+		nodeID = 1000000 + fips
 	) %>% 
+	tidylog::filter(fips %in% matlab_fips$fips) %>% 
 	arrange(nodeID)
  
+# Get centroids
 centroids <- counties %>% 
 	mutate(centroids = st_point_on_surface(geometry)) %>% 
 	st_drop_geometry() %>% st_as_sf()
 
-plot(st_geometry(centroids))
+# plot(st_geometry(centroids))
 
+
+## Load Roads Shape ------------------------------------------------------------ 
+ 
 roads_raw <- read_sf(glue("{shape}/roads1930.shp")) %>% 
 	st_make_valid() %>% 
 	st_transform(2163) %>%
@@ -54,8 +65,6 @@ roads <- roads_raw %>%
 	filter(!is.na(roadClass)) %>% 
 	select(speed1, speed2, segmentID, roadClass, distance, cost1, cost2, geometry) %>% 
 	mutate(edgeID = 1:n())
-
-# tmap::qtm(roads)
 
 
 ## Network from Roads ----------------------------------------------------------
@@ -165,7 +174,7 @@ edges_all <- bind_rows(edges, counties_to_roads, access)
 
 save(edges_all, file = glue("{dropbox}/data/road_network/network.Rdata"))
 
-# load(file = glue("{dropbox}/data/road_network/network.Rdata"))
+load(file = glue("{dropbox}/data/road_network/network.Rdata"))
 
 
 
@@ -179,7 +188,25 @@ Graph <- edges_all %>%
 
 # Dijkstra's Algorithm
 tau <- cppRouting::get_distance_matrix(Graph, from = county_id, to = county_id, allcores = TRUE)
-
 diag(tau) <- 1
+
+## Market Access ---------------------------------------------------------------
+
+Y <- read_csv(glue("{dropbox}/data/matlab/input/Y1940.csv"), col_names = FALSE)
+Y <- as.matrix(Y)
+Counties <- length(Y)
+th <- 8
+
+# temp
+tau1940 <- read_csv(glue("{dropbox}/data/matlab/input/tau1940cost1.csv"), col_names = FALSE)
+tau1940 <- as.matrix(tau)
+
+# Load SolveMA function
+Rcpp::sourceCpp(glue("{gh}/scripts/solveMA.cpp"))
+
+# Solve for MA
+ma <- tibble(fips = counties$fips, ma = SolveMA(Y, tau, th, Counties))
+
+
 
 
