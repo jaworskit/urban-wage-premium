@@ -12,8 +12,8 @@ clear all
 
 ********************************************************************************
 
-global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
-global gh "/Users/taylorjaworski/Projects/urban-wage-premium/"
+global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium/"
+global gh "/Users/taylorjaworski/Github/urban-wage-premium"
 if c(username) == "kylebutts" {
 	global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 	global gh "/Users/kylebutts/Documents/Projects/urban-wage-premium"
@@ -23,6 +23,47 @@ if c(username) == "kylebutts" {
 
 use "$project/data/dta/urban_wage_with_ma.dta", clear
 
+********************************************************************************
+* Generate Group Averages
+********************************************************************************
+	
+	qui g msacode = metarea
+	qui replace msacode = statefip if msacode==.
+
+*-> Total
+
+	egen perwt_total = total(perwt), by(year msacode)
+
+*-> By Race Group
+	
+	levelsof white, local(rlevels)
+	foreach r of local rlevels {
+		qui g race`r'_level = perwt*(white==`r')
+		qui egen race`r'_total = total(race`r'_level), by(year msacode)
+		qui g share_race`r' = race`r'_total/perwt_total
+		drop race`r'_level race`r'_total
+		}
+	
+*-> By Age Group
+	
+	levelsof agegroup, local(alevels)
+	foreach a of local alevels {
+		qui g age`a'_level = perwt*(agegroup==`a')
+		qui egen age`a'_total = total(age`a'_level), by(year msacode)
+		qui g share_age`a' = age`a'_total/perwt_total
+		drop age`a'_level age`a'_total
+		}
+	
+*-> By Education Group
+	
+	levelsof educ, local(elevels)
+	foreach e of local elevels {
+		qui g educ`e'_level = perwt*(educ==`e')
+		qui egen educ`e'_total = total(educ`e'_level), by(year msacode)
+		qui g share_educ`e' = educ`e'_total/perwt_total
+		drop educ`e'_level educ`e'_total
+		}
+		
 ********************************************************************************
 * Results
 ********************************************************************************
@@ -92,20 +133,23 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 	restore
 
 *-> run regressions
-	/*
+	
 	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
 
 		qui g urban_`year' = urban*(year==`year')
 
 		}
 
-	reghdfe ln_weeklywage urban_* [aw=perwt], cluster(metarea) a(statefip year) noconstant
-
-	reghdfe ln_weeklywage urban_* [aw=perwt], cluster(metarea) a(statefip year agegroup educ white) noconstant
-
-	reghdfe ln_weeklywage urban_* ln_ma [aw=perwt], cluster(metarea) a(statefip year agegroup educ white) noconstant
-	*/
-
+***** Preliminary Results with Group Averages **********************************
+		
+	*reghdfe ln_weeklywage urban_* ln_ma share_* [aw=perwt], cluster(metarea) a(statefip year agegroup educ white) noconstant
+	
+	*reghdfe ln_weeklywage urban_* ln_ma [aw=perwt], cluster(metarea) a(statefip year agegroup educ white) noconstant
+	
+********************************************************************************
+	
+	
+	
 	*est clear
 	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
 
