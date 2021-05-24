@@ -1,3 +1,9 @@
+********************************************************************************
+* data-IPUMS-compile.do
+*
+* From IPUMS files, creates individual survey dataset  
+********************************************************************************
+
 cls
 clear all
 
@@ -279,6 +285,8 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 		
 ********************************************************************************
 
+	*-> Basic Urban Wage Premium Plot
+
 		use "$project/data/dta/urban_wage_premium_data.dta", clear
 		
 	*->fix income top codes
@@ -346,3 +354,6 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 		
 		gr tw (scatter urbanpremium year, c(l) lc(black) mfc(white) mc(black))
 		gr export "$project/paper/figures/urbanpremium_IPUMS.pdf", as(pdf) replace
+		
+		
+		

@@ -2,9 +2,6 @@
 * results-IPUMS_robust.do
 *
 * This file runs robustness checks for results-IPUMS.do
-*
-* Files to Run Before: 
-*   - do/data-marketaccess.do 
 ********************************************************************************
 
 cls
@@ -12,8 +9,8 @@ clear all
 
 ********************************************************************************
 
-global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium/"
-global gh "/Users/taylorjaworski/Projects/urban-wage-premium/"
+global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium/"
+global gh "/Users/taylorjaworski/Github/urban-wage-premium/"
 if c(username) == "kylebutts" {
 	global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 	global gh "/Users/kylebutts/Documents/Projects/urban-wage-premium"
@@ -27,7 +24,7 @@ if c(username) == "kylebutts" {
 ********************************************************************************	
 
 est clear
-use "$project/data/dta/urban_wage_with_ma.dta", clear
+use "$project/data/dta/urban_wage_final .dta", clear
 
 *-> Replicate Boustan figure
 	
@@ -121,7 +118,7 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 ********************************************************************************	
 	
 est clear
-use "$project/data/dta/urban_wage_with_ma.dta", clear
+use "$project/data/dta/urban_wage_final.dta", clear
 	
 
 *-> 2015 CBSA to MSA
@@ -242,7 +239,7 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 ********************************************************************************	
 	
 est clear
-use "$project/data/dta/urban_wage_with_ma.dta", clear
+use "$project/data/dta/urban_wage_final.dta", clear
 	
 *-> Replicate Boustan figure
 	
@@ -346,7 +343,7 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 ********************************************************************************	
 	
 est clear
-use "$project/data/dta/urban_wage_with_ma.dta", clear
+use "$project/data/dta/urban_wage_final.dta", clear
 	
 	
 *-> Replicate Boustan figure
