@@ -1,9 +1,9 @@
 cls
 clear all
 
-* global ipums "/Users/taylorjaworski/Dropbox/Data/Census/IPUMS"
+ global ipums "/Users/taylorjaworski/Dropbox/Research/Data/IPUMS"
 * global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
-global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 
 
 ********************************************************************************
@@ -79,7 +79,7 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 				
 				*save 1940 data
 					
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl
+					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl marst vetstat rent
 					qui save "$project/data/dta/temp/census_1940_temp.dta", replace
 				
 					}
@@ -132,7 +132,7 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 				
 				*save 1950 data
 				
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 bpl
+					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 bpl marst vetstat
 					qui save "$project/data/dta/temp/census_1950_temp.dta", replace
 						
 					}
@@ -189,14 +189,19 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 				
 				*save 1960-2010 data
 					
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl
+					if `year' == 1970 {
+					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl marst rent
+					}
+					if `year' != 1970 {
+					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl marst vetstat rent
+					}
 					qui save "$project/data/dta/temp/census_`year'_temp.dta", replace
 					
 				}
 			
 			}
 		
-		*-> 2005, 2010, 20105
+		*-> 2005, 2010, 2015
 			
 			foreach year of numlist 2005 2010 2015 {
 			
@@ -252,7 +257,7 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 					if `year'==2015 {
 						rename met2013 metarea
 						}
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl
+					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 bpl marst vetstat rent valueh
 					qui save "$project/data/dta/temp/census_`year'_temp.dta", replace
 				
 				}
