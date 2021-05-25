@@ -16,6 +16,8 @@ if c(username) == "kylebutts" {
 	global gh "/Users/kylebutts/Documents/Projects/urban-wage-premium"
 }
 
+cd $gh
+
 
 ********************************************************************************
 * Data Cleaning
@@ -25,7 +27,7 @@ if c(username) == "kylebutts" {
 do scripts/data-metarea.do
 
 * From IPUMS files, creates individual survey dataset 
-do scripts/data-IPUMS-compile.do
+* do scripts/data-IPUMS-compile.do
 
 * Matlab script to create market access
 * run findMA.m

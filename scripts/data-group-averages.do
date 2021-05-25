@@ -27,7 +27,7 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 	qui g msacode = metarea
 	qui replace msacode = statefip if msacode==.
 
-*-> Total
+*-> Total Pop.
 
 	egen perwt_total = total(perwt), by(year msacode)
 
@@ -61,5 +61,32 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 		drop educ`e'_level educ`e'_total
 		}
 		
+*-> By Marital Status
+
+	levelsof marst, local(mlevels)
+	foreach m of local mlevels {
+		qui g marst`m'_level = perwt*(marst==`m')
+		qui egen marst`m'_total = total(marst`m'_level), by(year msacode)
+		qui g share_marst`m' = marst`m'_total/perwt_total
+		drop marst`m'_level marst`m'_total
+		}
+
+*-> By Veteran Status
+
+	levelsof vetstat, local(vlevels)
+	foreach v of local vlevels {
+		qui g vetstat`v'_level = perwt*(vetstat==`v')
+		qui egen vetstat`v'_total = total(vetstat`v'_level), by(year msacode)
+		qui g share_vetstat`v' = vetstat`v'_total/perwt_total
+		drop vetstat`v'_level vetstat`v'_total
+		}
+		
+*-> Average rent
+
+	qui egen rent_total = total(rent), by(year msacode)
+	qui g rent_avg = rent_total/perwt_total
+	drop rent_total
+
+		
 *-> Export
-save "$project/data/dta/urban_wage.dta", replace 
+save "$project/data/dta/urban_wage_final.dta", replace 
