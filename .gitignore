@@ -21,6 +21,7 @@
 *.blg
 *.bbl
 *.bdg_latexmk
+*.xdv
 
 ## Build tool auxiliary files:
 *.fdb_latexmk
