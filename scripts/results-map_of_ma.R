@@ -21,21 +21,20 @@ library(patchwork)
 gh <- "~/Documents/Projects/urban-wage-premium"
 dropbox <- "~/Dropbox/UrbanWagePremium/" 
 
-setwd(dropbox)
+# theme_kyle 
+source("https://raw.githubusercontent.com/kylebutts/templates/master/ggplot_theme/theme_kyle.R") 
 
-# Custom Theme 
-source("https://gist.githubusercontent.com/kylebutts/7dc66a01ec7e499faa90b4f1fd46ef9f/raw/ea949343b6f486d7453b12465b8f375b8b67093f/theme_kyle.R")
+# ggpreview
+devtools::source_gist("380ff5f7e826e3510975dd3da24f2652")
 
-
-## Load MA with Shapefile from `data-merge_ma_with_shape.R`
-
+# Load MA with Shapefile from `data-merge_ma_with_shape.R`
 load(glue("{dropbox}/data/msa_with_shape/msa_with_shape.RData"))
 
 
 ## Plot: Market Access over Time -----------------------------------------------
 
-(ma_over_time_plot <- ggplot() + 
- 	geom_sf(data = ma_allyrs %>% filter(!is.na(year)), aes(fill = log_ma), color = NA) +
+ma_over_time_plot <- ggplot() + 
+ 	geom_sf(data = ma_allyrs %>% filter(!is.na(year)), aes(fill = log_ma_removeown), color = NA) +
  	geom_sf(data= us, fill = NA, color= "grey30", size= 0.2) + 
  	facet_wrap(~ year, ncol = 5) +
  	# Remove Coordinates, leaving just the map
@@ -52,7 +51,9 @@ load(glue("{dropbox}/data/msa_with_shape/msa_with_shape.RData"))
  	theme(
  		legend.position = "bottom",
  		legend.key.width = unit(1, "cm")
- 	))
+ 	)
+
+ggpreview(ma_over_time_plot, dpi = 300, width = 4800/300, height = 2400/300)
 
 ggsave(
 	glue("{gh}/paper/figures/ma_over_time.jpg"), ma_over_time_plot, 
@@ -60,14 +61,15 @@ ggsave(
 )
 
 ## Plot: Market Access Deviation over Time -------------------------------------
+
 ma_norm <- ma_allyrs %>% 
 	group_by(year) %>% 
-	mutate(log_ma = log_ma - mean(log_ma)) %>% 
+	mutate(log_ma_removeown = log_ma_removeown - mean(log_ma_removeown, na.rm = TRUE)) %>% 
 	ungroup() %>% 
 	filter(!is.na(year))
 
-(ma_deviations_over_time_plot <- ggplot() + 
-	geom_sf(data = ma_norm, aes(fill = log_ma), color = NA) +
+ma_deviations_over_time_plot <- ggplot() + 
+	geom_sf(data = ma_norm, aes(fill = log_ma_removeown), color = NA) +
 	geom_sf(data= us, fill = NA, color= "grey30", size= 0.2) + 
 	facet_wrap(~ year, ncol = 5) +
 	# Remove Coordinates, leaving just the map
@@ -84,7 +86,9 @@ ma_norm <- ma_allyrs %>%
 	theme(
 		legend.position = "bottom",
 		legend.key.width = unit(1, "cm")
-	))
+	)
+
+ggpreview(ma_deviations_over_time_plot, dpi = 300, width = 4800/300, height = 2400/300)
 
 ggsave(
 	glue("{gh}/paper/figures/ma_deviations_over_time.jpg"), ma_deviations_over_time_plot, 
@@ -167,6 +171,8 @@ ma_change <- ma_allyrs %>%
 		legend.position = "bottom",
 		legend.key.width = unit(1, "cm")
 	))
+
+ggpreview(ma_change_plot, dpi = 300, width = 4800/300, height = 2400/300)
 
 ggsave(
 	glue("{gh}/paper/figures/ma_1940_to_2010.jpg"), ma_change_plot, 

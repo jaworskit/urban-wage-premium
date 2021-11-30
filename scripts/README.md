@@ -23,11 +23,13 @@ Data Creation Order:
 
 Analysis Order:
 
+- results-summary.do
+  - Creates summary table of urban indicator, log(remove own MA), wage_urban, and wage_nonurban
+
 - results-IPUMS.do
   - Replicates Boustan's Urban Wage gap figure in the Urbanization in the United States paper
-  - Extends it to include MA and then Controls 
+  - Extends it sequentially to include individual controls, market access, and group averages
 
 - results-IPUMS-robust.do
   - A set of robustness checks on main result
-  - Including a remove-own MA 
 

@@ -41,13 +41,27 @@ do scripts/data-data-merge-MA.do
 * Creates group averages 
 do scripts/data-group-averages.do
 
+* Create shape file of MSAs matched with data
+* R scripts/data-merge_ma_with_shape.R
+
 
 ********************************************************************************
 * Analysis
 ********************************************************************************
 
+* Summary table
+do scripts/results-summary.do
+
 * Replicates Boustan's Urban Wage gap figure in the Urbanization in the United States paper and extends it to include MA and then Controls
-do scripts/results-IPUMS.do
+* Uses urban indicator
+* R scripts/results-urban_indicator.R
+
+* Using log urban_size
+* R scripts/results-urban_size.R
+
+* Replicates Boustan's Urban Wage gap figure in the Urbanization in the United States paper and extends it to include MA and then Controls
+* do scripts/results-IPUMS.do
 
 * A set of robustness checks on main result including a remove-own GDP MA variable
-do scripts/results-IPUMS-robust.do
+* do scripts/results-IPUMS-robust.do
+

@@ -21,9 +21,6 @@ dropbox <- "~/Dropbox/UrbanWagePremium"
 
 setwd(dropbox)
 
-# Custom Theme 
-source("https://gist.githubusercontent.com/kylebutts/7dc66a01ec7e499faa90b4f1fd46ef9f/raw/ea949343b6f486d7453b12465b8f375b8b67093f/theme_kyle.R")
-
 
 
 ## Load MA data ----------------------------------------------------------------
@@ -34,7 +31,8 @@ ma <- haven::read_dta("data/dta/msa_market_access.dta") %>%
 			code >= 100000 ~ code / 100000
 		),
 		code = sprintf("%04d", code),
-		log_ma = log(ma)
+		log_ma = log(ma),
+		log_ma_removeown = log(ma_removeown)
 	) %>% 
 	select(code, year, everything()) %>% 
 	arrange(code, year) 
@@ -44,7 +42,7 @@ ma_nonurban <- ma %>%
 
 ma <- ma %>% 
 	filter(is.na(state_fips)) %>% 
-	select(code, year, log_ma)
+	select(code, year, log_ma, log_ma_removeown)
 
 
 ## 1950 ------------------------------------------------------------------------
@@ -105,7 +103,7 @@ ma_1940 <- full_join(
 		filter(!(code %in% c("2001", "2200", "7161"))), 
 	by = "code"
 ) %>%
-	select(code, metarea, year, log_ma, geometry)
+	select(code, metarea, year, log_ma, log_ma_removeown, geometry)
 
 ma_1950 <- full_join(
 	msa_1950, 
@@ -114,7 +112,7 @@ ma_1950 <- full_join(
 		filter(!(code %in% c("2001", "2200", "7161"))), 
 	by = "code"
 ) %>%
-	select(code, metarea, year, log_ma, geometry)
+	select(code, metarea, year, log_ma, log_ma_removeown, geometry)
 
 ## 1960 ------------------------------------------------------------------------
 
@@ -182,7 +180,7 @@ ma_1960 <- full_join(
 	by = "code"
 ) %>%
 	st_transform(st_crs(msa_1950)) %>% 
-	select(code, metarea, year, log_ma, geometry)
+	select(code, metarea, year, log_ma, log_ma_removeown, geometry)
 
 ## 1970 ------------------------------------------------------------------------
 
@@ -265,7 +263,7 @@ ma_1970 <- full_join(
 		filter(!(code %in% c("2020", "2700", "3980", "4410", "6240", "7161", "7480", "9140", "9260"))), 
 	by = "code"
 ) %>%
-	select(code, metarea, year, log_ma, geometry)
+	select(code, metarea, year, log_ma, log_ma_removeown, geometry)
 
 
 ## 1980 ------------------------------------------------------------------------
@@ -370,7 +368,7 @@ ma_1980 <- full_join(
 		filter(!(code %in% c("0460", "1921", "4760", "6240", "7560"))), 
 	by = "code"
 ) %>%
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 
 ## 1990 ------------------------------------------------------------------------
@@ -502,9 +500,9 @@ ma_1990 <- ma %>%
 		)
 	) %>% 
 	group_by(year, csa) %>% 
-	summarize(log_ma = mean(log_ma)) %>%
+	summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
 	mutate(year = 1990) %>% 
-	select(year, code = csa, log_ma) %>%
+	select(year, code = csa, log_ma, log_ma_removeown) %>%
 	filter(!(code %in% c(
 		"5790", # Ocala FL
 		"6240" # Pine Bluff FL
@@ -516,7 +514,7 @@ ma_1990 <- full_join(
 	ma_1990,
 	by = "code"
 ) %>%
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 
 ## 2000 ------------------------------------------------------------------------
@@ -618,9 +616,9 @@ ma_2000 <- ma %>%
 		)
 	) %>% 
 	group_by(year, csa) %>% 
-	summarize(log_ma = mean(log_ma)) %>%
+	summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
 	mutate(year = 2000) %>% 
-	select(year, code = csa, log_ma)
+	select(year, code = csa, log_ma, log_ma_removeown)
 
 
 ma_2000 <- full_join(
@@ -628,7 +626,7 @@ ma_2000 <- full_join(
 	ma_2000,
 	by = "code"
 ) %>%
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 ## 2005 ------------------------------------------------------------------------
 
@@ -684,9 +682,9 @@ ma_2005 <- ma %>%
 		)
 	) %>% 
 	group_by(year, csa) %>% 
-	summarize(log_ma = mean(log_ma)) %>%
+	summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
 	mutate(year = 2005) %>% 
-	select(year, code = csa, log_ma)
+	select(year, code = csa, log_ma, log_ma_removeown)
 
 
 ma_2005 <- full_join(
@@ -694,7 +692,7 @@ ma_2005 <- full_join(
 	ma_2005,
 	by = "code"
 ) %>%
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 
 ## 2010 ------------------------------------------------------------------------
@@ -751,9 +749,9 @@ ma_2010 <- ma %>%
 		)
 	) %>% 
 	group_by(year, csa) %>% 
-	summarize(log_ma = mean(log_ma)) %>%
+	summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
 	mutate(year = 2010) %>% 
-	select(year, code = csa, log_ma)
+	select(year, code = csa, log_ma, log_ma_removeown)
 
 
 ma_2010 <- full_join(
@@ -761,7 +759,7 @@ ma_2010 <- full_join(
 	ma_2010,
 	by = "code"
 ) %>%
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 
 ## 2015 ------------------------------------------------------------------------
@@ -802,10 +800,10 @@ ma_2015 <- ma %>%
 		)
 	) %>% 
 	group_by(year, csa) %>% 
-	summarize(log_ma = mean(log_ma)) %>%
+	summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
 	ungroup() %>% 
 	mutate(year = 2015) %>% 
-	select(year, code = csa, log_ma)
+	select(year, code = csa, log_ma, log_ma_removeown)
 
 ma_2015 <- left_join(ma_2015, msa_2015, by = "code") %>% 
 	st_as_sf() %>% st_transform(st_crs(msa_1950))
@@ -814,8 +812,8 @@ ma_2015 <- left_join(ma_2015, msa_2015, by = "code") %>%
 ## Prepare geometries ----------------------------------------------------------
 
 
-states <- tigris::states(class = "sf") %>% 
-	# rmapshaper::ms_simplify(keep = 0.025) %>% 
+states <- tigris::states(cb = TRUE, class = "sf") %>% 
+	rmapshaper::ms_simplify(keep = 0.025) %>% 
 	filter(as.numeric(STATEFP) < 58 & NAME != "Alaska" & NAME != "Hawaii" & STATEFP != 11) %>% 
 	st_transform(st_crs(msa_1950)) %>% 
 	select(state_fips = STATEFP, geometry)
@@ -826,53 +824,53 @@ us <- states %>% summarise()
 nonurban_1940 <- st_difference(states, msa_1950 %>% summarize()) %>%
 	mutate(state_fips = as.numeric(state_fips)) %>% 
 	left_join(., ma_nonurban %>% filter(year == 1940), by = "state_fips") %>%
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 nonurban_1950 <- st_difference(states, msa_1950 %>% summarize()) %>%
 	mutate(state_fips = as.numeric(state_fips)) %>% 
 	left_join(., ma_nonurban %>% filter(year == 1950), by = "state_fips") %>% 	
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 nonurban_1960 <- st_difference(states, msa_1960 %>% summarize()) %>%
 	mutate(state_fips = as.numeric(state_fips)) %>% 
 	left_join(., ma_nonurban %>% filter(year == 1960), by = "state_fips") %>% 	
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 nonurban_1970 <- st_difference(states, msa_1970 %>% summarize()) %>%
 	mutate(state_fips = as.numeric(state_fips)
 	) %>% 
 	left_join(., ma_nonurban %>% filter(year == 1970), by = "state_fips") %>% 	
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 nonurban_1980 <- st_difference(states, msa_1980 %>% summarize()) %>%
 	mutate(state_fips = as.numeric(state_fips)) %>% 
 	left_join(., ma_nonurban %>% filter(year == 1980), by = "state_fips") %>% 	
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 nonurban_1990 <- st_difference(states, msa_1990 %>% summarize())  %>%
 	mutate(state_fips = as.numeric(state_fips)) %>% 
 	left_join(., ma_nonurban %>% filter(year == 1990), by = "state_fips") %>% 	
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 nonurban_2000 <- st_difference(states, msa_2000 %>% summarize())  %>%
 	mutate(state_fips = as.numeric(state_fips)) %>% 
 	left_join(., ma_nonurban %>% filter(year == 2000), by = "state_fips") %>% 	
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 nonurban_2005 <- st_difference(states, msa_2000 %>% summarize())  %>%
 	mutate(state_fips = as.numeric(state_fips)) %>% 
 	left_join(., ma_nonurban %>% filter(year == 2005), by = "state_fips") %>% 	
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 nonurban_2010 <- st_difference(states, msa_2000 %>% summarize())  %>%
 	mutate(state_fips = as.numeric(state_fips)) %>% 
 	left_join(., ma_nonurban %>% filter(year == 2010), by = "state_fips") %>% 	
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 nonurban_2015 <- st_difference(states, ma_2015 %>% st_make_valid() %>% st_buffer(0) %>% summarize())  %>%
 	mutate(state_fips = as.numeric(state_fips)) %>% 
 	left_join(., ma_nonurban %>% filter(year == 2015), by = "state_fips") %>% 	
-	select(code, year, log_ma, geometry)
+	select(code, year, log_ma, log_ma_removeown, geometry)
 
 ma_1940_all <- bind_rows(ma_1940, nonurban_1940) %>% st_as_sf()
 ma_1950_all <- bind_rows(ma_1950, nonurban_1950) %>% st_as_sf()
