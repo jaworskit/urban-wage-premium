@@ -3,8 +3,11 @@
 \usepackage{booktabs, threeparttable, adjustbox}
 %\usepackage{tweaklist}  % I use this package as well; you may need to download
 %\usepackage{natbib}
+
+\makeatletter\let\expandableinput\@@input\makeatother
 \usepackage{pdflscape}
 \usepackage{subcaption}
+\usepackage{adjustbox}
 
 %% Shortcut commands
 %\newcommand{\proptitle}[1]{\color{TaylorBlue} \textnormal{(#1):}}
@@ -232,7 +235,8 @@ Since 1980, the urban wage premium has increased; in 2015 the premium was 26 per
     \caption{Summary Statistics}
     \label{table:summ}
 
-    \resizebox{1.1\linewidth}{!}{
+    \begin{adjustbox}{width = 1.1\textwidth, center}
+    % \resizebox{1.1\linewidth}{!}{
         \centering
 
         \begin{tabular}{@{\extracolsep{5pt}}lccrrrrrr}
@@ -242,13 +246,14 @@ Since 1980, the urban wage premium has increased; in 2015 the premium was 26 per
         \cline{4-5} \cline{6-7} \cline{8-9}
         Year & N & \% Urban & Mean & SD & Mean & SD & Mean & SD \\ \hline 
 
-        \input{results/summary_stats/summary.tex}
+        \expandableinput{results/summary_stats/summary.tex}
 
-        \\\bottomrule
+        \bottomrule
 
         \end{tabular}
     
-    }
+    % }
+    \end{adjustbox}
     
     \vspace{2mm}
     {\footnotesize
@@ -257,128 +262,45 @@ Since 1980, the urban wage premium has increased; in 2015 the premium was 26 per
 \end{table}
 
 
-%The log of market access also increases in the post war era, until about the year 2000, when it levels off. Market access increases in part due to major improvements in the transportation network, such as the expansion of the Interstate Highway System (IHS), Appalachian Development Highway System (ADHS), and other improvements in the state and federal aid highways that increase driving speeds. Aside from improvements in network infrastructure, the growth in market access reflects GDP growth, which has grown from $1.3 trillion in 1940 to $18.2 trillion in 2015.  
-%
-
-% ------------------------------------------------------------------------------
-\subsection{Market Access Data}
-% ------------------------------------------------------------------------------
-
-To construct our measure of market access, we begin by drawing on recently digitized data by Jaworski and Kitchens of historic highways. 
-For the years 2000, 2005, and 2015, we rely on the detailed shapefiles maintained by the federal government. 
-For years prior to 2000, we georeference atlases produced by Rand McNally in each decade 1940-1990, as the federal government did not begin maintaining its database until 1994. 
-To create a time consistent network, we begin with the 2000 version of the Federal Highway Administration's shapefiles. 
-Then, for each decade, we overlay scans of each decade's Rand McNally atlas and edit the federal shapefile. 
-Specifically, we delete road segments that were constructed between the current map year and 2000, and re-code segments that have been reclassified over time (i.e., segments of the US Highway network that became interstates, or paved roads that were previously gravel or dirt). 
-We perform this procedure iteratively for each decade back to 1940. 
-One advantage of this approach is that it locates roads based on modern GPS technologies to ensure accurate placement throughout time.\footnote{One drawback is that this approach may ignore roads that were important prior to the modern stock of infrastructure.} 
-We then follow the process outlined in \cite{Jaworski_Kitchens_2019} to measure the distance and travel time through the network each decade for alorigin-destination pairs. 
-Specifically, we represent each location by its geographic centroid, connected to the network by a set of access roads. 
-We assign a travel speed to each segment in the network according to its classification (state, federal, interstate) and surface (dirt, gravel, paved).\footnote{The speed limits used in this paper are Interstate - 65;  US Highway (Paved) - 45; US Highway (Gravel) - 35; US Highway (Dirt) - 30; State Highway (Paved) - 25; State Highway (Gravel) - 20; State Highway (Dirt) - 15; Access Road - 10. \citet{Jaworski_Kitchens_2019} show that the measure of market access is robust to other speed limits.} 
-We then solve for the least cost route through the network for all pairwise combinations of origins and destinations.
-
-The measures of distance and travel time are then used as inputs to measure the origin-destination trade costs, $\tau_{cd}$. 
-Formally, 
-\begin{align} 
-    \label{eq:trade_cost}
-    \begin{split}
-        \tau_{cdt} &= \text{distance in miles}_{cdt} \times \text{cost per mile}_t \\
-        &\quad + \text{travel time in hours}_{cdt} \times \text{hourly wage of truck drivers}_t
-    \end{split}
-\end{align} 
-where the cost per mile is based on the cost per gallon and the number of miles traveled per gallon and we the hourly wage for a truck driver.
- 
-To construct a measure of market access, we follow the inter-regional trade literature developed in \citet{Eaton_Kortum_2002}, \citet{Redding_Venables_2004}, and \citet{Donaldson_Hornbeck_2016}.\footnote{The particular trade model used is described in \citet{Jaworski_Kitchens_2019}.} A county $c$'s market access, $\text{MA}_c$, is given by this system of non-linear equations 
-\begin{equation}
-    \label{eq:ma}
-    \text{MA}_{c} = \rho \sum_d \tau_{cd}^{-\theta} \text{MA}_d^{-1} Y_d,
-\end{equation}
-where $\theta$ is the trade elasticity with respect to trade costs, $\rho$ is a constant from the theoretical model, and $Y_d$ is the income of county $d$ measured by GDP. 
-   
-
-The market access variable summarizes a county c's access to the transportation network by taking an average of other counties' market size weighted by both the trade cost to ship to that market and by all other counties access to that market ($\text{MA}_{d}^{-1}$). Therefore a county $c$'s market access is large when it has access to large markets that other counties have little access to.
-
-Since our measure of market access is increasing in a county's own size, there could be concern that our measure is not only captures the county's access to the transportation network, but also the size of the county itself. 
-\citet{DCosta_Overman_2014} finds evidence that the urban wage premium indeed is growing in city size. This would mean market access is absorbing a portion of the premium associated with being in a largely populated area and would attenuate our estimates of the wage premium towards zero. To avoid this, for all counties in an MSA, we construct a measure of market access that removes all counties from the summation that fall within the same MSA. This is similar to one of the approaches used by \cite{Donaldson_Hornbeck_2016} that omits counties within a given radius of the origin county. The equation we use for market access is therefore:
-
-\begin{equation}
-    \label{eq:ma_removeown}
-    \text{MA}_{c} = \rho \sum_{d \not \in \text{MSA}(c)} \tau_{cd}^{-\theta} \text{MA}_d^{-1} Y_d,
-\end{equation}
-
-To aggregate market access to Urban areas, we created a crosswalk of counties within MSAs. For each MSA, we average across the counties within the MSA.\footnote{Our results are robust to weighting by population. (NEED TO CHECK)} Our measure of non-urban market access for a given state is the average of counties in that state that do not fall within any MSA. Therefore, for each individual we have a measure of whether or not they live in an urban area and the market access of the urban/non-urban area they live in. This process is detailed in Appendix \ref{appendix:msa_ma}.
-
-Table \ref{table:summ}, Column 4 highlights how market access has increased over time. However, the summary statistics mask significant heterogeneity across space. In Figure \ref{fig:ma_over_time} we document how the log of market access has changed over time.
-
-% @TODO: Update summary statistics table to have remove-own market access
-
-While market access has grown everywhere, the South and West have experienced relative gains, in part due to the construction of the IHS and migration patterns. In Figure \ref{fig:ma_dev_over_time} we show the within-year deviations of the log of market access from the yearly mean at the MSA-level and the state average of non-urban counties. The figure shows that over time, market access in non-urban areas has grown relative to urban areas, particularly in the southern and western United States. On the other hand, large cities in the 1940 had very large market access relative to the national average and this relative advantage declines over time from about 4 log points to about 2 log points above the mean. The deviation in log market access from the national average highlights the variation in market access used in our regressions below. 
-
-\begin{figure}[h!]
-    \caption{Market Access over 1940-2015}
-    \label{fig:ma_over_time}
-
-    \begin{subfigure}{\textwidth}
-        \caption{Log of Market Access}\vspace{-6mm}
-        \begin{center}
-            \resizebox{\textwidth}{!}{
-                \includegraphics{figures/ma_over_time.jpg}
-            }
-        \end{center}
-        
-    \end{subfigure}
-    \begin{subfigure}{\textwidth}
-        \caption{Deviations from Yearly Mean}\vspace{-6mm}
-        \begin{center}
-            \resizebox{\textwidth}{!}{
-                \includegraphics{figures/ma_deviations_over_time.jpg}
-            } 
-        \end{center}
-    \end{subfigure}
-    {\footnotesize
-        \textit{Notes:} Panel (a) shows the log market access averaged to MSAs and the state-wide average of non-urban counties. Panel (b) shows deviations from the national mean of log market access averaged to MSAs and the state-wide average of non-urban counties. These averages are described in Appendix \ref{appendix:msa_ma}. Market access is calculated from Equation \ref{eq:ma} using trade costs calculated in Equation \ref{eq:trade_cost}. 
-    }
-\end{figure}
-
-
 % ------------------------------------------------------------------------------
 \section{Estimation and Results}
 % ------------------------------------------------------------------------------
 
-We begin by computing the log ratio between the average urban weekly wage and the average non-urban weekly wage for each survey year (adjusted for inflation using the BLS' consumer price index) following \citet{Boustan_Bunten_Hearey_2013}. This ratio captures the raw, unadjusted urban wage premium that has been discussed in previous literature. The results of this exercise are presented in Figure \ref{fig:premium_boustan}.
+We begin our analysis by estimating the urban wage premium by comparing average weekly wages for people who live in urban and non-urban areas.\footnote{Weekly wages are adjusted for inflation using the BLS' consumer price index in each period.} For each survey year, we run the following basic regression:
+\begin{equation}
+    \label{eq:reg}
+    \log(\text{Wage}_i) = \beta_0 + \beta_1 \text{Urban}_i + \varepsilon_i,
+\end{equation}
+where $\text{Urban}_i$ is an indicator if unit $i$ resides in an urban area (as classified by the Census Bureau). Therefore, our estimate of $\beta_1$ captures the percent difference in weekly wages earned by urban-residing workers realtive to non-urban workers. These estimates will serve as a baseline description of the differences in wages that we observe in our survey data. 
 
 \begin{figure}[htb!]
-    \caption{Urban Wage Premium 1940-2015 \citep{Boustan_Bunten_Hearey_2013}}
-    \label{fig:premium_boustan}
+    \caption{Unadjusted Urban Wage Premium 1940-2015}
+    \label{fig:premium_urban}
     {\centering
         \resizebox{\columnwidth}{!}{
-            \includegraphics{figures/boustan.pdf}
+            \includegraphics{figures/urbanpremium_urban.pdf}
         } 
     }
     {\footnotesize Notes: Each point is the log of the ratio of average wage among urban male wage-earners and non-urban male wage-earners in the given survey year. 
     }
 \end{figure}
 
-The urban wage premium starts around 30\% in 1940, decreases between 1950 and 1980 to just over 20\% and then increases again to over 25\% after 2000. This is consistent with results found in the literature.\footnote{Our results match the shape over time found in Figure 3 of \citet{Boustan_Bunten_Hearey_2013}. 
-Relative to prior work, our unadjusted difference for the year 2000 is smaller in magnitude than the estimate of 32\% from \citet{Glaeser_Mare_2001}. 
-Despite this difference, our data generate a similar pattern to others documented in the literature, such as the increase between 1980 and 2000 described in \citet{Baum-Snow_Pavan_2012}.}
-
-The unadjusted urban premium reflects a combination of differences in productivity, the endogenous selection of labor into urban areas, differential returns to experience and other potential factors, such as agglomeration economies. To better understand how these different channels impact the urban wage premium, we move to a regression framework. Specifically, we estimate a set of regressions for each survey year as follows: 
-\begin{equation}
-    \label{eq:reg}
-    \log(\text{Wage}_i) = \beta_0 + \beta_1 \text{Urban}_i + X_{i} \delta + \varepsilon_i.
-\end{equation}
-
-Here $\text{Urban}_i$ is an indicator variable that takes the value of 1 if an individual resides in an MSA and is zero otherwise. In the absence of controls, $\beta_1$ captures the unadjusted urban wage premium. To understand what is driving the urban wage premium, in the following subsections we slowly introduce sets of control variables into $X_i$ and reestimate equation \ref{eq:reg}.
-
-Figure \ref{fig:premium_over_time} presents the point estimates of $\beta_1$ in the set of specifications as well as a dotted line representing the method used by \citet{Boustan_Bunten_Hearey_2013}. The line with square markers is Equation \ref{eq:reg} with no controls. The primary thing to note is that the urban wage premium no longer significantly rebounds after 1980 which counters previous descriptive work that shows a recent resurgance of the wage premium. The reason for the difference is simple. The method in \citet{Boustan_Bunten_Hearey_2013} estimates the following
+The urban wage premium starts around 35\% in 1940, decreases to 25\% between 1950 and 1970, and starting in 1980 the premium converges to where it stands today at around 20\%. Our results match the estimates found in Figure 3 of \citet{Boustan_Bunten_Hearey_2013} for estimates before 1980. However, our estimates in later years diverge from those found in previous estimates. Relative to prior work, our unadjusted difference for the year 2000 is smaller in magnitude than the estimate of 32\% from \citet{Glaeser_Mare_2001} and our results don't show as large of an increase between 1980 and 2000 as documented in \citet{Baum-Snow_Pavan_2012} and \citet{Boustan_Bunten_Hearey_2013}. Overall, our unadjused estimates at the urban wage premium do not provide evidence of a ``modern resurgance'' of the wage premium that is suggested by previous descriptive work and the popular press.\footnote{The reason for the difference in estimates comes from our use of a regression framework. The method in \citet{Boustan_Bunten_Hearey_2013} estimates the following
 \[ 
     \log( \hat{\mathbb{E}}[\text{Wage} | \text{Urban} = 1] ) - \log( \hat{\mathbb{E}}[\text{Wage} | \text{Urban} = 0] )
 \]
 which differs from the regression estimate
 \[ 
-    \hat{\beta}_1 = \hat{\mathbb{E}}[ \log(\text{Wage}) | \text{Urban} = 1] - \hat{\mathbb{E}}[ \log(\text{Wage}) | \text{Urban} = 0]
-\]
+    \hat{\beta}_1 = \hat{\mathbb{E}}[ \log(\text{Wage}) | \text{Urban} = 1] - \hat{\mathbb{E}}[ \log(\text{Wage}) | \text{Urban} = 0].
+\]. The latter is a more precise estimate for average percent difference in wages.}
+
+The unadjusted urban premium reflects a combination of differences in productivity, the endogenous selection of labor into urban areas, differential returns to experience and other potential factors such as agglomeration economies. To better understand how these different channels impact the urban wage premium, we extend our regression specification to control for confounding variables. Specifically, we estimate a set of regressions for each survey year as follows: 
+
+\begin{equation}
+    \label{eq:controls}
+    \log(\text{Wage}_i) = \beta_0 + \beta_1 \text{Urban}_i + X_{i} \delta + \varepsilon_i.
+\end{equation}
+In the following subsections we slowly introduce sets of control variables into $X_i$ and reestimate equation \ref{eq:controls}. Figure \ref{fig:premium_over_time} presents the point estimates of $\beta_1$ in the set of specifications. The line with square markers recreates Figure \ref{fig:premium_urban} which is the unadjusted estimate.
 
 \begin{landscape}
 \thispagestyle{empty}
@@ -388,97 +310,46 @@ which differs from the regression estimate
     \label{fig:premium_over_time}
     {\centering
         \resizebox{\columnwidth}{!}{
-            \includegraphics{figures/urbanpremium.pdf}
+            \includegraphics{figures/urbanpremium_controls.pdf}
         } 
     }
     {\footnotesize
-        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:reg}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of market access.
+        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:controls}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of market access.
     }
 \end{figure}
 
 \end{landscape}
 
 
-
 % ------------------------------------------------------------------------------
-\subsection{Individual Control Variables}\label{sec:control}
-% ------------------------------------------------------------------------------
-
-There are many reasons to not interpret the bivariate regression coefficient as a causal paramater. First, people can freely sort between urban and non-urban areas and therefore the individuals may differ in their productivity and hence their wages. To limit the scope that endogenous sorting has on the urban wage premium, we control for a set of individual-level variables. Since we want to compare across years, we use the same set of individual-level covariates which limit the number of variables we can include to a set of 5-year age bins, indicator variables for education level, and an indicator for race.
-
-We report the urban wage premium estimates after controlling for individual characteristics in Figure \ref{fig:ma_over_time} by the line with circle markers. Our estimates suggest that in 1940, the individual-level controls explain about 1/8 of the unadjusted urban wage premium, but the shape of the premium over time remains consistent. However, the explanatory power of individual controls steadily grows over time. In 2015, the individual-level controls explain about 1/3 of the urban premium highlighting the importance of sorting of individuals in explaining wage premiums in the modern era. Across all years in the sample, we find that individual-level observables explain between 8\% and 33\% of the urban wage premium, with the individual characteristics explaining a larger portion of the premium since 1980.
-
-As \citet{Yankow_2006} and \citet{Combes_Duranton_Gobillon_2008} point out, there may be \emph{unobservable} individual attributes that are correlated with the urban indicator. Thus, we should not try to provide a causal interpretation to these estimates. Unlike prior literature, we do not observe the same individual multiple times, so we cannot include individual-specific fixed effects and therefore rely on a small number of control variables. In section \ref{sec:group}, we revisit this issue by following a recently proposed method by \citet{altonji2018estimating} which allows to control for unobserved covariates by using group-averages of observed variables that we don't have individual-level data for.
-
-% ------------------------------------------------------------------------------
-\subsection{Market Access}\label{sec:ma}
+\subsection{Controlling for Individual Characteristics}\label{sec:control}
 % ------------------------------------------------------------------------------
 
-As noted above, market access may impact the urban wage premium through potential agglomeration forces. Being located in cities may increase income for workers if it improves firms' access to larger markets and hence increases profits. Market access is a variable that summarizes a locations' access to markets, so controlling for it in our regression framework should remove the portion of the urban wage premium due to being located near other markets. 
+There are many reasons to not interpret the bivariate regression coefficient as a causal paramater. First, people can freely sort between urban and non-urban areas and therefore the individuals may differ in their productivity and hence their wages. To limit the scope that endogenous sorting has on the urban wage premium, we control for a set of individual-level variables. To facilitate consistent comparisons across years, we use the same set of individual-level covariates in each survey-year. This limits the number of variables we include to a set of 5-year age bins, indicator variables for education level, and an indicator for race.
 
-% \begin{landscape}
-% \thispagestyle{empty}
-    
-% \begin{table}[htb]
-%     \caption{All Urban Wage Premium Estimates by Survey Year}
-%     \label{table:ma_reg_all}
+We report the urban wage premium estimates after controlling for individual characteristics in Figure \ref{fig:premium_over_time} by the line with circle markers. Our estimates suggest that in 1940, the individual-level controls explain about 1/8 of the unadjusted urban wage premium, but the shape of the premium over time remains consistent. However, the explanatory power of individual controls steadily grows over time. In 2015, the individual-level controls explain about 1/3 of the urban premium highlighting the importance of sorting of individuals in explaining wage premiums in the modern era. Across all years in the sample, we find that individual-level observables explain between 8\% and 33\% of the urban wage premium, with the individual characteristics explaining a larger portion of the premium since 1980.
 
-%     \begin{adjustbox}{width = 1.2\textwidth, center}
-%     \begin{threeparttable}
-%         \begin{tabular}{@{}@{\extracolsep{5pt}}lrrrrrrrrrr@{}}
-%         \toprule
-
-%         & \textbf{1940} & \textbf{1950} & \textbf{1960} & \textbf{1970} & \textbf{1980} & \textbf{1990} & \textbf{2000} & \textbf{2005} & \textbf{2010} & \textbf{2015} \\
-%         \cline{2-11}\\[-4mm]
-        
-%         \multicolumn{11}{@{}l}{\large\textbf{Panel A: Urban only}} \\[2mm]
-%         \input{results/results-IPUMS/premium_no_ma.tex}
-        
-
-%         \midrule\\[-6mm]
-%         \multicolumn{11}{@{}l}{\large\textbf{Panel B: Urban with Controls}} \\[2mm]
-%         \input{results/results-IPUMS/premium_no_ma_controls.tex}
-
-%         \midrule\\[-6mm]
-%         \multicolumn{11}{@{}l}{\large\textbf{Panel C: Urban, Controls, and Market Access}} \\[2mm]
-%         \input{results/results-IPUMS/premium_ma.tex}
-
-%         \midrule\\[-6mm]
-%         \multicolumn{11}{@{}l}{\large\textbf{Panel D: Urban, Controls, and Market Access (excluding own market)}} \\[2mm]
-%         \input{results/results-IPUMS/premium_ma_removeown.tex}
-
-%         \bottomrule
-%         \end{tabular}
-
-%         % Notes 
-%         \begin{tablenotes}[flushleft]
-%             \item \textit{Notes.} Each cell is the coefficient estimate corresponding to the regression for the survey year indicated by the column label. The dependent variable is log weekly earning and each regression includes an indicator for living in an urban area. Panel A just includes the Urban indicator; Panel B includes controls for age in 5-year bins, education levels, and an indicator for being White; Panel C includes the above controls and our measure of market access; Panel D modifies the $\log(MA)$ measure by removing each unit's market access in equation \ref{eq:ma_removeown} in Appendix subsection \ref{sec:ma_remove_own} All regressions are weighted by the IPUMS person weights. Standard errors are in parenthesis and are clustered at the MSA-Nonurban State level 
-%         \end{tablenotes}
-%     \end{threeparttable}
-%     \end{adjustbox}
-% \end{table}
-    
-% \end{landscape}
-
-We summarize our baseline findings in Figure \ref{fig:premium_over_time} by the line with triangle markers. The urban wage premium coefficient is essentially unchanged from the estimates in Panel B. This suggests that the wage premium due to cities is not being driven by cities' better access to nearby markets and their advantageous location within the transportation network. 
-
+As \citet{Yankow_2006} and \citet{Combes_Duranton_Gobillon_2008} point out, there may be \emph{unobservable} individual attributes (e.g. motivation and aptitude) that are correlated with the urban indicator. Thus, we should not try to provide a causal interpretation to these estimates. Unlike prior literature, we do not observe the same individual multiple times, so we cannot include individual-specific fixed effects and therefore rely on a small number of control variables. In section \ref{sec:group}, we revisit this issue by following a recently proposed method by \citet{altonji2018estimating} which provides conditions under which controlling for group-averages of observed variables controls for unobserved covariates that we don't have individual-level data for.
 
 % ------------------------------------------------------------------------------
-\subsection{Group Averages}\label{sec:group}
+\subsection{Controlling for \emph{unobserved} Individual Characteristics}\label{sec:group}
 % ------------------------------------------------------------------------------
 
 Although we include a small set of individual-level control variables, there are many sources of unobserved covariates that can sort between urban and non-urban areas and lead to differences in average pay. We use the method proposed by \citet{altonji2018estimating} to attempt to control for these unobserved variables. The proposed method relies on two relationships in how individuals sort. First, group-level averages of variables in urban and non-urban areas reveal information about the differences in various amenities that cause people to sort between urban and non-urban areas.\footnote{This can even include the wage premium itself.} That is, the averages of covariates in urban and non-urban areas are correlated with average amenity quantities in urban and non-urban areas. Second, individuals sort based on their unobserved covariates because of the \emph{same} set of amenities. That is, the average of unobserved covariates are also correlated with the average amenitiy quantities. 
 
-Hence, controlling for the average of observable covariates should therefore, at least partially, control for averages of unobservable covariates. \citet{altonji2018estimating} show that under a set of conditions discussed below (and more formally in the authors' work), there exists a \emph{linear} mapping between group-level averages of \emph{observed} covariates and group-level averages of \emph{unobserved} covariates.\footnote{This is true even when there is no correlation between unobservable and observable variables at an individual-level.} Therefore including group-level averages linearly in Equation \ref{eq:reg} will absorb the portion of the urban wage premium that is due to sorting on unobservable covariates.\footnote{The group-level averages also will absorb the effects of the amenities that drive sorting, so changes in the wage premium coefficient reflect removal of both sources.}
+Hence, controlling for the average of observable covariates should therefore, at least partially, control for averages of unobservable covariates. \citet{altonji2018estimating} show that under a set of conditions discussed below (and more formally in the authors' work), there exists a \emph{linear} mapping between group-level averages of \emph{observed} covariates and group-level averages of \emph{unobserved} covariates.\footnote{This is true even when there is no correlation between unobservable and observable variables at an individual-level.} Therefore including group-level averages linearly in Equation \ref{eq:controls} will absorb the portion of the urban wage premium that is due to sorting on unobservable covariates.\footnote{The group-level averages also will absorb the effects of the amenities that drive sorting, so changes in the wage premium coefficient reflect removal of both sources.}
 
-The result proposed by \citet{altonji2018estimating} relies on a few assumptions. First, it is assumed that individuals choose locations following a standard logistic choice model with a latent function depending on both observed and unobserved covariates. The second assumption, called the `rank condition' in their paper, pertains with the set of factors that drive sorting based on the observable group averages. Essentially, this set of factors must contain \emph{all} factors that drive sorting based on unobservable covariates. The intuition for this is that group averages reveal information on only the factors that cause sorting on these covariates, however we need information on all factors in order to control for group-averages of unobservables. The second part of the rank condition is that the number of group-average variables must be larger than the total number of factors driving sorting into urban areas. The intutition for this is that regression will first `invert' the observed group-level averages to amenities, but this inversion is only possible if the mapping is one-to-one. If there were more amenities than group-average variables, then there would not be a unique inverse and therefore the mapping between observable averages and unobservable averages would break. 
+The result proposed by \citet{altonji2018estimating} relies on a few assumptions. First, it is assumed that individuals choose locations following a standard logistic choice model with a latent function that models the appeal of urban and non-urban areas as a function of both the observed and unobserved covariates. The second assumption, called the `rank condition' in their paper, pertains with the set of factors that drive sorting along the observable group averages. Essentially, this set of factors must contain \emph{all} factors that drive sorting based on unobservable covariates. The intuition for this is that group averages reveal information on the amenity factors that cause sorting based on these covariates. If a different set of amenity factors drive sorting based on the unobservable characteristics, then information on these group averages do not inform us on the unobservable characteristics. 
 
-The group-level averages we include are ... 
+The second part of the rank condition is that the number of group-average variables must be larger than the total number of factors driving sorting into urban areas. The intutition for this is that regression will first `invert' the observed group-level averages to amenities, but this inversion is only possible if the mapping is one-to-one. If there were more amenities than group-average variables, then there would not be a unique inverse and therefore the mapping between observable averages and unobservable averages would break. This second condition warrants more discussion as initially it may seem that there are many amenities that drive sorting into or out of urban areas. However, these amenities are often highly correlated with one another. More fomally, the rank condition requires the effective rank of the group-average variables be larger than the effective rank of amenity variables. \citet{Diamond_2016} provide evidence using a principal component analysis and a very detailed set of amenities that, at least in the 21st century, the effective rank of amenities is around 5 (with three components explain most of the variation). Therefore, one of our identifying assumption on our set of group-average variables to have a large enough effective rank to satisfy the rank condition. If this were not the case, then we would only \emph{partially} absorb the effects of individual sorting.
 
-The results are presented in Figure \ref{fig:ma_over_time} by the line with diamond markers
+The group-level averages we include are the share of individuals of different racial/ethnic groups, the share of individuals at different levels of educational attainments, the share of individuals who were veterans, and the share of individuals of different marital status. The results of this exercise are presented in Figure \ref{fig:premium_over_time} by the line with diamond markers.
+
+First, we turn to estimates after 1990, as we can directly compare these to similar estimates found in the literature. If our identifying assumptions hold true, then our estimates reflect the urban wage premium after controlling \emph{completely} for individual characteristics. We find an urban wage premium between 1990 and 2010 between -2\% and 5\%. These results fall very close to estimates in the literature that use panel data that use individual fixed-effects to control for individual characteristics. \citet{Glaeser_Mare_2001} estimate a premium of around 5\% in the 90s; \citet{Yankow_2006} estimate a premium between 3-5\% and \citet{DCosta_Overman_2014} estimate a premium between 2-5\% in the 2000s. Our estimates falling so close to these estimates provide support for our empirical approach. Overall, our results find that after 1990, there is very little causal benefits to living in the city.
+
+Now, we extend this literature by analyzing the premium from a historical perspective. The estimates of around 5\% continue back until 1960. However, in 1940 the premium remains around 25\% and aroudn 15\% in 1950. This evidence suggests that historically cities indeed did provide large benefits to any individuals who came there to work. This is consistent with historical accounts that ...
 
 
-% \subsection{Real Wage (Net of Rent)}\label{sec:rent}
 
 
 
@@ -502,7 +373,52 @@ The results are presented in Figure \ref{fig:ma_over_time} by the line with diam
 \setcounter{figure}{0}
 % ------------------------------------------------------------------------------
 
-Full results of our regression estimates in Figure \ref{fig:ma_over_time} can be found in Table \ref{table:ma_reg_all}. In Panel A corresponding to the dotted line with diamonds in Figure \ref{fig:ma_over_time}, this set of regressions only have an indicator for living in an Urban Area. In Panel B corresponding to the dotted line with traingle markers in Figure \ref{fig:ma_over_time}, this regression adds controls for age in 5-year bins, education levels, and an indicator for being White. Lastly, Panel C replicates the full regression including controls and the log of market acces which is the same as Table \ref{table:ma_reg}. 
+Full results of our regression estimates in Figure \ref{fig:premium_over_time} can be found in Table \ref{table:premium}.
+
+\begin{landscape}
+\thispagestyle{empty}
+    
+\begin{table}[htb]
+    \caption{All Urban Wage Premium Estimates by Survey Year}
+    \label{table:premium}
+
+    \begin{adjustbox}{width = 1.2\textwidth, center}
+    \begin{threeparttable}
+        \begin{tabular}{@{}@{\extracolsep{5pt}}lrrrrrrrrrr@{}}
+        \toprule
+
+        & \textbf{1940} & \textbf{1950} & \textbf{1960} & \textbf{1970} & \textbf{1980} & \textbf{1990} & \textbf{2000} & \textbf{2005} & \textbf{2010} & \textbf{2015} \\
+        \cline{2-11}\\[-4mm]
+        
+        \multicolumn{11}{@{}l}{\large\textbf{Panel A: Urban only}} \\[2mm]
+        \expandableinput{results/results-IPUMS/premium_no_ma.tex}
+        
+
+        \midrule\\[-6mm]
+        \multicolumn{11}{@{}l}{\large\textbf{Panel B: Urban with Controls}} \\[2mm]
+        \expandableinput{results/results-IPUMS/premium_no_ma_controls.tex}
+
+        \midrule\\[-6mm]
+        \multicolumn{11}{@{}l}{\large\textbf{Panel C: Urban, Controls, and Market Access}} \\[2mm]
+        \expandableinput{results/results-IPUMS/premium_ma.tex}
+
+        \midrule\\[-6mm]
+        \multicolumn{11}{@{}l}{\large\textbf{Panel D: Urban, Controls, and Market Access (excluding own market)}} \\[2mm]
+        \expandableinput{results/results-IPUMS/premium_ma_removeown.tex}
+
+        \bottomrule
+        \end{tabular}
+
+        % Notes 
+        \begin{tablenotes}[flushleft]
+            \item \textit{Notes.} Each cell is the coefficient estimate corresponding to the regression for the survey year indicated by the column label. The dependent variable is log weekly earning and each regression includes an indicator for living in an urban area. Panel A just includes the Urban indicator; Panel B includes controls for age in 5-year bins, education levels, and an indicator for being White; Panel C includes the above controls and our measure of market access; Panel D modifies the $\log(MA)$ measure by removing each unit's market access in equation \ref{eq:ma_removeown} in Appendix subsection \ref{sec:ma_remove_own} All regressions are weighted by the IPUMS person weights. Standard errors are in parenthesis and are clustered at the MSA-Nonurban State level 
+        \end{tablenotes}
+    \end{threeparttable}
+    \end{adjustbox}
+\end{table}
+    
+\end{landscape}
+
 
 
 % ------------------------------------------------------------------------------
@@ -522,54 +438,6 @@ For a given year, a metro area's market access is the geometric average of the c
 % ------------------------------------------------------------------------------
 
 % ------------------------------------------------------------------------------
-\subsubsection{MA Weighted by Population}
-% ------------------------------------------------------------------------------
-
-For some metro areas, there is a central county and more counties at the peripheral, less populated counties. In this case, our simple average may understate the market access in a city, so we check for this by averaging across counties weighted by the counties population share. The results in Figure \ref{fig:premium_over_time_weighted} show that the shape of the black line with circle markers is very similar to Figure \ref{fig:premium_over_time}. 
-
-\begin{figure}[htb!]
-    \caption{Urban Wage Premium 1940-2015 with Weighted Market Access}
-    \label{fig:premium_over_time_weighted}
-    {\centering
-        \resizebox{\columnwidth}{!}{
-            \includegraphics{figures/urbanpremium_IPUMS_ma_weighted.pdf}
-        } 
-    }
-
-    {\footnotesize
-        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:reg}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of the weighted market access.
-    }
-\end{figure}
-
-
-% ------------------------------------------------------------------------------
-\subsubsection{MA Without Own GDP}\label{sec:ma_remove_own}
-% ------------------------------------------------------------------------------
-
-Since our measure of market access is increasing in a county's own size, there could be concern that our measure is not only measuring the county's access to the transportation network, but also the size of the county itself. \citet{DCosta_Overman_2014} finds evidence that the urban wage premium indeed is growing in city size. This would mean market access is absorbing some of the premium associated with being in a largely populated area and would be biasing our estimates of the wage premium towards zero. To avoid this, for all counties in an MSA, we construct a measure of market access that removes all counties from the summation that fall within the same MSA: 
-\begin{equation}
-    \label{eq:ma_removeown_appendix}
-    \text{MA}_{c} = \rho \sum_{d \not \in \text{MSA}(c)} \tau_{cd}^{-\theta} \text{MA}_d^{-1} Y_d,
-\end{equation}
-
-The results are in Figure \ref{fig:premium_over_time_removeown_appendix}. 
-
-\begin{figure}[htb!]
-    \caption{Urban Wage Premium 1940-2015 with Remove Own Market Access}
-    \label{fig:premium_over_time_removeown_appendix}
-    {\centering
-        \resizebox{\columnwidth}{!}{
-            \includegraphics{figures/urbanpremium_IPUMS_removeown.pdf}
-        } 
-    }
-
-    {\footnotesize
-        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:reg}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of the weighted market access constructed according to Equation \ref{eq:ma_removeown}.
-    }
-\end{figure}
-
-
-% ------------------------------------------------------------------------------
 \subsubsection{MSA Selection Over Time}
 % ------------------------------------------------------------------------------
 
@@ -579,7 +447,7 @@ as smaller cities are added over time, the observed decline in the urban wage pr
 To create this, we keep all MSAs that exist in the entire sample from 1940 - 2015 (removing those that are added over time and the few that are lost over time). Observations are dropped for individuals identified in an MSA that does not exist for the entire sample. There still remains the issue that MSAs tend to grow over time incorporating less densly populated areas over time which we are unable to fix because the survey data does not feature exact locations of individuals.
 
 \begin{figure}[htb!]
-    \caption{Urban Wage Premium 1940-2015 with Weighted Market Access}
+    \caption{Urban Wage Premium 1940-2015 for 1940 MSAs}
     \label{fig:premium_msa_in_all_yrs}
     {\centering
         \resizebox{\columnwidth}{!}{
@@ -588,42 +456,10 @@ To create this, we keep all MSAs that exist in the entire sample from 1940 - 201
     }
 
     {\footnotesize
-        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:reg}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of the weighted market access.
+        \textit{Notes:} This figure plots the coefficient estimates for survey-year level estimates of the urban wage premium. In the grey line with square markers, the estimate is found by taking the ratio of the average log weekly wage for urban and nonurban workers. The remaining lines run versions of the regression given by Equation \ref{eq:controls}. In the line with diamond markers, there are no controls and no measure of market access; the line with triangle markers includes controls for age in 5-year bins, education levels, and an indicator for being White; the line with circle markers includes the same controls and the log of the weighted market access.
     }
 \end{figure}
 
-
-
-% Speed Limits
- \begin{table}[htb]
-     \caption{Road Classifications and Speed Parameters}
-     \label{table:road_param}
-
-     \begin{center}
-         \begin{tabular}{@{\extracolsep{5pt}}lcc}
-         \toprule  
-         \textbf{Class of Road} & \textbf{Speed limit} & \textbf{Speed limit} \\
-
-         \midrule
-         Interstate & 65 & 70 \\ 
-         US Highway (Paved) & 45 & 55 \\
-         US Highway (Gravel) & 35 & 50 \\
-         US Highway (Dirt) & 30 & 45 \\
-         State Highway (Paved) & 25 & 45 \\
-         State Highway (Gravel) & 20 & 40 \\
-         State Highway (Dirt) & 15 & 35 \\
-         Access Road & 10 & 10 \\
-
-         \bottomrule
-
-         \end{tabular}
-     \end{center}
-   
-     \vspace{2mm}
-     {\footnotesize
-         \textit{Notes:} 
-     }
- \end{table}
 
 
 

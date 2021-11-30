@@ -125,6 +125,28 @@ boustan <- ggplot(results %>% filter(group == "Raw"), aes(x = year, y = exp_est,
 ggsave(glue("{gh}/paper/figures/boustan.pdf"), boustan, width = 4800 / 300, height = 2400 / 300)
 
 
+## Raw -------------------------------------------------------------------------
+
+
+(urban <- ggplot(
+        results[results$group == "Urban Only", ], 
+        aes(x = year, y = exp_est)
+    ) +
+    geom_line(size = 2, linetype = 1) +
+    geom_point(size = 5, shape = 15) +
+    labs(
+        x = "Year", y = "Urban Wage Premium"
+    ) +
+    scale_y_continuous(labels = scales::percent, limits = c(-0.05, 0.375)) + 
+    theme_kyle(base_size = 24) +
+    guides(colour = guide_legend(title.position = "top", nrow = 2)) +
+    theme(legend.position = "bottom"))
+
+# kfbmisc::ggpreview(controls, dpi = 300, width = 4800/300, height = 3000/300, cairo = FALSE, device ="pdf")
+
+ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), controls, width = 16, height = 10)
+
+
 ## Regression Results ----------------------------------------------------------
 
 (controls <- ggplot(
@@ -138,7 +160,7 @@ ggsave(glue("{gh}/paper/figures/boustan.pdf"), boustan, width = 4800 / 300, heig
         shape = "Specification", color = "Specification", 
         linetype = "Specification"
     ) +
-    scale_y_continuous(labels = scales::percent) +
+    scale_y_continuous(labels = scales::percent, limits = c(-0.05, 0.375)) + 
     # ggsci::scale_color_jama() +
     scale_color_manual(values = c(
         # "Raw" = "grey40",
@@ -170,4 +192,4 @@ ggsave(glue("{gh}/paper/figures/boustan.pdf"), boustan, width = 4800 / 300, heig
 
 # kfbmisc::ggpreview(controls, dpi = 300, width = 4800/300, height = 3000/300, cairo = FALSE, device ="pdf")
 
-ggsave(glue("{gh}/paper/figures/urbanpremium.pdf"), controls, width = 16, height = 10)
+ggsave(glue("{gh}/paper/figures/urbanpremium_controls.pdf"), controls, width = 16, height = 10)
