@@ -34,18 +34,21 @@ df0 <- data %>%
     select(year, est, group)
 
 # Store results
-results <- df0
+# results <- df0
+results <- NULL
 
 
 ## Regression Results ----------------------------------------------------------
 
 # Loop through year
-for (i in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2005, 2010, 2015)) {
+# Removed 2005 and 2015 for data quality issue in 2005
+for (i in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010)) {
     cli::cli_alert_info("Starting on year {i}")
 
     # Sample has every observation except 15% sample of 1940 full count
+    rm(data)
     data <- data.table::fread(glue("{project}/data/dta/urban_wage_final_sample.csv"))
-    data <- data[year == i]
+    data <- data[year == i, ]
 
     ## Urban -------------------------------------------------------------------
 
@@ -58,33 +61,26 @@ for (i in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2005, 2010, 2015)) {
     est2 <- feols(ln_weeklywage ~ urban | agegroup + educ + white,
         data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
     )
-
-    ## Urban, Individual Controls, & Market Access -----------------------------
-
-    est3 <- feols(ln_weeklywage ~ urban + ln_ma_removeown | agegroup + educ + white,
-        data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
-    )
-
     ## Urban, Individual Controls, Market Access, & Group Averages -------------
 
     # Group_vars formula
-    group_vars <- c("share_race0", "share_race1", "share_age5", "share_age6", "share_age7", "share_age8", "share_age9", "share_age10", "share_age11", "share_age12", "share_age13", "share_educ0", "share_educ1", "share_educ2", "share_educ3", "share_educ4", "share_educ5", "share_educ6", "share_educ7", "share_educ8", "share_educ9", "share_educ10", "share_educ11", "share_educ99", "share_marst1", "share_marst2", "share_marst3", "share_marst4", "share_marst5", "share_marst6", "share_vetstat0", "share_vetstat1", "share_vetstat2", "share_vetstat9")
+    group_vars <- c("ln_ma_removeown", "share_race0", "share_race1", "share_age5", "share_age6", "share_age7", "share_age8", "share_age9", "share_age10", "share_age11", "share_age12", "share_age13", "share_educ0", "share_educ1", "share_educ2", "share_educ3", "share_educ4", "share_educ5", "share_educ6", "share_educ7", "share_educ8", "share_educ9", "share_educ10", "share_educ11", "share_educ99", "share_marst1", "share_marst2", "share_marst3", "share_marst4", "share_marst5", "share_marst6", "share_vetstat0", "share_vetstat1", "share_vetstat2", "share_vetstat9")
 
     group_formula <- paste(group_vars, collapse = " + ")
 
-    fmla <- as.formula(glue("ln_weeklywage ~ urban + ln_ma_removeown + {group_formula} | agegroup + educ + white"))
+    fmla <- as.formula(glue("ln_weeklywage ~ urban + {group_formula} | agegroup + educ + white"))
 
-    est4 <- feols(fmla,
+    est3 <- feols(fmla,
         data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
     )
 
 
     results <- bind_rows(results, tibble(
-        year = rep(i, times = 4),
-        est = unlist(lapply(list(est1, est2, est3, est4), function(x) {
+        year = rep(i, times = 3),
+        est = unlist(lapply(list(est1, est2, est3), function(x) {
             coef(x)[["urban"]]
         })),
-        group = c("Urban Only", "Controls", "Market Access", "Group Averages")
+        group = c("Urban Only", "Controls", "Group Averages")
     ))
 }
 
@@ -106,7 +102,7 @@ library(kfbmisc)
 results <- results %>%
     mutate(
         exp_est = exp(est) - 1,
-        group = factor(group, levels = c("Raw", "Urban Only", "Controls", "Market Access", "Group Averages"))
+        group = factor(group, levels = c("Urban Only", "Controls", "Group Averages"))
     )
 
 ## Boustan et. al --------------------------------------------------------------
