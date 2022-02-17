@@ -81,3 +81,5 @@ city_premia[
 ]
 
 save(city_premia, file = glue::glue("{gh}/data/estimates-city_premia.RData"))
+fwrite(city_premia, file = glue::glue("{gh}/data/estimates-city_premia.csv"))
+
