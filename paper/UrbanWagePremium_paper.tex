@@ -67,51 +67,76 @@
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-As of 2015, workers in urban areas earn a 16 percent premium over their non-urban counterparts.
-The urban wage premium has become an empirical fact, widely documented in the urban economics literature (see for example \citet{rosenthal2004evidence} for a review). 
-The literature has closely explored the role of high productivity individuals sorting into cities \citep{Combes_Duranton_Gobillon_2008}. 
+Workers in urban areas earn a 16 percent premium over their non-urban counterparts.
+This gap is often referred to as the urban wage premium, and is a well documented fact in the urban economics literature (see for example \citet{rosenthal2004evidence} for a review). 
+The literature has closely explored the drivers of this gap, which include the role of sorting and selection of high productivity individuals into cities \citep{Combes_Duranton_Gobillon_2008}. 
 For example \citet{Yankow_2006} documents that up to two-thirds of the urban wage premium is driven by differences in worker skills. 
 The literature has also closely studied the role of differential returns to experience in urban areas as a source of the wage premium \citep{Baum-Snow_Pavan_2012}
 Outside of human capital explanations, researchers have explored the role of agglomeration economies and firm survival to explain the remaining gap (\citet{Glaeser_Mare_2001}, \citet{wheaton2002urban}, \citet{combes2012productivity}, \citet{behrens2014productive}).\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} 
-Agglomeration economies are an attractive explanation, yet determining the underlying mechanism that contributes to agglomeration is difficult. 
-Indeed a large literature has sought to explain the causes and mechanisms of agglomeration. 
+While the importance of sorting, selection, and firm survival are well documented in recent data, less is known about the urban wage premium throughout the 20th Century, and how the role of sorting and selection varied over time.  
+\cite{Boustan_Bunten_Hearey_2013} provide descriptive evidence of the rising urban wage premium throughout the 19th and 20th Century, which peaked around 1990, however, they do not isolate selection and sorting effects in their exercise. 
+In this paper, we explore how the urban wage premium has evolved over the second half of the 20th Century and into the 21st Century, while addressing unobservable sorting following recent econometric advances introduced by \citet{altonji2018estimating}. 
 
-
-According to \citet{marshall1920industry} physical proximity and connections to firms are a drivers of agglomeration. 
-Similarly, \citet{duranton2004micro} and \citet{head2004empirics} stress how trade costs may shape agglomeration and industrial location, and thus may partially explain the observed urban wage premium. 
-In this paper, we directly explore how improvements in transportation that shape connections between locations, measured by market access, impact the estimated urban wage premium in the United States between 1940 and 2015. 
-Empirically we begin by estimating regressions of individual wages on a set of individual characteristics and location and time fixed effects. 
-This set of regressions enables us to partial out the portion of the wage gap due to underlying differences in the skill-education-experience composition of workers between urban and non-urban areas, while at the same time, netting out common firm survival trends that conttibute to the wage gap. 
-Similar to prior work, we find that individual characteristics account for approximately half of the urban wage premium and become increasingly important after 1980.  
-We then construct a measure of market access following \citet{Donaldson_Hornbeck_2016} and \citet{Jaworski_Kitchens_2019} at the MSA level drawing on newly digitized atlases of the US Highway Network each decade 1940-2010. 
-Our measure of market access allows us to consider how changes in a city's connectedness to other locations affects the wage premium.
-In general, we find that market access (MA) has a direct, positive impacts on wages, but the market access variable is uncorrelated with the urban variable, thus it has little to no impact on the urban wage premium. 
-Importantly, we find that a portion of market access is collinear with urbanization, thus it is important to measure market access, net of the own market effect. 
-This should be clear as by definition market access captures local productivity, population desnity, and amenities. 
-Combined, the MA estimates highlight the importance of localized productivity differences, that we explore in more detail. 
-
-
-In particular, we are interested in understanding how changes in MA, induced by expansions of the highway system have influenced each MSA's position in the wage premium distribution. 
-That is, as the highways have expanded, has it altered the rank of specific cities by the size of the premium.
-This exercise relates to work by \citet{Yankow_2006}, who explores heterogeneity in the wage premium among large and small MSAs. 
-%We find..... 
-
+In our empirical exercise, we first document the raw urban wage premium over time. 
+We then consider how much of the gap is explained by differences in individual characteristics. 
 Finally, we seek to understand to what extent spatial sorting on unobservables, such as unobserved amenities or unobserved productivity, drives the urban wage premium. 
-To address concerns regarding selection on unobservables, we follow \citet{altonji2018estimating} and control for MSA level averages of individual characteristics in additional specifications.
-The inclusion of these MSA-level averages should, in theory, net out the influence of unobservable productivity, for example, due to higher returns to experience in urban areas, as described by \cite{Baum-Snow_Pavan_2012}.
-For example, consider the unobservable trait of working longer hours, as discussed in \citet{weinberg2004neighborhoods}. 
-If workers in a particular city work longer hours due to an unobserved and time varying preference for longer work days, then this may be reflected in the urban wage premium. 
-Controlling for the MSA-level averages nets out this type of sorting, however it may overcontrol by limiting the scope for other mechanisms. 
-In this case, controlling for observables to address unobserved preferences for longer hours may limit the scope of referrals from neighbors, as discussed in \citet{bayer2008place}.
-In addition to controlling for MSA-level averages of individual characteristics, we also estimate specifications where we control for MSA level housing values. 
-We add housing value controls to limit the impact that unobserved amenities or land use restrictions have on wages. 
+To net out the role of spatial sorting, we follow \citet{altonji2018estimating} and control for MSA level averages of individual characteristics.
+Intuitively, \citet{altonji2018estimating} highlight that group averages of observables tell us something about how individuals optimally select or sort into locations, and that the average observables are are correlated with group averages of unobservables.
+Thus, controlling for group averages of observables controls for many unobservables that drive selection and sorting. 
+%For example, consider the unobservable trait of working longer hours, as discussed in \citet{weinberg2004neighborhoods}. 
+%If workers in a particular city work longer hours due to an unobserved and time varying preference for longer work days, then this may be reflected in the urban wage premium. 
+%Controlling for the MSA-level averages nets out this type of sorting, however it may overcontrol by limiting the scope for other mechanisms. 
+%In this case, controlling for observables to address unobserved preferences for longer hours may limit the scope of referrals from neighbors, as discussed in \citet{bayer2008place}.
+%In addition to controlling for MSA-level averages of individual characteristics, we also estimate specifications where we control for MSA level housing values. 
+%We add housing value controls to limit the impact that unobserved amenities or land use restrictions have on wages. 
+%The inclusion of these MSA-level averages nets out the influence of unobservable productivity, for example, due to higher returns to experience in urban areas.
+Adopting this approach allows us to document the role of sorting on the urban wage premium prior to the construction individual-level panel datasets. 
+Prior litrature such as \citet{Baum-Snow_Pavan_2012} and \citet{Glaeser_Mare_2001}), have utilized individual-level panel datasets to account for sorting on unobservables, which is not possible in many historical datasets. 
 
-When we add MSA-level averages of individual characteritics and MSA average housing values to our specifications, we find that the urban wage premium rises/falls by XYZ.
+
+Consistent with prior literature, we document a large urban wage premium in the raw data, ranging from 20-35 percent over the postwar era. 
+The raw urban wage premium is at a peak in 1940, and declines rapidly between 1940 and 1950, and then declines more slowly throughout the period after 1950. 
+We also see that the premium begins to rise again after 1980, which closely follows the skills gap discussed in the literature %CITATIONS.
+Controlling for observable individual characteristics reduces the urban wage premium. 
+We find that individual characteristics explain XX - YY of the urban wage premium, a much smaller share than  \citet{Yankow_2006} describes, albeit, we have a much more limited set of observables. 
+When we add MSA-level averages of individual characteritics and MSA average housing values to our specifications, we find that the urban wage premium is about 1/3 the premium after controlling for individual characteristics. 
+Importantly, we see that after netting out the role of spatial sorting, the urban wage premium drops rapidly between 1940 and 1960, and then levels off to about 5 percent throughout the remainder of the 20th and 21st Century. 
+Our estimate of 5 percent in the period 1960-2015 is very similar to the estimates reported in \citet{Baum-Snow_Pavan_2012} and \citet{Glaeser_Mare_2001} that use individual fixed effects models. 
+
+This raises an interesting question, what factors explain the decline in the urban wage premium in the postwar era, or alternatively, why did spatial sorting become increasingly important. 
+In the second part of the paper, we explore whether regional convergence is a plausible explanation for the narrowing of the wage premium over time.
+ 
+
 Overall, our findings highlight the role that selection, both by individuals and firms, contributes to the urban wage premium. 
 Indeed, after controlling for many sources of selection, we find that the unexplained wage premium is XX percent of the observed premium.
 
-In what follows, we provide a brief background of why cities formed and how transportation has evolved over time. 
-We then describe our data and empirical strategy. 
+%In what follows, we provide a brief background of why cities formed and how transportation has evolved over time. 
+%We then describe our data and empirical strategy.
+  
+%Agglomeration economies are an attractive explanation, yet determining the underlying mechanism that contributes to agglomeration is difficult. 
+%Indeed a large literature has sought to explain the causes and mechanisms of agglomeration. 
+
+
+%According to \citet{marshall1920industry} physical proximity and connections to firms are a drivers of agglomeration. 
+%Similarly, \citet{duranton2004micro} and \citet{head2004empirics} stress how trade costs may shape agglomeration and industrial location, and thus may partially explain the observed urban wage premium. 
+%In this paper, we directly explore how improvements in transportation that shape connections between locations, measured by market access, impact the estimated urban wage premium in the United States between 1940 and 2015. 
+%Empirically we begin by estimating regressions of individual wages on a set of individual characteristics and location and time fixed effects. 
+%This set of regressions enables us to partial out the portion of the wage gap due to underlying differences in the skill-education-experience composition of workers between urban and non-urban areas, while at the same time, netting out common firm survival trends that conttibute to the wage gap. 
+%Similar to prior work, we find that individual characteristics account for approximately half of the urban wage premium and become increasingly important after 1980.  
+%We then construct a measure of market access following \citet{Donaldson_Hornbeck_2016} and \citet{Jaworski_Kitchens_2019} at the MSA level drawing on newly digitized atlases of the US Highway Network each decade 1940-2010. 
+%Our measure of market access allows us to consider how changes in a city's connectedness to other locations affects the wage premium.
+%In general, we find that market access (MA) has a direct, positive impacts on wages, but the market access variable is uncorrelated with the urban variable, thus it has little to no impact on the urban wage premium. 
+%Importantly, we find that a portion of market access is collinear with urbanization, thus it is important to measure market access, net of the own market effect. 
+%This should be clear as by definition market access captures local productivity, population desnity, and amenities. 
+%Combined, the MA estimates highlight the importance of localized productivity differences, that we explore in more detail. 
+
+
+%In particular, we are interested in understanding how changes in MA, induced by expansions of the highway system have influenced each MSA's position in the wage premium distribution. 
+%That is, as the highways have expanded, has it altered the rank of specific cities by the size of the premium.
+%This exercise relates to work by \citet{Yankow_2006}, who explores heterogeneity in the wage premium among large and small MSAs. 
+%We find..... 
+
+ 
 
  
 
