@@ -1,8 +1,9 @@
 ## results-IPUMS.R -------------------------------------------------------------
 ## Kyle Butts, CU Boulder Economics
 ##
-## This file replicates Boustan's Urban Wage gap figure in the Urbanization in the United States paper. Then it extends this to include individual-level controls, market access controls, and MSA-averages.
-##
+## This file replicates Boustan's Urban Wage gap figure in the Urbanization in 
+## the United States paper. Then it extends this to include individual-level 
+## controls, market access controls, and MSA-averages.
 
 library(tidyverse)
 library(glue)
@@ -34,6 +35,7 @@ df0 <- data %>%
     select(year, est, group)
 
 # Store results
+# No lonver including Boustan replication
 # results <- df0
 results <- NULL
 
@@ -105,21 +107,6 @@ results <- results %>%
         group = factor(group, levels = c("Urban Only", "Controls", "Group Averages"))
     )
 
-## Boustan et. al --------------------------------------------------------------
-
-boustan <- ggplot(results %>% filter(group == "Raw"), aes(x = year, y = exp_est, color = group)) +
-    geom_line(aes(x = year, y = exp_est), color = "grey10", size = 2) +
-    geom_point(aes(x = year, y = exp_est), color = "grey10", shape = 15, size = 5) +
-    labs(x = "Year", y = "Urban Wage Premium") +
-    scale_y_continuous(labels = scales::percent, limits = c(0, NA)) +
-    theme_kyle(base_size = 24) +
-    guides(colour = guide_legend(title.position = "top", nrow = 2)) +
-    theme(legend.position = "bottom")
-
-# kfbmisc::ggpreview(boustan, dpi = 300, width = 4800/300, height = 2400/300, cairo = FALSE)
-
-ggsave(glue("{gh}/paper/figures/boustan.pdf"), boustan, width = 4800 / 300, height = 2400 / 300)
-
 
 ## Raw -------------------------------------------------------------------------
 
@@ -138,7 +125,7 @@ ggsave(glue("{gh}/paper/figures/boustan.pdf"), boustan, width = 4800 / 300, heig
     guides(colour = guide_legend(title.position = "top", nrow = 2)) +
     theme(legend.position = "bottom"))
 
-# kfbmisc::ggpreview(controls, dpi = 300, width = 4800/300, height = 3000/300, cairo = FALSE, device ="pdf")
+td# kfbmisc::ggpreview(controls, dpi = 300, width = 4800/300, height = 3000/300, cairo = FALSE, device ="pdf")
 
 ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), controls, width = 16, height = 10)
 
@@ -162,7 +149,7 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), controls, width = 16, 
         # "Raw" = "grey40",
         "Urban Only" = "grey10",
         "Controls" = "grey10",
-        "Market Access" = "grey10",
+        # "Market Access" = "grey10",
         "Group Averages" = "grey10"
         # "Rent" = "grey10"
     )) +
@@ -170,7 +157,7 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), controls, width = 16, 
         # "Raw" = 2,
         "Urban Only" = 1,
         "Controls" = 1,
-        "Market Access" = 1,
+        # "Market Access" = 1,
         "Group Averages" = 1
         # "Rent" = 1
     )) +
@@ -178,7 +165,7 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), controls, width = 16, 
         # "Raw" = 15,
         "Urban Only" = 15,
         "Controls" = 16,
-        "Market Access" = 17,
+        # "Market Access" = 17,
         "Group Averages" = 18
         # "Rent" = 4
     )) +
