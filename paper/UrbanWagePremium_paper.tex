@@ -471,12 +471,13 @@ If there are more amenities than group-average variables, then there is not be a
 This second condition warrants more discussion as initially it may seem that there are many amenities that drive sorting in or out of urban areas. 
 \citet{Diamond_2016} provides evidence using a principal component analysis on a very detailed set of amenities and documents that in the 21st century the effective rank of amenities is around 5 (with three components explaining most of the variation). 
 Therefore, a key identifying assumptions is that our group-average variables have a rank larger than 5. %comment - Is there anything we can do that supports this point?
-If this were not the case, then we would only \emph{partially} absorb the effects of individual sorting.
+Under these assumptions, we can then interpret our estimate of the urban wage premium as causal. 
+%If this were not the case, then we would only \emph{partially} absorb the effects of individual sorting.
 
 %% Possible Example for Intuition?
-As an illustrative example, suppose that a part of the urban wage premium is driven by parent's sorting into high quality schools for their children. 
+As an illustrative example, suppose that a part of the urban wage premium is driven by parent's sorting into areas with high quality schools for their children. 
 We may not be able to directly measure school quality (or some other amenity), but can observe the average education of parents in the location. 
-So as long as the other parent's location decisions are also correlated with unobserved school quality, controlling for the average parent education level will  directly control for the sorting due to unobseved selection on school quality. 
+So as long as the other parents' location decisions are also correlated with unobserved school quality, controlling for the average parent education level will  directly control for the sorting due to unobseved selection on school quality. 
 
 In the empirical specification, we include the following group-level averages, the share of individuals of different racial/ethnic groups, the share of individuals at different levels of educational attainments, the share of individuals who were veterans, the share of individuals of different marital status, and a measure of market access which summarizes a location ability to trade with other areas.
 
@@ -509,13 +510,75 @@ In the empirical specification, we include the following group-level averages, t
 \subsection{Results}
 % ------------------------------------------------------------------------------
 
-The results of this exercise are presented in Figure \ref{fig:premium_over_time} by the line with diamond markers. First, we turn to estimates after 1990, as we can directly compare these to similar estimates found in the literature. If our identifying assumptions hold true, then our estimates reflect the urban wage premium after controlling \emph{completely} for individual characteristics. We find an urban wage premium between 1990 and 2010 between -2\% and 5\%. These results fall very close to estimates in the literature that use panel data with individual fixed-effects to control for individual sorting. \citet{Glaeser_Mare_2001} estimate a premium of around 5\% in the 90s; \citet{Yankow_2006} estimate a premium between 3-5\% and \citet{DCosta_Overman_2014} estimate a premium between 2-5\% in the 2000s. Our estimates falling so close to these estimates provide support for our empirical approach. Overall, our results find that after 1990, there is very little causal benefits to living in the city.
+The results following \citet{altonji2018estimating}'s method are presented in Figure \ref{fig:premium_over_time} by the line with diamond markers. 
+First, we turn to estimates after 1990, as we can directly compare these to similar estimates found in the literature. 
+Under the assumptions laid out in \citet{altonji2018estimating}'s, our estimates reflect the urban wage premium after controlling for sorting. 
+We find an urban wage premium between 1990 and 2010 between 2\% and 5\%. 
+These results fall very close to estimates in the literature that use panel data with individual fixed-effects to control for individual sorting. 
+\citet{Glaeser_Mare_2001} estimate a premium of around 5\% in the 90s; \citet{Yankow_2006} estimate a premium between 3-5\% and \citet{DCosta_Overman_2014} estimate a premium between 2-5\% in the 2000s. 
+Given that our estimates from 1990 to 2015 closely align with those found in the literature, we have confidence adopting this approach earlier in time. 
 
-Now, we extend this literature by analyzing the premium from a historical perspective. The estimates of around 5\% continue back until 1960. However, in 1940 the premium remains around 25\% and around 15\% in 1950. This evidence suggests that historically cities indeed did provide large benefits to any individuals who came there to work. This is consistent with historical accounts that ...
+In 1940, we estimate an urban wage premium of 25\%. 
+The wage premium falls rapidly between and 1940 and 1960.
+In 1950, we estimate an urban wage premium of approximately 15\%.
+In 1960, we estimate a wage premium of just 6\%. 
+After 1960, the urban wage premium is essentially flat and is roughly unchanged between 1960 and 2015. 
 
+We find this pattern of results fascinating.
+In part, the pattern of estimates shows that the raw premium present in 1940 was largely due to real differences in wages between urban and non-urban locations, whereas today, the raw premium is largely driven by differential sorting by high productive types.
+In 1940, sorting only accounted for (1-25/37)\% of the premium, whereas in 2015, sorting accounted for roughly 75\% of the raw wage gap.\footnote{In appendix XX, we show that the effects discussed here are not driven by changes in MSA classification.}
 
+This raises an interesting question, what factors contributed to the closing of the urban wage premium in the second half of the 20th Century.
+ 
+% ------------------------------------------------------------------------------
+\section{Convergence of the Urban Wage Premium}\label{sec:convergence1}
+% ------------------------------------------------------------------------------
+To better understand why the urban wage premium declined over time, we adopt the approach of Barro and Sala-I-Martin (1990,1991) and estimate the rate at which MSAs and non-MSAs converged over the second half of the 20th Century. 
+From the estimates in the prior section, we can construct the relative premium for each MSA and non-MSA, which is equal to the average location wage minus the predicted average wage. 
+This is a measure of how large the premium is for a given MSA is in a relative sense in each cross section.
+Following Barro and Sala-I-Martin (1990,1991), we can then estimate a regression as follows,  
 
+\begin{equation}
+    \label{eq:converge_1}
+    \text{RP}_i,t = \beta_0 + \beta_1 \text{RP}_i,t-1 + \varepsilon_i,
+\end{equation}
 
+where \text{RP}_i,t is the relative wage premium in the current period, in location \text{i}.
+If the relative premium has converged over time, then the coefficient, \beta_1 , is less than zero, then the urban wage premium has converged over time. 
+In this exercise, we consider the rate of convergence between different periods (i.e., 1940-1960, 1960-2015). 
+
+% ------------------------------------------------------------------------------
+\subsection{Convergence Results}
+% ------------------------------------------------------------------------------
+
+% Describe basic convergence estimates, the beta should very likely be less than 0.
+
+% ------------------------------------------------------------------------------
+\subsection{Drivers of Urban Wage Convergence}
+% ------------------------------------------------------------------------------
+An open question in the literature is what drove the convergence in wages between MSA and non-MSA's throughout the second half of the 20th Century. 
+Here we explore several competing hypothesis by adopting the approach of Ganong and Shoag (2017) by modifying the basic convergence regression to allow a given factor \text{C}_i,t0 to explain differential convergence rates. 
+In general, we will estimate specifications of the following form:
+
+\begin{equation}
+    \label{eq:converge_1}
+    \text{RP}_i,t = \beta_0 + \beta_1 \text{RP}_i,t-1 +\beta_2 \text{C}_i,t0+ \beta_3 \text{RP}_i,t-1 \text{C}_i,t0 + \varepsilon_i.
+\end{equation}
+In this regression, \beta_3 captures the differential rate of convergence due to the given factor. 
+
+How do we choose these various factors to explain differential convergence rates?
+First, there is a large literature that has explored the role of structural transformation in the United States (Caselli and Coleman, 2001). 
+To address the role of structural transformation, we allow the convergence rate to differ by the initial share of manufacuting employment in the MSA. 
+Secondly, there were large demographic changes in the United States in the early portion of our sample due in part to the Great Migration (Boustan 2016, Collins and Wannamaker, 2017, Derenoncourt, 2022).
+To address the role of the Great Migration, we allow convergence rates to differe by the initial share of the black population. 
+In post WWII era, the US invested in large scale highway infrastructure that may have altered agglomeration forces. 
+The interstates in particular led to large gains in connectivity for locations outside of the East Coast and Rust Belt. 
+We allow for differential convergence by including historic measures of market access.  
+Finally,  Ganang and Shoag (2017) highlight how convergence has stalled due to differences in land use regulation.
+We adopt their meaure to test whether changes in land use explain the rate of convergence in the urban wage premium. 
+
+%Now, we extend this literature by analyzing the premium from a historical perspective. 
+%The estimates of around 5\% continue back until 1960. However, in 1940 the premium remains around 25\% and around 15\% in 1950. This evidence suggests that historically cities indeed did provide large benefits to any individuals who came there to work. This is consistent with historical accounts that ...
 
 
 % ------------------------------------------------------------------------------
