@@ -74,6 +74,7 @@ For example \citet{Yankow_2006} documents that up to two-thirds of the urban wag
 The literature has also closely studied the role of differential returns to experience in urban areas as a source of the wage premium \citep{Baum-Snow_Pavan_2012}
 Outside of human capital explanations, researchers have explored the role of agglomeration economies and firm survival to explain the remaining gap (\citet{Glaeser_Mare_2001}, \citet{wheaton2002urban}, \citet{combes2012productivity}, \citet{behrens2014productive}).\footnote{ Recently, work has also shown that urban industry-level concentration has led to a markdown of wages as firms exercise monopsony power \citet{azar2020labor}, thus, in the absence of concentration, the urban wage premium may be even larger than previously thought.} 
 While the importance of sorting, selection, and firm survival are well documented in recent data, less is known about the urban wage premium throughout the 20th Century, and how the role of sorting and selection varied over time.  
+This gap in the literature exists largely because there are few (if any) historitcal individual-level longinitudinal datasets with income data, making it empirically challenging to fully account for individual sorting.
 \cite{Boustan_Bunten_Hearey_2013} provide descriptive evidence of the rising urban wage premium throughout the 19th and 20th Century, which peaked around 1990, however, they do not isolate selection and sorting effects in their exercise. 
 In this paper, we explore how the urban wage premium has evolved over the second half of the 20th Century and into the 21st Century, while addressing unobservable sorting following recent econometric advances introduced by \citet{altonji2018estimating}. 
 
@@ -95,7 +96,7 @@ Adopting this approach allows us to document the role of sorting on the urban wa
 
 Consistent with prior literature, we document a large urban wage premium in the raw data, ranging from 20-35 percent over the postwar era. 
 The raw urban wage premium peaks in 1940, and declines rapidly between 1940 and 1960, and then declines more slowly throughout the period after 1960. 
-We also see that the premium begins to rise again after 1980, which closely follows the skills gap discussed in the literature %CITATIONS.
+We also see that the unadjusted premium rises again after 1980, which closely follows the skills biased technological change literature (see Acemoglu and Autor, 2011 for a survey).%CITATIONS.
 Controlling for observable individual characteristics reduces the urban wage premium. 
 We find that individual characteristics explain XX - YY of the urban wage premium, a much smaller share than  \citet{Yankow_2006} describes, albeit, we have a much more limited set of observables due to the nature of our data. 
 When we add controls for MSA-level averages of individual characteritics and MSA average characteristics, following \citet{altonji2018estimating}, we find that the urban wage premium is about 1/3 the size of the estimate that only controls for individual observables. 
@@ -310,6 +311,7 @@ This trend matches those highlighted in \citet{Boustan_Bunten_Hearey_2013}.
 Secondly, it is clear that both urban and nonurban mean weekly wages are growing over time in 2015 \$ from \$33.24 and \$25.23 in 1940 to \$1353.95 and \$1067.48 in 2015.
 The urban wage premium, the ratio of the urban to nonurban wage, follows a W shape. 
 The urban premium starts at 0.32, and then falls sharply between 1940 and 1950, where it declines to a low of 19 percent in 1980. 
+The decline from 1940 to 1950 is well documented in the literature, and is often referred to as the Great Compression (Goldin and Margo, 1992). 
 Since 1980, the urban wage premium has increased; in 2015 the premium was 26 percent.
 
 % Summary Statistics
@@ -511,18 +513,20 @@ In the empirical specification, we include the following group-level averages, t
 % ------------------------------------------------------------------------------
 
 The results following \citet{altonji2018estimating}'s method are presented in Figure \ref{fig:premium_over_time} by the line with diamond markers. 
-First, we turn to estimates after 1990, as we can directly compare these to similar estimates found in the literature. 
+First, we turn to estimates 1990 and later, as these are directly comparable to those reported in the modern urban wage premium literature.  
 Under the assumptions laid out in \citet{altonji2018estimating}'s, our estimates reflect the urban wage premium after controlling for sorting. 
 We find an urban wage premium between 1990 and 2010 between 2\% and 5\%. 
 These results fall very close to estimates in the literature that use panel data with individual fixed-effects to control for individual sorting. 
 \citet{Glaeser_Mare_2001} estimate a premium of around 5\% in the 90s; \citet{Yankow_2006} estimate a premium between 3-5\% and \citet{DCosta_Overman_2014} estimate a premium between 2-5\% in the 2000s. 
 Given that our estimates from 1990 to 2015 closely align with those found in the literature, we have confidence adopting this approach earlier in time. 
 
-In 1940, we estimate an urban wage premium of 25\%. 
+Turning to the historical estimates, we estimate an urban wage premium of 25\% in 1940. 
 The wage premium falls rapidly between and 1940 and 1960.
 In 1950, we estimate an urban wage premium of approximately 15\%.
 In 1960, we estimate a wage premium of just 6\%. 
-After 1960, the urban wage premium is essentially flat and is roughly unchanged between 1960 and 2015. 
+This sharp decline in the urban wage premium is consistent with the Greatm Compression literature (Goldin and Margo, 1992) that highlights a narrowing of the wage gap immediately following WWII. 
+While the Great Compression literature points to a widening of the wage gap starting in the 1960s, we find that the urban wage premium is essentially flat and is roughly unchanged between 1960 and 2015. 
+
 
 We find this pattern of results fascinating.
 In part, the pattern of estimates shows that the raw premium present in 1940 was largely due to real differences in wages between urban and non-urban locations, whereas today, the raw premium is largely driven by differential sorting by high productive types.
@@ -544,8 +548,8 @@ Following Barro and Sala-I-Martin (1990,1991), we can then estimate a regression
 \end{equation}
 
 where \text{RP}_i,t is the relative wage premium in the current period, in location \text{i}.
-If the relative premium has converged over time, then the coefficient, \beta_1 , is less than zero, then the urban wage premium has converged over time. 
-In this exercise, we consider the rate of convergence between different periods (i.e., 1940-1960, 1960-2015). 
+If the relative premium has converged over time, then the coefficient, \beta_1 , is less than zero. 
+In this exercise, we consider the rate of convergence between different periods (i.e., 1940-2015, 1940-1960, 1960-2015). 
 
 % ------------------------------------------------------------------------------
 \subsection{Convergence Results}
@@ -554,7 +558,7 @@ In this exercise, we consider the rate of convergence between different periods 
 % Describe basic convergence estimates, the beta should very likely be less than 0.
 
 % ------------------------------------------------------------------------------
-\subsection{Drivers of Urban Wage Convergence}
+\subsection{Drivers of Urban Wage Premium Convergence}
 % ------------------------------------------------------------------------------
 An open question in the literature is what drove the convergence in wages between MSA and non-MSA's throughout the second half of the 20th Century. 
 Here we explore several competing hypothesis by adopting the approach of Ganong and Shoag (2017) by modifying the basic convergence regression to allow a given factor \text{C}_i,t0 to explain differential convergence rates. 
@@ -566,11 +570,16 @@ In general, we will estimate specifications of the following form:
 \end{equation}
 In this regression, \beta_3 captures the differential rate of convergence due to the given factor. 
 
-How do we choose these various factors to explain differential convergence rates?
-First, there is a large literature that has explored the role of structural transformation in the United States (Caselli and Coleman, 2001). 
+
+We explore several different sources of change within the US during the second half of the 20th Century. 
+First, there is a large literature that has explored the role of structural transformation in the United States on regional convergence (Caselli and Coleman, 2001). 
 To address the role of structural transformation, we allow the convergence rate to differ by the initial share of manufacuting employment in the MSA. 
+Caselli and Coleman (2001) describe the movement out of agriculture and into manufacuring, especially in the South. 
+Therefore, locations with higher rates of manufacturing should experience urban wage premium convergence from above, as wages fall in response to in migration. 
 Secondly, there were large demographic changes in the United States in the early portion of our sample due in part to the Great Migration (Boustan 2016, Collins and Wannamaker, 2017, Derenoncourt, 2022).
 To address the role of the Great Migration, we allow convergence rates to differe by the initial share of the black population. 
+Both the structural transformation of the US economy and the Great Migration are likely contributors to the Great Compression in wages observed 1940-1950, as described by Goldin and Margo (1992), Margo (1995), Jaworski and Niemesh (2018), and Collins and Niemesh (2019). 
+
 In post WWII era, the US invested in large scale highway infrastructure that may have altered agglomeration forces. 
 The interstates in particular led to large gains in connectivity for locations outside of the East Coast and Rust Belt. 
 We allow for differential convergence by including historic measures of market access.  
