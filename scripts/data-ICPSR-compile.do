@@ -2,6 +2,7 @@
 * data-ICPSR-compile.do
 *
 * This creates a basic replication of the urban wage premium using county aggregate data. 
+* No longer used
 ********************************************************************************
 
 cls

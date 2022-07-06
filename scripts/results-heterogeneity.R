@@ -18,15 +18,16 @@ gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
 
 # Data from https://www2.census.gov/library/publications/decennial/1950/pc-03/pc-3-03.pdf
 # Calculate above and below- median population cities
-pop1940 <- fread(
-    glue("{project}/data/urbanareas/metarea_population_1940_1950.csv")
-)
+pop1940 <- glue(
+    "{project}/data/urbanareas/metarea_population_1940_1950.csv"
+  ) |> 
+  fread()
+
 pop1940 <- pop1940[, pop_1940 := as.integer(pop_1940)]
 pop1940 <- pop1940[!is.na(pop_1940),]
 
 pop1940[, pop_1940_rank := .N + 1 - frank(pop_1940)]
 pop1940[, top20 := (pop_1940_rank <= 20)]
-pop1940[, metarea := as.character(metarea)]
 pop1940 <- pop1940[order(pop_1940_rank), ]
 pop1940[, state := NULL]
 
@@ -41,11 +42,13 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010)) {
     cli::cli_alert_info("Starting on year {y}")
     
     # Sample has every observation except 15% sample of 1940 full count
-    data <- data.table::fread(glue("{project}/data/dta/urban_wage_final_{y}.csv"))
+    data <- glue("{project}/data/dta/urban_wage_final_{y}.dta") |> 
+      haven::read_dta() |> 
+      data.table::setDT()
     
     # Merge with 1940 above/below median population
     data <- merge(data, pop1940, by="metarea", all.x = T)
-    data <- data[!is.na(pop_1940) | metarea == "Not identifiable or not in an MSA", ]
+    data <- data[!is.na(pop_1940) | metarea == 0, ]
     data[, urban_top20 := fcase(
         top20, "Top 20",
         !top20, "Urban",
@@ -59,8 +62,7 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010)) {
         default = "Non-urban"
     )]
     
-    cli::cli_alert_warning("Year {y} has {nrow(data)} observations")
-    
+    cli::cli_alert_warning("Year {y} has {nrow(data)} observations")    
     
     ## Urban, Individual Controls, Market Access, & Group Averages -------------
     
@@ -143,7 +145,7 @@ results_region <- results_region |>
 
 
 
-urban_1940_msas <- ggplot(results, aes(x = year, y = exp_est, group = group, color = group)) +
+(urban_1940_msas <- ggplot(results, aes(x = year, y = exp_est, group = group, color = group)) +
     geom_line(aes(linetype = group), size = 2) +
     geom_point(aes(shape = group), size = 5) +
     labs(
@@ -164,10 +166,10 @@ urban_1940_msas <- ggplot(results, aes(x = year, y = exp_est, group = group, col
     )) +
     kfbmisc::theme_kyle(base_size = 24) +
     guides(colour = guide_legend(title.position = "top", nrow = 2)) +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom"))
 
 
-top20 <- ggplot(results_top20, aes(x = year, y = exp_est, group = group, color = group)) +
+(top20 <- ggplot(results_top20, aes(x = year, y = exp_est, group = group, color = group)) +
     geom_line(aes(linetype = group), size = 2) +
     geom_point(aes(shape = group), size = 5) +
     labs(
@@ -191,10 +193,10 @@ top20 <- ggplot(results_top20, aes(x = year, y = exp_est, group = group, color =
     )) +
     kfbmisc::theme_kyle(base_size = 24) +
     guides(colour = guide_legend(title.position = "top", nrow = 2)) +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom"))
 
 
-region <- ggplot(results_region, aes(x = year, y = exp_est, group = group, color = group)) +
+(region <- ggplot(results_region, aes(x = year, y = exp_est, group = group, color = group)) +
     geom_line(aes(linetype = group), size = 2) +
     geom_point(aes(shape = group), size = 5) +
     labs(
@@ -223,7 +225,7 @@ region <- ggplot(results_region, aes(x = year, y = exp_est, group = group, color
     )) +
     kfbmisc::theme_kyle(base_size = 24) +
     guides(colour = guide_legend(title.position = "top", nrow = 2)) +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom"))
 
 
 

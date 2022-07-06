@@ -41,7 +41,7 @@ use "$project/data/dta/urban_wage_final.dta", clear
 
 	qui g urbanpremium = log(weeklywage1 / weeklywage0)
 	
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		qui sum urbanpremium if year == `year'
 		scalar urban_est0_`year' = `=r(mean)'
 	}
@@ -50,7 +50,7 @@ use "$project/data/dta/urban_wage_final.dta", clear
 
 *-> Regression based estimates
 	
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		qui g urban_`year' = urban*(year==`year')
 	}
 
@@ -58,52 +58,36 @@ use "$project/data/dta/urban_wage_final.dta", clear
 	
 	qui reghdfe ln_weeklywage urban_* [aw=perwt], cluster(metarea) a(year)
 
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		scalar urban_est1_`year' = _b[urban_`year']
 	}
 	
 	qui eststo est1
 	estadd local cov ""
-	estadd local ma ""
 	estadd local group ""
 
 	***** Urban, & Controls ****************************************************
 
 	qui reghdfe ln_weeklywage urban_* [aw=perwt], cluster(metarea) a(year  agegroup educ white)
 
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		scalar urban_est2_`year' = _b[urban_`year']
 	}
 	
 	qui eststo est2
 	estadd local cov "X"
-	estadd local ma ""
 	estadd local group ""
 
-	***** Urban, Controls, & Remove-own MA ************************************
+	***** Urban, Controls, & Group Averages *********************
+	
+	qui reghdfe ln_weeklywage urban_* ln_ma_removeown (c.share_*)#i.year c.rent_avg#i.year [aw=perwt], cluster(metarea) a(statefip year agegroup educ white) noconstant
 
-	qui reghdfe ln_weeklywage urban_* ln_ma_removeown [aw=perwt], cluster(metarea) a(year agegroup educ white)
-
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		scalar urban_est3_`year' = _b[urban_`year']
 	}
 		
 	qui eststo est3
 	estadd local cov "X"
-	estadd local ma "X"
-	estadd local group ""
-
-	***** Urban, Controls, Remove-own MA, & Group Averages *********************
-	
-	qui reghdfe ln_weeklywage urban_* ln_ma_removeown (c.share_*)#i.year c.rent_avg#i.year [aw=perwt], cluster(metarea) a(statefip year agegroup educ white) noconstant
-
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
-		scalar urban_est4_`year' = _b[urban_`year']
-	}
-		
-	qui eststo est4
-	estadd local cov "X"
-	estadd local ma "X"
 	estadd local group "X"
 
 	****************************************************************************

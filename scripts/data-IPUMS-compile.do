@@ -7,24 +7,26 @@
 cls
 clear all
 
- global ipums "/Users/taylorjaworski/Dropbox/Research/Data/IPUMS"
-* global project "/Users/taylorjaworski/Dropbox/Papers/EH/RegionalDevelopment/transportation/UrbanWagePremium"
-global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
+* global ipums "/Users/taylorjaworski/Dropbox/Research/Data/IPUMS"
+* global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
+global ipums "/Users/kylebutts/Dropbox/IPUMS"
+global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 
 
 ********************************************************************************
 
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 {
+  foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 { 
 		
 		display "`year'"
 		
 		*-> 1940
-		
 			if `year' == 1940 {
-				
+				set seed 339487731
 				forvalues r = 1/4 {
 
 					qui use "$ipums/1940/1940_reg`r'.dta", clear
+          * 1940 is too large, so using only 15% sample
+          keep if uniform() < .15
 
 					**keep age 25 - 65
 					
@@ -44,7 +46,7 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 					qui append using "$project/data/dta/temp/1940_reg`r'_temp.dta"
 					rm "$project/data/dta/temp/1940_reg`r'_temp.dta"
 					
-					}	
+        }	
 				
 				**fix occupation variable
 				
@@ -86,9 +88,9 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 				*save 1940 data
 					
 					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl marst vetstat rent
-					qui save "$project/data/dta/temp/census_1940_temp.dta", replace
-				
-					}
+					qui save "$project/data/dta/temp/census_1940_temp.dta", replace	
+      }
+
 		*-> 1950
 			
 			if `year' == 1950 {
@@ -141,20 +143,19 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 bpl marst vetstat
 					qui save "$project/data/dta/temp/census_1950_temp.dta", replace
 						
-					}
+      }
 					
 		*-> 1960-2000
 		
-			if `year' > 1950 {
+			if `year' > 1950 & `year' <= 2000 {
 			
 				if `year' == 1970 {
 					qui use "$ipums/`year'/1970_wo_migrate.dta", clear
-					}
+        }
 				if `year' != 1970 {
 					qui use "$ipums/`year'/`year'.dta", clear
-					}
+        }
 				
-			
 				**keep age 25 - 65
 				
 					qui keep if age >= 25 & age <= 65
@@ -196,21 +197,19 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 				*save 1960-2010 data
 					
 					if `year' == 1970 {
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl marst rent
+					  keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl marst rent
 					}
 					if `year' != 1970 {
-					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl marst vetstat rent
+					  keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl marst vetstat rent
 					}
 					qui save "$project/data/dta/temp/census_`year'_temp.dta", replace
 					
-				}
+      }
+
+		*-> 2010, 2020
 			
-			}
-		
-		*-> 2005, 2010, 2015
-			
-			foreach year of numlist 2005 2010 2015 {
-			
+			if `year' > 2000 {
+        local year = 2010
 				qui use "$ipums/ACS/`year'.dta", clear
 				
 				**keep age 25 - 65
@@ -225,12 +224,10 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 				
 				*0) merge occ1950 -> occ2010
 					
-					if `year'==2005 | `year' ==2010 {
-					qui merge n:1 occ1950 using "$project/data/dta/occ1950_occ2010_crosswalk.dta"
-					qui gen occ2010 = occ2010_temp 
-					qui drop if _m == 2
-					drop occ2010_temp _m
-					}
+          qui merge n:1 occ1950 using "$project/data/dta/occ1950_occ2010_crosswalk.dta"
+          qui gen occ2010 = occ2010_temp 
+          qui drop if _m == 2
+          drop occ2010_temp _m
 				
 				*1) merge in soc2010 crosswalk 
 					qui gen occ2010_st = string(occ2010,"%04.0f") //gen occupation code stringed
@@ -258,24 +255,24 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 				
 					qui keep if wkswork2 >= 3
 				
-				*save 1960-2010 data
+				**save 1960-2010 data
 					
-					if `year'==2015 {
+					if `year'==2015 | `year'==2020 {
 						rename met2013 metarea
-						}
+          }
 					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 bpl marst vetstat rent valueh
 					qui save "$project/data/dta/temp/census_`year'_temp.dta", replace
-				
-				}
+      }
+  } /* end for loop */
 				
 ********************************************************************************
 
 	*-> append all years
 		
 		clear
-		foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {	
+		foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 {	
 			qui append using "$project/data/dta/temp/census_`year'_temp.dta"
-			rm "$project/data/dta/temp/census_`year'_temp.dta"
+			* rm "$project/data/dta/temp/census_`year'_temp.dta"
 		}
 		
 		qui replace occupation = "17" if occupation=="15" 
@@ -337,13 +334,13 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 		qui replace houseprice = houseprice*1.38 if year==2000
 		qui replace houseprice = houseprice*1.00 if year==2010
 		
-	*-> 
-		
-		qui g urban = (metarea!=0)
+	*-> 	
+		/*
+    qui g urban = (metarea!=0)
 		qui keep if sex==1
 		qui drop if ind1950==1
 		
-	collapse (sum) totalweeks totalincome perwt houses housingvalue, by(year urban)
+	  collapse (sum) totalweeks totalincome perwt houses housingvalue, by(year urban)
 	
 		qui g weeklywage = totalincome/perwt
 		qui g houseprice = housingvalue/houses
@@ -353,7 +350,6 @@ global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
 		qui g urbanpremium = log(weeklywage1/weeklywage0)
 		
 		gr tw (scatter urbanpremium year, c(l) lc(black) mfc(white) mc(black))
-		gr export "$project/paper/figures/urbanpremium_IPUMS.pdf", as(pdf) replace
-		
-		
+		gr export "$project/paper/figures/urbanpremium_IPUMS.pdf", as(pdf) replace	
+    */
 		

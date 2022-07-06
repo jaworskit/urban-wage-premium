@@ -21,36 +21,39 @@ gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
 # project <- "/projects/kybu6659/urban-wage-premium"
 # data <- vroom(glue("{project}/data/urban_wage_final.csv"))
 
-data <- data.table::fread(glue("{project}/data/dta/urban_wage_final_sample.csv"))
-
 # Results ----------------------------------------------------------------------
 
 ## Boustan et. al --------------------------------------------------------------
 
-df0 <- data %>%
-    collapse::collap(totalincome + perwt ~ year + urban, fsum) %>%
-    mutate(weeklywage = totalincome / perwt) %>%
-    pivot_wider(id_cols = c("year"), values_from = weeklywage, names_from = urban, names_prefix = "urban_") %>%
-    mutate(est = log(urban_1 / urban_0), group = "Raw") %>%
-    select(year, est, group)
-
+# data <- glue("{project}/data/dta/urban_wage_final.dta") |> 
+#   haven::read_dta() |> data.table::setDT()
+# df0 <- data %>%
+#     collapse::collap(totalincome + perwt ~ year + urban, fsum) %>%
+#     mutate(weeklywage = totalincome / perwt) %>%
+#     pivot_wider(id_cols = c("year"), values_from = weeklywage, names_from = urban, names_prefix = "urban_") %>%
+#     mutate(est = log(urban_1 / urban_0), group = "Raw") %>%
+#     select(year, est, group)
 # Store results
-# No lonver including Boustan replication
 # results <- df0
-results <- NULL
+
 
 
 ## Regression Results ----------------------------------------------------------
 
+results <- NULL
+data <- NULL
+
 # Loop through year
 # Removed 2005 and 2015 for data quality issue in 2005
-for (i in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010)) {
+for (i in seq(1940, 2020, 10)) {
     cli::cli_alert_info("Starting on year {i}")
 
     # Sample has every observation except 15% sample of 1940 full count
     rm(data)
-    data <- data.table::fread(glue("{project}/data/dta/urban_wage_final_sample.csv"))
-    data <- data[year == i, ]
+    data <- glue("{project}/data/dta/urban_wage_final_{i}.dta") |> 
+      haven::read_dta() |> 
+      data.table::setDT()
+    # data <- data[year == i, ]
 
     ## Urban -------------------------------------------------------------------
 
@@ -63,6 +66,7 @@ for (i in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010)) {
     est2 <- feols(ln_weeklywage ~ urban | agegroup + educ + white,
         data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
     )
+
     ## Urban, Individual Controls, Market Access, & Group Averages -------------
 
     # Group_vars formula
@@ -82,10 +86,15 @@ for (i in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010)) {
         est = unlist(lapply(list(est1, est2, est3), function(x) {
             coef(x)[["urban"]]
         })),
+        se = unlist(lapply(list(est1, est2, est3), function(x) {
+            se(x)[["urban"]]
+        })),
         group = c("Urban Only", "Controls", "Group Averages")
     ))
 }
 
+
+new_results = results
 
 # Export Results ---------------------------------------------------------------
 
@@ -103,9 +112,19 @@ library(kfbmisc)
 # exponentiate log differences
 results <- results %>%
     mutate(
+        est_lower = est - 1.96 * se, 
+        est_upper = est + 1.96 * se,
         exp_est = exp(est) - 1,
+        exp_est_lower = exp(est_lower) - 1,
+        exp_est_upper = exp(est_upper) - 1,
         group = factor(group, levels = c("Urban Only", "Controls", "Group Averages"))
     )
+
+# old_results = old_results %>%
+#   mutate(
+#     exp_est = exp(est) - 1,
+#     group = factor(group, levels = c("Urban Only", "Controls", "Group Averages"))
+#   )
 
 
 ## Raw -------------------------------------------------------------------------
@@ -116,6 +135,7 @@ results <- results %>%
         aes(x = year, y = exp_est)
     ) +
     geom_line(size = 2, linetype = 1) +
+    geom_linerange(size = 2, linetype = 1, aes(ymin = exp_est_lower, ymax = exp_est_upper)) +
     geom_point(size = 5, shape = 15) +
     labs(
         x = "Year", y = "Urban Wage Premium"
@@ -125,9 +145,9 @@ results <- results %>%
     guides(colour = guide_legend(title.position = "top", nrow = 2)) +
     theme(legend.position = "bottom"))
 
-td# kfbmisc::ggpreview(controls, dpi = 300, width = 4800/300, height = 3000/300, cairo = FALSE, device ="pdf")
+# kfbmisc::ggpreview(urban, dpi = 300, width = 4800/300, height = 3000/300, cairo = FALSE, device ="pdf")
 
-ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), controls, width = 16, height = 10)
+ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 16, height = 10)
 
 
 ## Regression Results ----------------------------------------------------------
@@ -137,13 +157,14 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), controls, width = 16, 
         aes(x = year, y = exp_est, group = group, color = group)
     ) +
     geom_line(aes(linetype = group), size = 2) +
+    # geom_linerange(size = 2, linetype = 1, aes(ymin = exp_est_lower, ymax = exp_est_upper)) +
     geom_point(aes(shape = group), size = 5) +
     labs(
         x = "Year", y = "Urban Wage Premium", group = "Specification", 
         shape = "Specification", color = "Specification", 
         linetype = "Specification"
     ) +
-    scale_y_continuous(labels = scales::percent, limits = c(-0.05, 0.375)) + 
+    scale_y_continuous(labels = scales::percent, limits = c(-0.005, 0.375)) + 
     # ggsci::scale_color_jama() +
     scale_color_manual(values = c(
         # "Raw" = "grey40",

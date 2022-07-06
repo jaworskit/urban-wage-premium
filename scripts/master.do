@@ -23,20 +23,20 @@ cd $gh
 * Data Cleaning
 ********************************************************************************
 
-* Creates MSA crosswalk from 1940-2015
+* Matlab script to create market access and remove-own market access
+* run findMA.m
+
+* Creates MSA crosswalk from 1940-2020
 do scripts/data-metarea.do
 
 * From IPUMS files, creates individual survey dataset 
-* do scripts/data-IPUMS-compile.do
-
-* Matlab script to create market access
-* run findMA.m
+do scripts/data-IPUMS-compile.do
 
 * Creates market access dataset and housing prices in 1950
 do scripts/data-marketaccess.do
 
 * Merges MA with individual survey and creates new variables    
-do scripts/data-data-merge-MA.do
+do scripts/data-merge-MA.do
 
 * Creates group averages 
 do scripts/data-group-averages.do

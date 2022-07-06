@@ -2,6 +2,7 @@
 * data-merge-MA.do
 *
 * This merges survey data with Market Access data
+* Must run after data-metarea.do, data-IPUMS-compile.do, data-marketaccess.do
 ********************************************************************************
 
 cls
@@ -175,6 +176,7 @@ if c(username) == "kylebutts" {
 	qui replace totalincome = totalincome*1.82 if year == 1990
 	qui replace totalincome = totalincome*1.38 if year == 2000
 	qui replace totalincome = totalincome*1.00 if year == 2010
+  qui replace totalincome = totalincome*1.00 if year == 2020
 	
 	qui g urban = (metarea > 0)
 	qui keep if sex == 1
@@ -222,10 +224,4 @@ if c(username) == "kylebutts" {
 	replace code = 0 if code >= 100000
 
 	save "$project/data/dta/urban_wage_with_ma.dta", replace 
-
-
-
-	
-	
-
 

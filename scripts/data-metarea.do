@@ -43,7 +43,7 @@ if c(username) == "kylebutts" {
 		
 	}
 
-	foreach t in "2015" {
+	foreach t in "2020" {
 		* From http://data.nber.org/cbsa-msa-fips-ssa-county-crosswalk/
 		import delimited "$project/data/urbanareas/cbsatocountycrosswalk`t'.csv", clear
 		
@@ -66,9 +66,9 @@ if c(username) == "kylebutts" {
 	sort year code fips
 	qui save "$project/data/urbanareas/metarea_1940_1950.dta", replace
 	
-*-> 1960-2015
+*-> 1960-2020
 	
-	foreach t in "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
+	foreach t in "1960" "1970" "1980" "1990" "2000" "2010" "2020" {
 		clear 
 		append using "$project/data/urbanareas/metarea_`t'.dta"	
 		qui g year=`t'
@@ -83,7 +83,7 @@ if c(username) == "kylebutts" {
 *-> Append all years
 	
 	clear
-	foreach t in "1940_1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
+	foreach t in "1940_1950" "1960" "1970" "1980" "1990" "2000" "2010" "2020" {
 		
 		append using "$project/data/urbanareas/metarea_`t'.dta"
 		

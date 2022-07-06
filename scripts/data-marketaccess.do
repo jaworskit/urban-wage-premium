@@ -2,6 +2,7 @@
 * data-marketaccess.do
 *
 * This file combines market access variables from matlab into a dataset
+* Must run after data-metarea.do, data-IPUMS-compile.do
 ********************************************************************************
 
 cls
@@ -21,12 +22,12 @@ if c(username) == "kylebutts" {
 
 *-> Load market access 
 	
-	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
+	foreach year in 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		
 		if `year' == 2005 {
 			qui import delimited using "$project/data/matlab/output/MA2000_cost1.csv", clear
 		} 
-		else if `year' == 2015 {
+		else if `year' == 2020 {
 			qui import delimited using "$project/data/matlab/output/MA2010_cost1.csv", clear
 		} 
 		else {
@@ -41,7 +42,7 @@ if c(username) == "kylebutts" {
 	}
 	
 	clear 
-	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
+	foreach year in 1940 1950 1960 1970 1980 1990 2000 2010 2020  {
 		qui append using "$project/data/marketaccess/dta/MA`year'.dta"
 	}
 	
@@ -56,12 +57,12 @@ if c(username) == "kylebutts" {
 	
 *-> Load market access (robustness: remove own-MSA gdp)
 	
-	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
+	foreach year in 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		
 		if `year' == 2005 {
 			qui import delimited using "$project/data/matlab/output/MA2000_cost1_removeown.csv", clear
 		} 
-		else if `year' == 2015 {
+		else if `year' == 2020 {
 			qui import delimited using "$project/data/matlab/output/MA2010_cost1_removeown.csv", clear
 		} 
 		else {
@@ -76,7 +77,7 @@ if c(username) == "kylebutts" {
 	}
 	
 	clear 
-	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
+	foreach year in 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		qui append using "$project/data/marketaccess/dta/MA`year'_removeown.dta"
 	}
 	
@@ -94,7 +95,7 @@ if c(username) == "kylebutts" {
 
 	clear
 
-	foreach year in "1940" "1950" "1960" "1970" "1980" "1990" "2000" "2005" "2010" "2015" {
+	foreach year in 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		qui append using "$project/data/population/population_`year'.dta"
 	}
 	
@@ -104,16 +105,16 @@ if c(username) == "kylebutts" {
 	qui drop if floor(fips/1000) == 2 | floor(fips/1000) == 15
 	drop state county
 	
-	qui save "$project/data/dta/temp/population_1940_2010.dta", replace
+	qui save "$project/data/dta/temp/population_1940_2020.dta", replace
 	
 	
 	
 	
 *-> MA county to MSA crosswalk
 
-	qui use "$project/data/dta/temp/population_1940_2010.dta", clear
+	qui use "$project/data/dta/temp/population_1940_2020.dta", clear
 	
-	* rm "$project/dta/temp/population_1940_2010.dta"
+	* rm "$project/dta/temp/population_1940_2020.dta"
 
 	* Merge with County FIPS to MSA Crosswalk
 	merge 1:m fips year using "$project/data/urbanareas/metarea_final.dta"
@@ -177,6 +178,8 @@ if c(username) == "kylebutts" {
 	merge m:1 code using "$project/data/crosswalk/state_lat_long.dta"
 	drop _merge
 	drop if code == .
+
+  drop if year == 2005 | year == 2015
 	
 	* Save
 	qui save "$project/data/dta/msa_market_access.dta", replace

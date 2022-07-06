@@ -2,6 +2,8 @@
 * data-group-averages.do
 *
 * Creates group-averages of variables for use with Altonji and Mansfield (2018)
+* Must run after data-IPUMS-compile.do, data-marketaccess.do, and 
+* data-merge-MA.do
 ********************************************************************************
 
 cls
