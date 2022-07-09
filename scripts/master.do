@@ -41,6 +41,9 @@ do scripts/data-merge-MA.do
 * Creates group averages 
 do scripts/data-group-averages.do
 
+* For R, quicker to make dataset year by year
+do scripts/data-split_by_year.do
+
 * Create shape file of MSAs matched with data
 * R scripts/data-merge_ma_with_shape.R
 

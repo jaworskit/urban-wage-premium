@@ -29,6 +29,8 @@ use "$project/data/dta/urban_wage_with_ma.dta", clear
 	qui g msacode = metarea
 	qui replace msacode = statefip if msacode==.
 
+  sort year msacode
+
 *-> Total Pop.
 
 	egen perwt_total = total(perwt), by(year msacode)

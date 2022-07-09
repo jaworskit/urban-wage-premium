@@ -24,10 +24,7 @@ if c(username) == "kylebutts" {
 	
 	foreach year in 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
 		
-		if `year' == 2005 {
-			qui import delimited using "$project/data/matlab/output/MA2000_cost1.csv", clear
-		} 
-		else if `year' == 2020 {
+		if `year' == 2020 {
 			qui import delimited using "$project/data/matlab/output/MA2010_cost1.csv", clear
 		} 
 		else {
