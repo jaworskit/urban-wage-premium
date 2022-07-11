@@ -29,21 +29,24 @@ gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
 ## Boustan et. al --------------------------------------------------------------
 
 # data <- glue("{project}/data/dta/urban_wage_final.dta") |>
-#   haven::read_dta() |> data.table::setDT()
+#   haven::read_dta() |>
+#   data.table::setDT()
+
 # df0 <- data %>%
-#     collapse::collap(totalincome + perwt ~ year + urban, fsum) %>%
-#     mutate(weeklywage = totalincome / perwt) %>%
-#     pivot_wider(id_cols = c("year"), values_from = weeklywage, names_from = urban, names_prefix = "urban_") %>%
-#     mutate(est = log(urban_1 / urban_0), group = "Raw") %>%
-#     select(year, est, group)
-# Store results
+#   collapse::collap(totalincome + perwt ~ year + urban, fsum) %>%
+#   mutate(weeklywage = totalincome / perwt) %>%
+#   pivot_wider(id_cols = c("year"), values_from = weeklywage, names_from = urban, names_prefix = "urban_") %>%
+#   mutate(est = log(urban_1 / urban_0), group = "Raw") %>%
+#   select(year, est, group)
+
+# # Store results
 # results <- df0
 
 
 
 ## Regression Results ----------------------------------------------------------
 
-results <- NULL
+# results <- NULL
 data <- NULL
 
 # Loop through year
@@ -60,38 +63,36 @@ for (i in seq(1940, 2020, 10)) {
 
   ## Urban -------------------------------------------------------------------
 
-  est1 <- feols(ln_weeklywage ~ urban,
+  est1 <- feols(ln_weeklywage ~ i(urban),
     data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
   )
 
   ## Urban & Individual Controls ---------------------------------------------
 
-  est2 <- feols(ln_weeklywage ~ urban | agegroup + educ + white,
+  est2 <- feols(ln_weeklywage ~ i(urban) | agegroup + educ + white,
     data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
   )
 
   ## Urban, Individual Controls, Market Access, & Group Averages -------------
 
-  # Group_vars formula
-  group_vars <- c("ln_ma_removeown", "share_race0", "share_race1", "share_age5", "share_age6", "share_age7", "share_age8", "share_age9", "share_age10", "share_age11", "share_age12", "share_age13", "share_educ0", "share_educ1", "share_educ2", "share_educ3", "share_educ4", "share_educ5", "share_educ6", "share_educ7", "share_educ8", "share_educ9", "share_educ10", "share_educ11", "share_educ99", "share_marst1", "share_marst2", "share_marst3", "share_marst4", "share_marst5", "share_marst6", "share_vetstat0", "share_vetstat1", "share_vetstat2", "share_vetstat9")
-
-  group_formula <- paste(group_vars, collapse = " + ")
-
-  fmla <- as.formula(glue("ln_weeklywage ~ urban + {group_formula} | agegroup + educ + white"))
-
-  est3 <- feols(fmla,
+  est3 <- feols(
+    ln_weeklywage ~ i(urban) + ln_ma_removeown + ..("share_") + i(educ) + i(white) + i(agegroup),
     data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
   )
 
 
   results <- bind_rows(results, tibble(
     year = rep(i, times = 3),
-    est = unlist(lapply(list(est1, est2, est3), function(x) {
-      coef(x)[["urban"]]
-    })),
-    se = unlist(lapply(list(est1, est2, est3), function(x) {
-      se(x)[["urban"]]
-    })),
+    est = list(est1, est2, est3) |>
+      lapply(function(x) {
+        coef(x)[["urban::1"]]
+      }) |>
+      unlist(),
+    se = list(est1, est2, est3) |>
+      lapply(function(x) {
+        se(x)[["urban::1"]]
+      }) |>
+      unlist(),
     group = c("Urban Only", "Controls", "Group Averages")
   ))
 }
@@ -107,6 +108,7 @@ for (i in seq(1940, 2020, 10)) {
 # exponentiate log differences
 results <- results %>%
   mutate(
+    year = as.numeric(year),
     est_lower90 = est - 1.65 * se,
     est_upper90 = est + 1.65 * se,
     est_lower95 = est - 1.96 * se,
@@ -116,9 +118,31 @@ results <- results %>%
     exp_est_upper90 = exp(est_upper90) - 1,
     exp_est_lower95 = exp(est_lower95) - 1,
     exp_est_upper95 = exp(est_upper95) - 1,
-    group = factor(group, levels = c("Urban Only", "Controls", "Group Averages"))
+    group = factor(group, levels = c("Raw", "Urban Only", "Controls", "Group Averages"))
   )
 
+
+## Raw -------------------------------------------------------------------------
+
+(raw <- ggplot(
+    results[results$group == "Raw", ],
+    aes(x = year, y = exp_est)
+  ) +
+  geom_line(size = 2, linetype = 1, color = "black") +
+  geom_point(size = 5, shape = 15, color = "black") +
+  labs(
+    x = NULL, y = "Urban Wage Premium"
+  ) +
+  scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
+  theme_kyle(base_size = 24) +
+  guides(colour = guide_legend(title.position = "top", nrow = 1)) +
+  theme(
+    legend.position = "bottom",  
+    panel.grid.minor.x = element_blank()
+  ))
+
+ggsave(glue("{gh}/paper/figures/urbanpremium_raw.pdf"), urban, width = 14, height = 6)
 
 ## Raw -------------------------------------------------------------------------
 
@@ -127,40 +151,44 @@ results <- results %>%
   aes(x = year, y = exp_est)
 ) +
   geom_line(size = 2, linetype = 1, color = "black") +
-  geom_ribbon(aes(ymin = exp_est_lower90, ymax = exp_est_upper90), color = NA, fill = "black", alpha = 0.3) +
-  geom_ribbon(aes(ymin = exp_est_lower95, ymax = exp_est_upper95), color = NA, fill = "black", alpha = 0.3) +
+  geom_linerange(size = 1.2, aes(ymin = exp_est_lower95, ymax = exp_est_upper95), color = "black") +
   geom_point(size = 5, shape = 15, color = "black") +
   labs(
-    x = "Year", y = "Urban Wage Premium"
+    x = NULL, y = "Urban Wage Premium"
   ) +
   scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   theme_kyle(base_size = 24) +
   guides(colour = guide_legend(title.position = "top", nrow = 1)) +
-  theme(legend.position = "bottom"))
+  theme(
+    legend.position = "bottom",  
+    panel.grid.minor.x = element_blank()
+  ))
 
-ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 16, height = 10)
+ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 14, height = 6)
 
 
 ## Regression Results ----------------------------------------------------------
 
 (controls <- ggplot(
-  results[results$group != "Raw", ],
-  aes(x = year, y = exp_est, group = group, color = group)
-) +
+    results[results$group != "Raw", ],
+    aes(x = year, y = exp_est, group = group, color = group, ymin = exp_est_lower95, ymax = exp_est_upper95)
+  ) +
   geom_line(aes(linetype = group), size = 2) +
-  geom_linerange(size = 1.2, linetype = 1, aes(ymin = exp_est_lower, ymax = exp_est_upper)) +
+  geom_linerange(size = 1.2) +
   geom_point(aes(shape = group), size = 5) +
   labs(
-    x = "Year", y = "Urban Wage Premium", group = "Specification",
+    x = NULL, y = "Urban Wage Premium", group = "Specification",
     shape = "Specification", color = "Specification",
     linetype = "Specification"
   ) +
   scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   # ggsci::scale_color_jama() +
   scale_color_manual(values = c(
     # "Raw" = "grey40",
-    "Urban Only" = "grey10",
-    "Controls" = "grey10",
+    "Urban Only" = "grey70",
+    "Controls" = "grey40",
     # "Market Access" = "grey10",
     "Group Averages" = "grey10"
     # "Rent" = "grey10"
@@ -182,10 +210,19 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 16, hei
     # "Rent" = 4
   )) +
   theme_kyle(base_size = 24) +
-  guides(colour = guide_legend(title.position = "top", nrow = 1)) +
-  theme(legend.position = "bottom"))
+  guides(
+    colour = guide_legend(
+      title.position = "top", nrow = 1,
+      override.aes = list(linetype = 0)
+    )
+  ) +
+  theme(
+    legend.position = c(0.5, 0.88),
+    panel.grid.minor.x = element_blank(),
+    legend.background = element_rect(fill="white", color="gray20")
+  ))
 
-ggsave(glue("{gh}/paper/figures/urbanpremium_controls.pdf"), controls, width = 16, height = 10)
+ggsave(glue("{gh}/paper/figures/urbanpremium_controls.pdf"), controls, width = 14, height = 6)
 
 
 ## Casual Estimate Only --------------------------------------------------------
@@ -195,18 +232,18 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_controls.pdf"), controls, width = 1
   aes(x = year, y = exp_est)
 ) +
   geom_line(size = 2, linetype = 1, color = "black") +
-  geom_ribbon(aes(ymin = exp_est_lower90, ymax = exp_est_upper90), color = NA, fill = "black", alpha = 0.3) +
-  geom_ribbon(aes(ymin = exp_est_lower95, ymax = exp_est_upper95), color = NA, fill = "black", alpha = 0.3) +
+  geom_linerange(size = 1.2, aes(ymin = exp_est_lower95, ymax = exp_est_upper95), color = "black") +
   geom_point(size = 5, shape = 15, color = "black") +
   labs(
-    x = "Year", y = "Urban Wage Premium"
+    x = NULL, y = "Urban Wage Premium"
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.20)) +
+  scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   theme_kyle(base_size = 24) +
   guides(colour = guide_legend(title.position = "top", nrow = 1)) +
-  theme(legend.position = "bottom"))
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor.x = element_blank()
+  ))
 
-ggsave(glue("{gh}/paper/figures/urbanpremium_causal.pdf"), urban, width = 16, height = 10)
-
-
-
+ggsave(glue("{gh}/paper/figures/urbanpremium_causal.pdf"), urban, width = 14, height = 6)

@@ -141,7 +141,12 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)) {
 
   results <- bind_rows(
     results,
-    tibble(code = names(coef(est)), premium = coef(est), year = y)
+    tibble(
+      code = names(coef(est)), 
+      est = coef(est), 
+      se = se(est), 
+      year = y
+    )
   )
 
   ## Top 20 Populous Urban Areas ---------------------------------------------
@@ -153,7 +158,7 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)) {
 
   results_top20 <- bind_rows(
     results_top20,
-    tibble(code = names(coef(est_top20)), premium = coef(est_top20), year = y)
+    tibble(code = names(coef(est_top20)), est = coef(est_top20), year = y)
   )
 
   ## Regions of US -----------------------------------------------------------
@@ -165,12 +170,19 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)) {
 
   results_region <- bind_rows(
     results_region,
-    tibble(code = names(coef(est_region)), premium = coef(est_region), year = y)
+    tibble(code = names(coef(est_region)), est = coef(est_region), year = y)
   )
 }
 
 
-# results <- results |> filter(year != 1960)
+# Export Results ---------------------------------------------------------------
+# save(results, results_top20, results_region, file = glue("{gh}/data/estimates-heterogeneity.RData"))
+
+
+# Plot Point Estimates ---------------------------------------------------------
+# load(file = glue("{gh}/data/estimates-heterogeneity.RData"))
+
+
 
 results_clean <- results |>
   filter(stringr::str_starts(code, "urban")) |>
@@ -178,7 +190,15 @@ results_clean <- results |>
     group = "Urban",
     group = factor(group, levels = "Urban"),
     code = NULL,
-    exp_est = exp(premium) - 1
+    exp_est = exp(est) - 1,
+    est_lower90 = est - 1.65 * se,
+    est_upper90 = est + 1.65 * se,
+    est_lower95 = est - 1.96 * se,
+    est_upper95 = est + 1.96 * se,
+    exp_est_lower90 = exp(est_lower90) - 1,
+    exp_est_upper90 = exp(est_upper90) - 1,
+    exp_est_lower95 = exp(est_lower95) - 1,
+    exp_est_upper95 = exp(est_upper95) - 1
   )
 
 results_top20_clean <- results_top20 |>
@@ -187,7 +207,7 @@ results_top20_clean <- results_top20 |>
     group = stringr::str_remove(code, "urban_top20::"),
     group = factor(group, levels = c("Top 20", "Urban")),
     code = NULL,
-    exp_est = exp(premium) - 1
+    exp_est = exp(est) - 1
   )
 
 results_region_clean <- results_region |>
@@ -196,44 +216,41 @@ results_region_clean <- results_region |>
     group = stringr::str_remove(code, "urban::1:region::"),
     group = factor(group, levels = c("North", "West", "South", "Midwest")),
     code = NULL,
-    exp_est = exp(premium) - 1
+    exp_est = exp(est) - 1
   )
 
 
 
-(urban_1940_msas <- ggplot(results_clean, aes(x = year, y = exp_est, group = group, color = group)) +
-  geom_line(aes(linetype = group), size = 2) +
-  geom_point(aes(shape = group), size = 5) +
+(urban_1940_msas <- ggplot(
+    results_clean, 
+    aes(x = year, y = exp_est)
+  ) +
+  geom_line(size = 2, linetype = 1, color = "black") +
+  geom_point(size = 5, shape = 15, color = "black") +
   labs(
-    x = "Year", y = "Urban Wage Premium", group = "Specification",
+    x = NULL, y = "Urban Wage Premium", group = "Specification",
     shape = "Specification", color = "Specification",
     linetype = "Specification"
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.05, 0.375)) +
-  # ggsci::scale_color_jama() +
-  scale_color_manual(values = c(
-    "Urban" = "grey10"
-  )) +
-  scale_linetype_manual(values = c(
-    "Urban" = 1
-  )) +
-  scale_shape_manual(values = c(
-    "Urban" = 16
-  )) +
+  scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   kfbmisc::theme_kyle(base_size = 24) +
-  guides(colour = guide_legend(title.position = "top", nrow = 2)) +
   theme(legend.position = "bottom"))
 
 
-(top20 <- ggplot(results_top20_clean, aes(x = year, y = exp_est, group = group, color = group)) +
+(top20 <- ggplot(
+    results_top20_clean, 
+    aes(x = year, y = exp_est, group = group, color = group)
+  ) +
   geom_line(aes(linetype = group), size = 2) +
   geom_point(aes(shape = group), size = 5) +
   labs(
-    x = "Year", y = "Urban Wage Premium", group = "Specification",
+    x = NULL, y = "Urban Wage Premium", group = "Specification",
     shape = "Specification", color = "Specification",
     linetype = "Specification"
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.05, 0.375)) +
+  scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   # ggsci::scale_color_jama() +
   scale_color_manual(values = c(
     "Top 20" = "grey10",
@@ -248,19 +265,32 @@ results_region_clean <- results_region |>
     "Urban" = 16
   )) +
   kfbmisc::theme_kyle(base_size = 24) +
-  guides(colour = guide_legend(title.position = "top", nrow = 2)) +
-  theme(legend.position = "bottom"))
+  guides(
+    colour = guide_legend(
+      title.position = "top", nrow = 1,
+      override.aes = list(linetype = 0)
+    )
+  ) +
+  theme(
+    legend.position = c(0.5, 0.88),
+    panel.grid.minor.x = element_blank(),
+    legend.background = element_rect(fill="white", color="gray20")
+  ))
 
 
-(region <- ggplot(results_region_clean, aes(x = year, y = exp_est, group = group, color = group)) +
+(region <- ggplot(
+    results_region_clean, 
+    aes(x = year, y = exp_est, group = group, color = group)
+  ) +
   geom_line(aes(linetype = group), size = 2) +
   geom_point(aes(shape = group), size = 5) +
   labs(
-    x = "Year", y = "Urban Wage Premium", group = "Specification",
+    x = NULL, y = "Urban Wage Premium", group = "Specification",
     shape = "Specification", color = "Specification",
     linetype = "Specification"
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.05, 0.375)) +
+  scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   scale_color_manual(values = c(
     "North" = ggsci::pal_jama("default")(4)[1],
     "South" = ggsci::pal_jama("default")(4)[2],
@@ -280,11 +310,22 @@ results_region_clean <- results_region |>
     "Midwest" = 18
   )) +
   kfbmisc::theme_kyle(base_size = 24) +
-  guides(colour = guide_legend(title.position = "top", nrow = 2)) +
-  theme(legend.position = "bottom"))
+  guides(
+    colour = guide_legend(
+      title.position = "top", nrow = 1,
+      override.aes = list(linetype = 0)
+    )
+  ) +
+  theme(
+    legend.position = c(0.5, 0.88),
+    panel.grid.minor.x = element_blank(),
+    legend.background = element_rect(fill="white", color="gray20")
+  ))
 
 
+kfbmisc::ggpreview(urban_1940_msas, device = "pdf", width = 14, height = 6)
 
-ggsave(glue("{gh}/paper/figures/urbanpremium_1940_msas.pdf"), urban_1940_msas, width = 16, height = 10)
-ggsave(glue("{gh}/paper/figures/urbanpremium_top20.pdf"), top20, width = 16, height = 10)
-ggsave(glue("{gh}/paper/figures/urbanpremium_region.pdf"), region, width = 16, height = 10)
+ggsave(glue("{gh}/paper/figures/urbanpremium_1940_msas.pdf"), urban_1940_msas, width = 14, height = 6)
+ggsave(glue("{gh}/paper/figures/urbanpremium_top20.pdf"), top20, width = 14, height = 6)
+ggsave(glue("{gh}/paper/figures/urbanpremium_region.pdf"), region, width = 14, height = 6)
+
