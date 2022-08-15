@@ -282,7 +282,8 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 		
 ********************************************************************************
 
-	*-> Basic Urban Wage Premium Plot
+	/* 
+  *-> Basic Urban Wage Premium Plot
 
 		use "$project/data/dta/urban_wage_premium_data.dta", clear
 		
@@ -332,10 +333,9 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 		qui replace houseprice = houseprice*3.00 if year==1980
 		qui replace houseprice = houseprice*1.82 if year==1990
 		qui replace houseprice = houseprice*1.38 if year==2000
-		qui replace houseprice = houseprice*1.00 if year==2010
-		
+		qui replace houseprice = houseprice*1.00 if year==2010 
+
 	*-> 	
-		/*
     qui g urban = (metarea!=0)
 		qui keep if sex==1
 		qui drop if ind1950==1
@@ -351,5 +351,5 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 		
 		gr tw (scatter urbanpremium year, c(l) lc(black) mfc(white) mc(black))
 		gr export "$project/paper/figures/urbanpremium_IPUMS.pdf", as(pdf) replace	
-    */
+  */
 		

@@ -134,17 +134,19 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)) {
   ## Urban on 1940 MSA subsample -----------------------------------------------
 
   est <- feols(
-    ln_weeklywage ~ i(urban) + ln_ma_removeown + ..("share_") + i(educ) + i(white) + i(agegroup),
+    ln_weeklywage ~ i(urban) + ln_ma_removeown + ..("share_") | educ + white + agegroup,
     data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
   )
 
+  coef <- est |> coef()
+  se <- est |> se()
 
   results <- bind_rows(
     results,
     tibble(
-      code = names(coef(est)), 
-      est = coef(est), 
-      se = se(est), 
+      code = coef |> names(), 
+      est = coef, 
+      se = se,  
       year = y
     )
   )
@@ -158,7 +160,11 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)) {
 
   results_top20 <- bind_rows(
     results_top20,
-    tibble(code = names(coef(est_top20)), est = coef(est_top20), year = y)
+    tibble(
+      code = est_top20 |> coef() |> names(), 
+      est = est_top20 |> coef(), 
+      year = y
+    )
   )
 
   ## Regions of US -----------------------------------------------------------
@@ -170,7 +176,11 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)) {
 
   results_region <- bind_rows(
     results_region,
-    tibble(code = names(coef(est_region)), est = coef(est_region), year = y)
+    tibble(
+      code = est_region |> coef() |> names(), 
+      est = est_region |> coef(),
+      year = y
+    )
   )
 }
 
@@ -181,8 +191,6 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)) {
 
 # Plot Point Estimates ---------------------------------------------------------
 # load(file = glue("{gh}/data/estimates-heterogeneity.RData"))
-
-
 
 results_clean <- results |>
   filter(stringr::str_starts(code, "urban")) |>
@@ -227,12 +235,13 @@ results_region_clean <- results_region |>
   ) +
   geom_line(size = 2, linetype = 1, color = "black") +
   geom_point(size = 5, shape = 15, color = "black") +
+  geom_linerange(size = 1.2, aes(ymin = exp_est_lower95, ymax = exp_est_upper95), color = "black") +
   labs(
     x = NULL, y = "Urban Wage Premium", group = "Specification",
     shape = "Specification", color = "Specification",
     linetype = "Specification"
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_y_continuous(labels = scales::percent, limits = c(-0.075, 0.45)) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   kfbmisc::theme_kyle(base_size = 24) +
   theme(legend.position = "bottom"))
@@ -249,7 +258,7 @@ results_region_clean <- results_region |>
     shape = "Specification", color = "Specification",
     linetype = "Specification"
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_y_continuous(labels = scales::percent, limits = c(-0.075, 0.45)) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   # ggsci::scale_color_jama() +
   scale_color_manual(values = c(
@@ -289,7 +298,7 @@ results_region_clean <- results_region |>
     shape = "Specification", color = "Specification",
     linetype = "Specification"
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.06, 0.45)) +
+  scale_y_continuous(labels = scales::percent, limits = c(-0.075, 0.45)) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   scale_color_manual(values = c(
     "North" = ggsci::pal_jama("default")(4)[1],
@@ -323,7 +332,7 @@ results_region_clean <- results_region |>
   ))
 
 
-kfbmisc::ggpreview(urban_1940_msas, device = "pdf", width = 14, height = 6)
+# kfbmisc::ggpreview(urban_1940_msas, device = "pdf", width = 14, height = 6)
 
 ggsave(glue("{gh}/paper/figures/urbanpremium_1940_msas.pdf"), urban_1940_msas, width = 14, height = 6)
 ggsave(glue("{gh}/paper/figures/urbanpremium_top20.pdf"), top20, width = 14, height = 6)
