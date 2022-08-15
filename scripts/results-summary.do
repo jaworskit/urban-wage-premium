@@ -19,6 +19,10 @@ if c(username) == "kylebutts" {
 ********************************************************************************
 
 use "$project/data/dta/urban_wage_final.dta", clear
+
+* Temp for code editing
+* bys year urban: keep if _n < 5000
+
 		
 ********************************************************************************
 * Results
@@ -26,37 +30,40 @@ use "$project/data/dta/urban_wage_final.dta", clear
 
 *-> Summary Table of urban indicator, log(remove own MA), wage_urban, and wage_nonurban
 
-	qui g wage_urban = .
-	replace wage_urban = weeklywage if urban == 1
-	qui g wage_nonurban = .
-	replace wage_nonurban = weeklywage if urban == 0
+	qui g college_degree = (educ >= 10)
 
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
+  * foreach year of numlist 1940 {
+    qui sum urban [aw=perwt] if year == `year'
+    matrix frac_urban_`year' = `r(mean)' * 100
 
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015 {
-		foreach var of varlist urban ln_ma_remove_own wage_urban wage_nonurban {
-			qui sum `var' [aw=perwt] if year == `year'
+    qui sum weeklywage [aw=perwt] if year == `year' & urban == 1
+    matrix mean_weeklywage_urban_`year' = `r(mean)'
+    qui sum weeklywage [aw=perwt] if year == `year' & urban == 0
+    matrix mean_weeklywage_nonurban_`year' = `r(mean)'
+    matrix premia_`year' = (mean_weeklywage_urban_`year'[1,1] / mean_weeklywage_nonurban_`year'[1,1] - 1) * 100
 
-			if "`var'" == "urban" {
-				matrix n_`year' = `r(N)'
-			}
+    * Fraction of people with college degree
+    qui sum college_degree [aw=perwt] if year == `year'
+    matrix frac_college_`year' = `r(mean)' * 100
 
-			matrix mean_`var'_`year' = `r(mean)'
-			matrix sd_`var'_`year' = `r(sd)'
-		}
+    * Fraction of people with college degree in Urban Areas
+    qui sum college_degree [aw=perwt] if year == `year' & urban == 1
+    matrix frac_college_urban_`year' = `r(mean)' * 100
 
-		matrix year_`year' = `year'
+    * Fraction of people with college degree in Non-urban
+    qui sum college_degree [aw=perwt] if year == `year' & urban == 0
+    matrix frac_college_nonurban_`year' = `r(mean)' * 100
 
-		matrix define row_`year' = (n_`year', mean_urban_`year', mean_ln_ma_`year', sd_ln_ma_`year', ///
-			mean_wage_urban_`year', sd_wage_urban_`year', mean_wage_nonurban_`year', sd_wage_nonurban_`year')
+		matrix define row_`year' = (premia_`year', frac_urban_`year', frac_college_`year', frac_college_urban_`year', frac_college_nonurban_`year')
 	}
 
-	matrix define results = (row_1940 \ row_1950 \ row_1960 \ row_1970 \ row_1980 ///
-		\ row_1990 \ row_2000 \ row_2005 \ row_2010 \ row_2015)
+	matrix define results = (row_1940 \ row_1950 \ row_1960 \ row_1970 \ row_1980 \ row_1990 \ row_2000 \ row_2010 \ row_2020)
 
-	matrix rownames results = 1940 1950 1960 1970 1980 1990 2000 2005 2010 2015
+	matrix rownames results = 1940 1950 1960 1970 1980 1990 2000 2010 2020
 
 
-	esttab matrix(results, fmt(%10.0fc 2 %10.2fc %10.2fc %10.0fc %10.0fc %10.0fc %10.0fc ))  ///
+	esttab matrix(results, fmt(1 1 1 1 1))  ///
 		using "$gh/paper/results/summary_stats/summary.tex" ///
 		, replace ///
 		tex plain fragment ///
