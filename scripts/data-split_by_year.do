@@ -1,15 +1,21 @@
 * Splits data by year so easier to work with on RAM
 
-global dropbox "/Users/kylebutts/Dropbox/UrbanWagePremium"
+global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium/"
+global gh "/Users/taylorjaworski/Github/urban-wage-premium"
+if c(username) == "kylebutts" {
+	global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+	global gh "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+}
 
-use ${dropbox}/data/dta/urban_wage_final.dta, clear
+
+use ${project}/data/dta/urban_wage_final.dta, clear
 
 foreach y in 1940 1950 1960 1970 1980 1990 2000 2010 2020 { 
 	preserve
 	
 	keep if year == `y'
 	
-  save "${dropbox}/data/dta/urban_wage_final_`y'.dta", replace
+  save "${project}/data/dta/urban_wage_final_`y'.dta", replace
 	
 	restore
 }
