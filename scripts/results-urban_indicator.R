@@ -75,7 +75,7 @@ for (i in 1:length(year_seq)) {
   ## Urban, Individual Controls & Group Averages -------------------------------
 
   est3 <- feols(
-    ln_weeklywage ~ i(urban, ref = FALSE) + ln_ma_removeown + ..("share_") + i(educ) + i(white) + i(agegroup),
+    ln_weeklywage ~ i(urban, ref = FALSE) + ln_ma_removeown + ..("^share_") + i(educ) + i(white) + i(agegroup),
     data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
   )
 

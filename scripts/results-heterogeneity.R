@@ -134,7 +134,7 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)) {
   ## Urban on 1940 MSA subsample -----------------------------------------------
 
   est <- feols(
-    ln_weeklywage ~ i(urban) + ln_ma_removeown + ..("share_") | educ + white + agegroup,
+    ln_weeklywage ~ i(urban) + ln_ma_removeown + ..("^share_") | educ + white + agegroup,
     data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
   )
 
