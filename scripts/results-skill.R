@@ -1,9 +1,5 @@
-## results-IPUMS.R -------------------------------------------------------------
+## results-skills.R ------------------------------------------------------------
 ## Kyle Butts, CU Boulder Economics
-##
-## This file replicates Boustan's Urban Wage gap figure in the Urbanization in
-## the United States paper. Then it extends this to include individual-level
-## controls, market access controls, and MSA-averages.
 
 library(tidyverse)
 library(glue)
@@ -18,11 +14,6 @@ library(data.table)
 # Local
 project <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
 gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
-
-
-# Research Computing
-# project <- "/projects/kybu6659/urban-wage-premium"
-# data <- vroom(glue("{project}/data/urban_wage_final.csv"))
 
 # Results ----------------------------------------------------------------------
 
