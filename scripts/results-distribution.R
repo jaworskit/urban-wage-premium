@@ -17,7 +17,7 @@ gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
 
 
 
-## Regression Results ----------------------------------------------------------
+# Regression Results -----------------------------------------------------------
 
 dataset <- NULL
 results <- NULL
@@ -71,7 +71,7 @@ for (i in 1:length(year_seq)) {
 # save(dataset, file = glue("{gh}/data/estimates-distribution.RData"))
 # load(file = glue("{gh}/data/estimates-distribution.RData"))
 
-# ---- Plot Results ------------------------------------------------------------
+# Plot Results -----------------------------------------------------------------
 
 dataset[, urban := ifelse(urban == 1, "Urban", "Nonurban")]
 dataset[, year := as.numeric(year)]
@@ -91,7 +91,26 @@ wage_percentiles = dataset[, .(
   ln_weeklywage_resid_95   = quantile(ln_weeklywage_resid, 0.95)
 ), by = year]
 
-wage_percentiles[, .(year, gap_90_10 = ln_weeklywage_resid_90 - ln_weeklywage_resid_10)]
+gap_9010 = wage_percentiles[, .(year, gap_9010 = ln_weeklywage_resid_90 - ln_weeklywage_resid_10)]
+
+(plot_gap_9010 <- ggplot(gap_9010) + 
+  geom_point(
+    aes(x = year, y = gap_9010),
+    size = 3
+  ) +
+  geom_line(
+    aes(x = year, y = gap_9010),
+    size = 1.2
+  ) +
+  labs(
+    y = "Log Wage Residaul, 90th - 10th", x = NULL, 
+    group = NULL, color = NULL
+  ) +
+  theme_kyle(base_size = 24)
+)
+
+# kfbmisc::ggpreview(plot_gap_9010, device = "pdf", width = 14, height = 6)
+ggsave(glue("{gh}/paper/figures/urbanpremium_gap_9010.pdf"), plot_gap_9010,  width = 14, height = 6)
 
 (plot_9010 <- ggplot(wage_percentiles) + 
   geom_linerange(
@@ -110,6 +129,10 @@ wage_percentiles[, .(year, gap_90_10 = ln_weeklywage_resid_90 - ln_weeklywage_re
     aes(x = year, y = ln_weeklywage_resid_10),
     size = 3
   ) +
+  geom_point(
+    aes(x = year, y = ln_weeklywage_resid_50),
+    size = 2
+  ) +
   labs(
     y = "Wage Residual", x = NULL, 
     group = NULL, color = NULL
@@ -118,6 +141,37 @@ wage_percentiles[, .(year, gap_90_10 = ln_weeklywage_resid_90 - ln_weeklywage_re
 
 # kfbmisc::ggpreview(plot_9010, device = "pdf", width = 14, height = 6)
 ggsave(glue("{gh}/paper/figures/urbanpremium_9010.pdf"), plot_9010,  width = 14, height = 6)
+
+(plot_9505 <- ggplot(wage_percentiles) + 
+  geom_linerange(
+    aes(x = year, ymin = ln_weeklywage_resid_05, ymax = ln_weeklywage_resid_95),
+    size = 2, color = "gray10", alpha = 0.6
+  ) +
+  geom_linerange(
+    aes(x = year, ymin = ln_weeklywage_resid_20, ymax = ln_weeklywage_resid_80),
+    size = 2, color = "gray10", alpha = 0.9
+  ) +
+  geom_point(
+    aes(x = year, y = ln_weeklywage_resid_95),
+    size = 3
+  ) +
+  geom_point(
+    aes(x = year, y = ln_weeklywage_resid_05),
+    size = 3
+  ) +
+  geom_point(
+    aes(x = year, y = ln_weeklywage_resid_50),
+    size = 2
+  ) +
+  labs(
+    y = "Wage Residual", x = NULL, 
+    group = NULL, color = NULL
+  ) +
+  theme_kyle(base_size = 24))
+
+# kfbmisc::ggpreview(plot_9505, device = "pdf", width = 14, height = 6)
+ggsave(glue("{gh}/paper/figures/urbanpremium_9505.pdf"), plot_9505,  width = 14, height = 6)
+
 
 
 
@@ -135,7 +189,7 @@ wage_percentiles = dataset[, .(
 
 wage_percentiles[, .(year, gap_90_10 = ln_weeklywage_resid_90 - ln_weeklywage_resid_10), by = urban]
 
-wage_percentiles[, year_pos := year - 1 + 2 * (urban == "Urban")]
+wage_percentiles[, year_pos := year + 1 - 2 * (urban == "Urban")]
 
 (plot_9010_urban <- ggplot(wage_percentiles) + 
   geom_linerange(
@@ -153,6 +207,10 @@ wage_percentiles[, year_pos := year - 1 + 2 * (urban == "Urban")]
   geom_point(
     aes(x = year_pos, y = ln_weeklywage_resid_10),
     size = 3
+  ) +
+  geom_point(
+    aes(x = year_pos, y = ln_weeklywage_resid_50),
+    size = 2.5
   ) +
   labs(
     y = "Wage Residual", x = NULL, 
@@ -172,6 +230,45 @@ wage_percentiles[, year_pos := year - 1 + 2 * (urban == "Urban")]
 # kfbmisc::ggpreview(plot_9010_urban, device = "pdf", width = 14, height = 6)
 ggsave(glue("{gh}/paper/figures/urbanpremium_9010_urban.pdf"), plot_9010_urban,  width = 14, height = 6)
 
+
+(plot_9505_urban <- ggplot(wage_percentiles) + 
+  geom_linerange(
+    aes(x = year_pos, ymin = ln_weeklywage_resid_05, ymax = ln_weeklywage_resid_95, color = urban, group = urban),
+    size = 2, alpha = 0.6
+  ) +
+  geom_linerange(
+    aes(x = year_pos, ymin = ln_weeklywage_resid_20, ymax = ln_weeklywage_resid_80, color = urban, group = urban),
+    size = 2, alpha = 0.9
+  ) +
+  geom_point(
+    aes(x = year_pos, y = ln_weeklywage_resid_95),
+    size = 3
+  ) +
+  geom_point(
+    aes(x = year_pos, y = ln_weeklywage_resid_05),
+    size = 3
+  ) +
+  geom_point(
+    aes(x = year_pos, y = ln_weeklywage_resid_50),
+    size = 2
+  ) +
+  labs(
+    y = "Wage Residual", x = NULL, 
+    group = NULL, color = NULL
+  ) +
+  scale_color_manual(
+    values = c("Urban" = "grey10", "Non-Urban" = "grey40")
+  ) +
+  scale_x_continuous(breaks = seq(1940, 2020, by = 05)) +
+  theme_kyle(base_size = 24) + 
+  guides(colour = guide_legend(nrow = 1)) +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor.x = element_blank()
+  ))
+
+# kfbmisc::ggpreview(plot_9505_urban, device = "pdf", width = 14, height = 6)
+ggsave(glue("{gh}/paper/figures/urbanpremium_9505_urban.pdf"), plot_9505_urban,  width = 14, height = 6)
 
 
 
