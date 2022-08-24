@@ -64,7 +64,7 @@ use "$project/data/dta/urban_wage_final.dta", clear
 
 
 	esttab matrix(results, fmt(1 1 1 1 1))  ///
-		using "$gh/paper/results/summary_stats/summary.tex" ///
+		using "$gh/paper/tables/summary_stats/summary.tex" ///
 		, replace ///
 		tex plain fragment ///
 		nomtitle nonumbers collabel(none) ///

@@ -45,7 +45,6 @@ ests_group <- list()
 year_seq <- seq(1940, 2020, 10)
 
 # Loop through year
-# Removed 2005 and 2015 for data quality issue in 2005
 for (i in 1:length(year_seq)) {
   y <- year_seq[i]
   cli::cli_alert_info("Starting on year {y}")

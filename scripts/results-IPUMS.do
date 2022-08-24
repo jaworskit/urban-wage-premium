@@ -163,7 +163,7 @@ use "$project/data/dta/urban_wage_final.dta", clear
 	* Export results to table
 	if(1 == 1){
 		estout est* ///
-			using "$gh/paper/results/results-IPUMS/premium.tex" /// 
+			using "$gh/paper/tables/results-IPUMS/premium.tex" /// 
 			, replace type style(tex) collabels(none) mlabels(none) eqlabels(none) varwidth(40) cells(b(fmt(4)) se(par fmt(4))) ///
 			stats(cov ma group N, fmt(%12.0fc) labels("\hline Individual Covariates" "Market Access" "Group Averages" "\hline N" )) /// 
 			keep(urban_*) varlabels(urban_1940 "Urban $\times$ 1940" urban_1950 "Urban $\times$ 1950" urban_1960 "Urban $\times$ 1960" urban_1970 "Urban $\times$ 1970" urban_1980 "Urban $\times$ 1980" urban_1990 "Urban $\times$ 1990" urban_2000 "Urban $\times$ 2000" urban_2005 "Urban $\times$ 2005" urban_2010 "Urban $\times$ 2010" urban_2015 "Urban $\times$ 2015")

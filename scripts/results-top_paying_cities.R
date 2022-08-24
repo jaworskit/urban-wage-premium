@@ -112,7 +112,7 @@ cbind(
   as.matrix(top10_2020)
 ) |> 
   apply(1, printmrow) |>
-  # cat(file = here::here("paper/results/summary_stats/top10.tex")) |>
+  # cat(file = here::here("paper/tables/summary_stats/top10.tex")) |>
   cat() 
 
 

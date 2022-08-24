@@ -167,7 +167,8 @@ results_hs <- results_hs %>%
   geom_line(size = 2, linetype = 1) +
   geom_point(size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium", group = NULL
+    x = NULL, y = "Urban Wage Premium", 
+    group = NULL, color = NULL, shape = NULL
   ) +
   scale_y_continuous(labels = scales::percent, limits = c(-0.075, 0.45)) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
@@ -199,7 +200,8 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_college.pdf"), plot_college, width 
   geom_line(size = 2, linetype = 1) +
   geom_point(size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium", group = NULL
+    x = NULL, y = "Urban Wage Premium", 
+    group = NULL, color = NULL, shape = NULL
   ) +
   scale_y_continuous(labels = scales::percent, limits = c(-0.075, 0.45)) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
