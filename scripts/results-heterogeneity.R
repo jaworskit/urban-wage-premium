@@ -500,7 +500,7 @@ results_college <- results_college |>
     axis.line.x = element_blank(), axis.ticks.x = element_blank()
   ))
 
-ggsave(glue("{gh}/paper/figures/urbanpremium_college.pdf"), plot_college, width = 14, height = 6)
+ggsave(glue("{gh}/paper/figures/urbanpremium_college.pdf"), plot_college, width = 14, height = 4)
 
 
 
