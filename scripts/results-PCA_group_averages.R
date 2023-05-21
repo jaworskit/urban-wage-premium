@@ -15,47 +15,50 @@ library(data.table)
 project <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
 gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
 
-y <- 2020
-data <- glue("{project}/data/dta/urban_wage_final_{y}.dta") |>
-  haven::read_dta() |>
-  data.table::setDT()
+# y <- 1940
+y <- 2010
+
+
+data <- glue("{project}/data/dta/urban_wage_final_{y}.parquet") |>
+    arrow::read_parquet() |>
+    collect()
+
+data <- data |> haven::zap_labels() |> as.data.table()
+
 data[, code := ifelse(
   code == 0, paste0(statefip, "00000"), code
 )]
 
+data[, share_some_college := share_educ7 + share_educ8 + share_educ9]
+data[, share_less_than_hs := share_educ1 + share_educ2 + share_educ3 + share_educ4 + share_educ5]
 
-group_averages <- c(
-  "ln_ma_removeown", 
-  colnames(data)[stringr::str_starts(colnames(data), "share_")]
-)
+group_averages <- c("ln_ma_removeown", "share_race0",  "share_age5", "share_age6", "share_age7", "share_age8", "share_age9", "share_age10", "share_age11", "share_age12", "share_vetstat1", "share_marst1", "share_marst6", "share_marst2", "share_less_than_hs", "share_educ6", "share_some_college", "share_educ10", "share_educ11")
+
 group_averages_df = data[, 
   lapply(.SD, first), 
   by = code, 
   .SDcols = group_averages
 ]
 
-# Remove 0s
-if(y == 2020) {
-  group_averages_df = group_averages_df[, -c("share_vetstat0", "share_vetstat9", "share_educ9", "share_educ99")]
-}
-
 prcomp(group_averages_df[, -"code"], center = TRUE, scale. = TRUE) |> 
   summary()
 
 # 1940 Importance of components:
 # PC1    PC2    PC3     PC4     PC5     PC6     PC7    PC8     
-# Standard deviation     
-# 2.9734 2.5686 1.6806 1.48592 1.42283 1.30126 1.15799 1.1068 
-# Proportion of Variance 
-# 0.2526 0.1885 0.0807 0.06308 0.05784 0.04838 0.03831 0.0350 
-# Cumulative Proportion  
-# 0.2526 0.4411 0.5218 0.58489 0.64273 0.69111 0.72942 0.7644 
+# Standard deviation
+# 2.6064 1.9199 1.5341 1.24941 1.00116 0.9649 0.75964 0.68007
+# Proportion of Variance
+# 0.3575 0.1940 0.1239 0.08216 0.05275 0.0490 0.03037 0.02434
+# Cumulative Proportion
+# 0.3575 0.5515 0.6754 0.75757 0.81032 0.8593 0.88969 0.91403
 
-# 2020 Importance of components:
-# PC1    PC2    PC3     PC4     PC5     PC6     PC7    PC8     
-# Standard deviation     
-# 2.7215 2.2588 1.75498 1.57862 1.3070 1.08614 1.0725 1.03100
-# Proportion of Variance 
-# 0.2389 0.1646 0.09935 0.08039 0.0551 0.03805 0.0371 0.03429
-# Cumulative Proportion  
-# 0.2389 0.4035 0.50285 0.58324 0.6383 0.67639 0.7135 0.74779 
+
+# 2010 Importance of components:
+# PC1    PC2    PC3     PC4     PC5     PC6     PC7     PC8
+# Standard deviation
+# 2.4123 1.7397 1.4753 1.33807 1.08831 1.03845 0.93499 0.75165
+# Proportion of Variance
+# 0.3063 0.1593 0.1145 0.09423 0.06234 0.05676 0.04601 0.02974
+# Cumulative Proportion
+# 0.3063 0.4656 0.5801 0.67436 0.73669 0.79345 0.83946 0.86920
+

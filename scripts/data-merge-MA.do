@@ -31,8 +31,12 @@ if c(username) == "kylebutts" {
 	replace fips = 11000 if fips == 11001
 	qui save "$project/data/temp/metarea_1950.dta", replace
 	
+  * Historical, Demographic, Economic, and Social Data: 
+  * The United States, 1790-2002
 	qui use "$project/data/housing/02896-0072-Data.dta", clear
 	rename var63 valueh_1950
+  * rename var64 contract_rent_avg
+  rename var65 rent_avg_1950
 	* 2 obs missing fips 
 	drop if missing(fips)
 	* Drop statewide
@@ -48,7 +52,7 @@ if c(username) == "kylebutts" {
 	
 	* Collapse to code
 	qui replace code = statefip * 100000 if code == .
-	qui collapse (mean) valueh year, by(code)
+	qui collapse (mean) valueh_1950 rent_avg_1950 year, by(code)
 	
 	qui save "$project/data/temp/housing_1950.dta", replace
 
@@ -58,8 +62,7 @@ if c(username) == "kylebutts" {
 ********************************************************************************
 
 
-	qui use "$project/data/dta/urban_wage_premium_data.dta", clear 
-	
+	qui use "$project/data/dta/ipums_compiled.dta", clear 
 	
 *-> Fix MSA codes in survey
 
@@ -94,7 +97,6 @@ if c(username) == "kylebutts" {
 	* 1990 only Vancouver WA had its own msa
 	qui replace code = 6441 if year == 1990 & statefip == 53 & code == 6440
 	
-	
 *-> Merge MA
 
 	replace code = statefip*100000 if code == 0
@@ -107,12 +109,23 @@ if c(username) == "kylebutts" {
 	* CT has no missing counties after 1980, so non-msa's CT has to be dropped
 	drop if statefip == 09 & code == 900000 & year >= 1980
 
+
+*-> Unique state or msa code
+  
+  qui g msacode = metarea
+  qui replace msacode = (10000 * statefip) if (msacode == .) | (msacode == 0)
+	label var msacode "MSA Code or 10000 * Statefips for nonurban areas"
 	
+
 ********************************************************************************
 * Prepare Data for Results 
 ********************************************************************************
 	
+*-> order variables
+  order year perwt statefip metarea metarea_name code msacode ind1950 incwage wkswork2 valueh rent occupation age sex race educ bpl marst vetstat ma ma_weighted ma_removeown
+
 *-> fix income top codes
+
 	* https://usa.ipums.org/usa-action/variables/INCWAGE#codes_section
 	qui drop if incwage==0
 	qui drop if incwage==999998 & year==1940
@@ -121,7 +134,18 @@ if c(username) == "kylebutts" {
 	qui replace incwage = 1.5*25000 if incwage>=25000 & year==1960
 	qui replace incwage = 1.5*50000 if incwage>=50000 & year==1970
 	qui replace incwage = 1.5*75000 if incwage==75000 & year==1980
-	
+
+*-> use CPI to adjust to 2010 dollars 
+
+	qui replace incwage = incwage * 16.81 if year == 1940
+	qui replace incwage = incwage * 9.92 if year == 1950
+	qui replace incwage = incwage * 7.98 if year == 1960
+	qui replace incwage = incwage * 6.18 if year == 1970
+	qui replace incwage = incwage * 3.00 if year == 1980
+	qui replace incwage = incwage * 1.82 if year == 1990
+	qui replace incwage = incwage * 1.38 if year == 2000
+	qui replace incwage = incwage * 1.00 if year == 2010
+
 *-> fix weeks
 	qui g weeks = .
 	qui replace weeks = 33 if wkswork2==3
@@ -137,8 +161,7 @@ if c(username) == "kylebutts" {
 *-> generate log(weekly wage) variable
 
 	qui g weeklywage = (incwage/weeks)
-	qui g ln_weeklywage = log(incwage/weeks)
-	qui by year, sort: sum weeklywage
+	qui g ln_weeklywage = log(weeklywage)
 	
 *-> Merge in 1950 median home price
 	
@@ -146,38 +169,43 @@ if c(username) == "kylebutts" {
 	drop if _merge == 2
 	replace valueh = valueh_1950 if ~missing(valueh_1950)
 	drop valueh_1950
+  replace rent = rent_avg_1950 if ~missing(rent_avg_1950)
+	drop rent_avg_1950
 	drop _merge
 
-*-> generate log(average housing price) variable by city
+*-> Clean rent and housing value
+
+  replace rent = . if (rent == 9999 | rent == 9998) & (year == 1940)
+  replace rent = . if (rent == 1) & (year == 1980 | year == 1990)
+  replace rent = . if (rent == 0)
+  * NOTE: In 1940, there's oddly big numbers for 42,000 obs. out of 3.6 million
+  replace rent = . if (rent > 150) & (year == 1940)
 
 	qui replace valueh = . if valueh==0 | valueh==9999999 | valueh==9999998
-	qui g houses = perwt*(valueh!=.)
-	qui g housingvalue = perwt*valueh
-	egen total_houses = total(houses), by(year code)
-	egen total_housingvalue = total(housingvalue), by(year code)
-	qui g average_price = total_housingvalue/total_houses
-	qui g ln_price = log(average_price)
-	drop total_houses total_housingvalue average_price housingvalue houses valueh
-	*qui replace houseprice = houseprice*16.81 if year==1940
-	*qui replace houseprice = houseprice*7.98 if year==1960
-	*qui replace houseprice = houseprice*6.18 if year==1970
-	*qui replace houseprice = houseprice*3.00 if year==1980
-	*qui replace houseprice = houseprice*1.82 if year==1990
-	*qui replace houseprice = houseprice*1.38 if year==2000
-	*qui replace houseprice = houseprice*1.00 if year==2010
-	
-*-> use CPI to adjust to 2015 dollars 
 
-	qui replace totalincome = totalincome*16.81 if year == 1940
-	qui replace totalincome = totalincome*9.92 if year == 1950
-	qui replace totalincome = totalincome*7.98 if year == 1960
-	qui replace totalincome = totalincome*6.18 if year == 1970
-	qui replace totalincome = totalincome*3.00 if year == 1980
-	qui replace totalincome = totalincome*1.82 if year == 1990
-	qui replace totalincome = totalincome*1.38 if year == 2000
-	qui replace totalincome = totalincome*1.00 if year == 2010
-  qui replace totalincome = totalincome*1.00 if year == 2020
-	
+*-> Adjust housing value for inflation
+
+	qui replace valueh = valueh * 16.81 if year==1940
+  qui replace valueh = valueh * 9.92 if year==1950
+	qui replace valueh = valueh * 7.98 if year==1960
+	qui replace valueh = valueh * 6.18 if year==1970
+	qui replace valueh = valueh * 3.00 if year==1980
+	qui replace valueh = valueh * 1.82 if year==1990
+	qui replace valueh = valueh * 1.38 if year==2000
+	qui replace valueh = valueh * 1.00 if year==2010
+
+  qui gen rent_unadjusted = rent
+  qui replace rent = rent * 16.81 if year==1940
+  qui replace rent = rent * 9.92 if year==1950
+	qui replace rent = rent * 7.98 if year==1960
+	qui replace rent = rent * 6.18 if year==1970
+	qui replace rent = rent * 3.00 if year==1980
+	qui replace rent = rent * 1.82 if year==1990
+	qui replace rent = rent * 1.38 if year==2000
+	qui replace rent = rent * 1.00 if year==2010
+
+*-> Main sample
+
 	qui g urban = (metarea > 0)
 	qui keep if sex == 1
 	qui drop if ind1950 == 1
@@ -215,7 +243,6 @@ if c(username) == "kylebutts" {
 	label variable weeklywage "Weekly Wage, 2015 \$"
 	label variable white "=1, if White"
 	label variable urban "=1, if in Urban Area"
-	
 	
 *->	Export survey data with MA variable
 	

@@ -9,9 +9,7 @@ library(glue)
 library(broom)
 library(vroom)
 library(fixest)
-library(collapse)
-# devtools::install_github("kylebutts/kfbmisc")
-library(kfbmisc)
+library(arrow)
 
 
 # Local
@@ -25,12 +23,15 @@ for (y in c(1940, 2020)) {
 
   # Sample has every observation except 15% sample of 1940 full count
   rm(data)
-  data <- glue("{project}/data/dta/urban_wage_final_{y}.dta") |>
-    haven::read_dta() |>
-    data.table::setDT()
+  data <- glue("{project}/data/dta/urban_wage_final_{y}.parquet") |>
+    arrow::read_parquet() |>
+    collect()
+
+  data <- data |> haven::zap_labels() |> as.data.table()
 
   premias <- rbind(premias, 
-    feols(ln_weeklywage ~ 0 | metarea,
+    feols(
+      ln_weeklywage ~ 0 | metarea,
       data = data, cluster = ~metarea, weights = ~perwt
     ) |> 
       fixef() |> 
@@ -75,7 +76,7 @@ top10_1940 <- merge(
 
 top10_1940 <- top10_1940[order(est_premia, decreasing = TRUE), ]
 
-top10_1940 <- top10_1940[, .(cbsa_name, est_premia = paste0(round(est_premia, 3)*100, "\\%"))]
+top10_1940 <- top10_1940[, .(cbsa_name, est_premia = paste0(round(est_premia, 3) * 100, "\\%"))]
 
 
 ## 2020 Top 10
@@ -95,7 +96,7 @@ top10_2020 <- merge(
 
 top10_2020 <- top10_2020[order(est_premia, decreasing = TRUE), ]
 
-top10_2020 <- top10_2020[, .(cbsa_name, est_premia = paste0(round(est_premia, 3)*100, "\\%"))]
+top10_2020 <- top10_2020[, .(cbsa_name, est_premia = paste0(round(est_premia, 3) * 100, "\\%"))]
 
 
 
@@ -112,9 +113,19 @@ cbind(
   as.matrix(top10_2020)
 ) |> 
   apply(1, printmrow) |>
-  # cat(file = here::here("paper/tables/summary_stats/top10.tex")) |>
+  cat(file = here::here("paper/tables/summary_stats/top10.tex")) |>
   cat() 
 
+# Flint, MI & 48.7\% & San Jose-Sunnyvale-Santa Clara, CA & 63.2\% \\ 
+# Detroit, MI & 46.2\% & Bridgeport-Stamford-Norwalk, CT & 54.7\% \\ 
+# San Francisco, CA & 43.8\% & San Francisco-San Mateo-Redwood City,CA & 52\% \\ 
+# Seattle-Everett, WA & 43\% & Washington-Arlington-Alexandria DC-VA & 42.9\% \\ 
+# Washington DC, MD/VA/WV & 42.6\% & Boston-Quincy, MA & 42.7\% \\ 
+# Lansing-East Lansing, MI & 39.2\% & Seattle-Bellevue-Everett, WA & 42.2\% \\ 
+# Sacramento, CA & 39\% & Santa Cruz-Watsonville, CA & 36.7\% \\ 
+# New York, NY & 38.8\% & Trenton-Ewing, NJ & 36.1\% \\ 
+# Milwaukee-Waukesha, WI & 38.5\% & Midland, TX & 34\% \\ 
+# Rochester, NY & 38.4\% & Baltimore-Towson, MD & 33.6\% \\ 
 
 
 

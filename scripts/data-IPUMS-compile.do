@@ -15,12 +15,12 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 
 ********************************************************************************
 
-  foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 { 
+  foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 { 
 		
 		display "`year'"
 		
 		*-> 1940
-			if `year' == 1940 {
+			/* if `year' == 1940 {
 				set seed 339487731
 				forvalues r = 1/4 {
 
@@ -89,7 +89,7 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 					
 					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 valueh bpl marst vetstat rent
 					qui save "$project/data/dta/temp/census_1940_temp.dta", replace	
-      }
+      } */
 
 		*-> 1950
 			
@@ -206,11 +206,10 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 					
       }
 
-		*-> 2010, 2020
+		*-> 2010
 			
-			if `year' > 2000 {
-        local year = 2010
-				qui use "$ipums/ACS/`year'.dta", clear
+			if `year' == 2010 {
+				qui use "$ipums/`year'/`year'_with_rent.dta", clear
 				
 				**keep age 25 - 65
 				
@@ -257,7 +256,7 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 				
 				**save 1960-2010 data
 					
-					if `year'==2015 | `year'==2020 {
+					if `year'==2015 {
 						rename met2013 metarea
           }
 					keeporder year statefip metarea occupation ind1950 age sex race educ perwt incwage wkswork2 bpl marst vetstat rent valueh
@@ -270,7 +269,7 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 	*-> append all years
 		
 		clear
-		foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 {	
+		foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 {	
 			qui append using "$project/data/dta/temp/census_`year'_temp.dta"
 			* rm "$project/data/dta/temp/census_`year'_temp.dta"
 		}
@@ -278,14 +277,14 @@ global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
 		qui replace occupation = "17" if occupation=="15" 
 		qui replace occupation = "13" if occupation=="23" 
 		
-		qui save "$project/data/dta/urban_wage_premium_data.dta", replace
+		qui save "$project/data/dta/ipums_compiled.dta", replace
 		
 ********************************************************************************
 
 	/* 
   *-> Basic Urban Wage Premium Plot
 
-		use "$project/data/dta/urban_wage_premium_data.dta", clear
+		use "$project/data/dta/ipums_compiled.dta", clear
 		
 	*->fix income top codes
 		
