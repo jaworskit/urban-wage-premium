@@ -227,10 +227,11 @@ results <- results %>%
   ) +
   scale_y_continuous(labels = scales::percent, limits = c(-0.02, 0.42)) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 18) +
+  kfbmisc::theme_kyle(base_size = 20) +
   # pilot::theme_pilot() +
   guides(colour = guide_legend(title.position = "top", nrow = 1)) +
   theme(
+    axis.title.y = element_text(size = rel(0.8)),
     legend.position = "bottom",
     panel.grid.minor.x = element_blank(), 
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
@@ -287,7 +288,7 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 14, hei
     "Group Averages" = 18
     # "Rent" = 4
   )) +
-  kfbmisc::theme_kyle(base_size = 18) +
+  kfbmisc::theme_kyle(base_size = 20) +
   guides(
     colour = guide_legend(
       title.position = "top", nrow = 1,
@@ -295,6 +296,7 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 14, hei
     )
   ) +
   theme(
+    axis.title.y = element_text(size = rel(0.8)),
     legend.position = c(0.5, 0.88),
     panel.grid.minor.x = element_blank(),
     legend.background = element_rect(fill = "white", color = "gray20"),
@@ -323,9 +325,10 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_controls.pdf"), controls, width = 1
   ) +
   scale_y_continuous(labels = scales::percent, limits = c(-0.02, 0.42)) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 18) +
+  kfbmisc::theme_kyle(base_size = 20) +
   guides(colour = guide_legend(title.position = "top", nrow = 1)) +
   theme(
+    axis.title.y = element_text(size = rel(0.8)),
     legend.position = "bottom",
     panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),

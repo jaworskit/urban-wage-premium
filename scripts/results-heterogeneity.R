@@ -169,7 +169,7 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010)) {
   # data <- data[!is.na(pop_1940) | metarea == 0, ]
   data[, urban_top20 := fcase(
     top20, "Top 20",
-    !top20, "Urban",
+    !top20, "Other Urban",
     default = "Non-urban"
   )]
 
@@ -282,61 +282,13 @@ for (y in c(1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010)) {
 # Plot Point Estimates ---------------------------------------------------------
 # load(file = glue("{gh}/data/estimates-heterogeneity.RData"))
 
-
-## 1940 MSAs -------------------------------------------------------------------
-
-results_1940_msas_clean <- results_1940_msas |>
-  filter(stringr::str_starts(code, "urban")) |>
-  mutate(
-    group = "Urban",
-    group = factor(group, levels = "Urban"),
-    code = NULL,
-    exp_est = exp(est) - 1,
-    est_lower90 = est - 1.65 * se,
-    est_upper90 = est + 1.65 * se,
-    est_lower95 = est - 1.96 * se,
-    est_upper95 = est + 1.96 * se,
-    exp_est_lower90 = exp(est_lower90) - 1,
-    exp_est_upper90 = exp(est_upper90) - 1,
-    exp_est_lower95 = exp(est_lower95) - 1,
-    exp_est_upper95 = exp(est_upper95) - 1
-  )
-
-(urban_1940_msas <- ggplot(
-    results_1940_msas_clean, 
-    aes(x = year, y = exp_est)
-  ) +
-  geom_line(size = 2, linetype = 1, color = "black") +
-  geom_point(size = 5, shape = 15, color = "black") +
-  geom_errorbar(
-    aes(ymin = exp_est_lower95, ymax = exp_est_upper95), 
-    linewidth = 1.5, width = 1,
-    color = "gray10"
-  ) +
-  labs(
-    x = NULL, y = "Urban Wage Premium", group = "Specification",
-    shape = "Specification", color = "Specification",
-    linetype = "Specification"
-  ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.02, 0.42)) +
-  scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 18) +
-  theme(
-    legend.position = "bottom",
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
-  ))
-
-ggsave(glue("{gh}/paper/figures/urbanpremium_1940_msas.pdf"), urban_1940_msas, width = 14, height = 6)
-
-
 ## Top 20 Populous Urban Areas -------------------------------------------------
 
 results_top20_clean <- results_top20 |>
   filter(stringr::str_starts(code, "urban_top20")) |>
   mutate(
     group = stringr::str_remove(code, "urban_top20::"),
-    group = factor(group, levels = c("Top 20", "Urban")),
+    group = factor(group, levels = c("Top 20", "Other Urban")),
     code = NULL,
     exp_est = exp(est) - 1
   )
@@ -357,15 +309,15 @@ results_top20_clean <- results_top20 |>
   # ggsci::scale_color_jama() +
   scale_color_manual(values = c(
     "Top 20" = "grey10",
-    "Urban" = "grey10"
+    "Other Urban" = "grey40"
   )) +
   scale_linetype_manual(values = c(
     "Top 20" = 1,
-    "Urban" = 1
+    "Other Urban" = 1
   )) +
   scale_shape_manual(values = c(
     "Top 20" = 15,
-    "Urban" = 16
+    "Other Urban" = 16
   )) +
   kfbmisc::theme_kyle(base_size = 18) +
   guides(

@@ -47,7 +47,7 @@
 - `results-rent_premium.R`
   - Calculates raw urban rent premium observed in data as the average difference of log monthly rent 
 
-- `results-real_wage_premium.R`
+- `results-net_of_housing_premium.R`
   - Define "Real Wage" as the annual wages minus the annual average rent payment
   - Calculates raw urban real wage premium observed in data as the average difference of log real annual wages
   - Include covariates and group averages to see how selection drives the observed raw real wage premium over time.
@@ -57,7 +57,9 @@
   - 1. Estimates seperately for the top 20 largest populated cities (in 1940) and the other MSAs
   - 2. Estimates seperately for the four census regions (North, South, Midwest, and West)
   - 3. Estimates seperately for college and non-college workers
-  - 4. Estimates using 1940 MSA definitions
+  
+- `results-1940_msas.R`
+  - Robustness check dropping workers in MSAs that were created after 1940
 
 - `results-distribution.R`
   - Plots the distribution over time of residualized log weekly wages after controlling for individual controls and group averages

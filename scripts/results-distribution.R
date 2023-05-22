@@ -124,8 +124,9 @@ gap_9010 = wage_percentiles[, .(year, gap_9010 = ln_weeklywage_resid_90 - ln_wee
     group = NULL, color = NULL
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 18) + 
+  kfbmisc::theme_kyle(base_size = 20) + 
   theme(
+    axis.title.y = element_text(size = rel(0.8)),
     panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
     axis.line.x = element_blank(), axis.ticks.x = element_blank()
@@ -161,8 +162,9 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_gap_9010.pdf"), plot_gap_9010,  wid
     group = NULL, color = NULL
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 18) + 
+  kfbmisc::theme_kyle(base_size = 20) + 
   theme(
+    axis.title.y = element_text(size = rel(0.8)),
     panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
     axis.line.x = element_blank(), axis.ticks.x = element_blank()
@@ -219,9 +221,10 @@ wage_percentiles[, year_pos := year - 1 + 2 * (urban == "Urban")]
   scale_x_continuous(
     breaks = seq(1940, 2020, by = 10)
   ) +
-  kfbmisc::theme_kyle(base_size = 18) + 
+  kfbmisc::theme_kyle(base_size = 20) + 
   guides(colour = guide_legend(nrow = 1)) +
   theme(
+    axis.title.y = element_text(size = rel(0.8)),
     legend.position = "bottom",
     panel.grid.minor.x = element_blank(), 
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
@@ -251,9 +254,10 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_9010_urban.pdf"), plot_9010_urban, 
     "Urban" = "grey10",
     "Non-Urban" = "grey40"
   )) +
-  kfbmisc::theme_kyle(base_size = 18) + 
+  kfbmisc::theme_kyle(base_size = 20) + 
   guides(colour = guide_legend(nrow = 1)) +
   theme(
+    axis.title.y = element_text(size = rel(0.8)),
     legend.position = "bottom",
     panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),

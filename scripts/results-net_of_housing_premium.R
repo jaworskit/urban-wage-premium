@@ -163,10 +163,10 @@ results <- results %>%
   ) +
   scale_y_continuous(labels = scales::percent, limits = c(-0.05, 0.33)) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 18) +
+  kfbmisc::theme_kyle(base_size = 20) +
   guides(colour = guide_legend(title.position = "top", nrow = 1)) +
   theme(
-    legend.position = "bottom",
+    axis.title.y = element_text(size = rel(0.8)),
     panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
     axis.line.x = element_blank(), axis.ticks.x = element_blank()
@@ -190,12 +190,12 @@ ggsave(glue("{gh}/paper/figures/netofhousing_wagepremium_urban.pdf"), urban, wid
   labs(
     x = NULL, y = "Urban Wage Premium (Net of Housing)"
   ) +
-  scale_y_continuous(labels = scales::percent) +
   scale_y_continuous(labels = scales::percent, limits = c(-0.05, 0.33)) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 18) +
+  kfbmisc::theme_kyle(base_size = 20) +
   guides(colour = guide_legend(title.position = "top", nrow = 1)) +
   theme(
+    axis.title.y = element_text(size = rel(0.8)),
     legend.position = "bottom",
     panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
@@ -205,3 +205,44 @@ ggsave(glue("{gh}/paper/figures/netofhousing_wagepremium_urban.pdf"), urban, wid
 ggsave(glue("{gh}/paper/figures/netofhousing_wagepremium_causal.pdf"), causal, width = 14, height = 6)
  
 
+## Combined
+
+(combined <- ggplot(
+  results |> filter(group != "Controls"),
+  aes(x = year, y = exp_est, group = group, color = group, shape = group)
+) +
+  geom_line(linewidth = 2, linetype = 1) +
+  geom_errorbar(
+    aes(ymin = exp_est_lower95, ymax = exp_est_upper95), 
+    linewidth = 1.5, width = 1,
+  ) +
+  geom_point(size = 5) +
+  labs(
+    x = NULL, y = "Urban Wage Premium (Net of Housing)",
+    group = "Specification", 
+    color = "Specification", 
+    shape = "Specification"
+  ) +
+  scale_color_manual(values = c(
+    "Urban Only" = "grey70",
+    "Group Averages" = "grey10"
+  )) +
+  scale_y_continuous(labels = scales::percent, limits = c(-0.05, 0.33)) +
+  scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
+  kfbmisc::theme_kyle(base_size = 20) +
+  guides(
+    colour = guide_legend(
+      title.position = "top", nrow = 1,
+      override.aes = list(linetype = 0)
+    )
+  ) +
+  theme(
+    axis.title.y = element_text(size = rel(0.8)),
+    legend.position = c(0.5, 0.88),
+    legend.background = element_rect(fill = "white", color = "gray20"),
+    panel.grid.minor.x = element_blank(),
+    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+  ))
+
+ggsave(glue("{gh}/paper/figures/netofhousing_wagepremium_combined.pdf"), combined, width = 14, height = 6)
