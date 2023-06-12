@@ -52,7 +52,7 @@ across our sample period.
 
 ### Analysis 
 
-### Summary Statistics
+#### Summary Statistics
 
 - `results-summary.do`
   - Creates summary table of Year, Wage Gap (%), Urban Overall (%), % With College Degree (Overall, in Urban Areas, and in Nonurban Areas)
@@ -63,7 +63,7 @@ across our sample period.
 - `results-PCA_group_averages.R`
   - A simple script to calculate the PCA of the used group averages
 
-### Regression Results
+#### Regression Results
 
 - `results-urban_premium.R`
   - Calculates raw urban wage premium observed in data as the average difference of log weekly wages
