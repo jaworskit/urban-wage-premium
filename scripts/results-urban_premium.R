@@ -428,8 +428,9 @@ ggsave(
 
 ggsave(
   glue("{gh}/paper/figures/urbanpremium_controls_and_causal.pdf"), 
-  causal, width = 14, height = 6
+  combined, width = 14, height = 6
 )
+
 
 
 
