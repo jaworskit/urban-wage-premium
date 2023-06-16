@@ -113,7 +113,7 @@ cbind(
   as.matrix(top10_2020)
 ) |> 
   apply(1, printmrow) |>
-  cat(file = here::here("paper/tables/summary_stats/top10.tex")) |>
+  # cat(file = here::here("paper/tables/summary_stats/top10.tex")) |>
   cat() 
 
 # Flint, MI & 48.7\% & San Jose-Sunnyvale-Santa Clara, CA & 63.2\% \\ 
@@ -126,8 +126,6 @@ cbind(
 # New York, NY & 38.8\% & Trenton-Ewing, NJ & 36.1\% \\ 
 # Milwaukee-Waukesha, WI & 38.5\% & Midland, TX & 34\% \\ 
 # Rochester, NY & 38.4\% & Baltimore-Towson, MD & 33.6\% \\ 
-
-
 
 
 

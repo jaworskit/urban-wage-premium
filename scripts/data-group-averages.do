@@ -29,12 +29,17 @@ qui g college_degree = (educ >= 10)
 * msacode is MSA code or 10000*statefips for non-urban areas
 sort year msacode
 
+* Drop 0-weight individuals
+drop if perwt == 0
+drop if !inrange(year, 1940, 2020)
+
+
 ********************************************************************************
 * Generate Group Averages
 ********************************************************************************
 *-> Total Pop.
 
-	gegen perwt_total = total(perwt), by(year msacode)
+	qui by year msacode: gegen perwt_total = total(perwt)
 
 *-> By Race Group
 	
@@ -88,9 +93,11 @@ sort year msacode
 		
 *-> Average rent
 
-	qui gegen rent_total = total(rent), by(year msacode)
-	qui g rent_avg = rent_total/perwt_total
-	drop rent_total
+  qui g pos_rent = (rent > 0) * (rent < .)
+  qui by year msacode: gegen perwt_rent_total = total(perwt * pos_rent)
+	qui gegen rent_total = total(rent * pos_rent), by(year msacode)
+	qui g rent_avg = rent_total / perwt_rent_total
+	drop rent_total pos_rent
 
 *-> Average housing price
 
@@ -98,7 +105,7 @@ sort year msacode
 	qui g housingvalue = perwt*valueh
 	qui gegen total_houses = total(houses), by(year msacode)
 	qui gegen total_housingvalue = total(housingvalue), by(year msacode)
-	qui g average_price = total_housingvalue/total_houses
+	qui g average_price = total_housingvalue / total_houses
 	drop total_houses total_housingvalue housingvalue houses
 		
 ********************************************************************************
@@ -248,5 +255,11 @@ sort year msacode
 	drop total_houses total_housingvalue housingvalue houses
 
 
+*-> Drop people with negative real wage
+
+  qui g realwage = 52 * weeklywage - 12 * rent_avg
+  keep if realwage > 0
+
 *-> Export
+
   save "$project/data/dta/urban_wage_final.dta", replace 

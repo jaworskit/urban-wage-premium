@@ -124,7 +124,7 @@ gap_9010 = wage_percentiles[, .(year, gap_9010 = ln_weeklywage_resid_90 - ln_wee
     group = NULL, color = NULL
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 20) + 
+  kfbmisc::theme_kyle(base_size = 18) + 
   theme(
     axis.title.y = element_text(size = rel(0.8)),
     panel.grid.minor.x = element_blank(),
@@ -162,7 +162,7 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_gap_9010.pdf"), plot_gap_9010,  wid
     group = NULL, color = NULL
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 20) + 
+  kfbmisc::theme_kyle(base_size = 18) + 
   theme(
     axis.title.y = element_text(size = rel(0.8)),
     panel.grid.minor.x = element_blank(),
@@ -171,7 +171,9 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_gap_9010.pdf"), plot_gap_9010,  wid
   ))
 
 # kfbmisc::ggpreview(plot_9010, device = "pdf", width = 14, height = 6)
-ggsave(glue("{gh}/paper/figures/urbanpremium_9010.pdf"), plot_9010,  width = 14, height = 6)
+ggsave(
+  glue("{gh}/paper/figures/urbanpremium_9010.pdf"), 
+  plot_9010,  width = 14, height = 6)
 
 
 
@@ -221,7 +223,7 @@ wage_percentiles[, year_pos := year - 1 + 2 * (urban == "Urban")]
   scale_x_continuous(
     breaks = seq(1940, 2020, by = 10)
   ) +
-  kfbmisc::theme_kyle(base_size = 20) + 
+  kfbmisc::theme_kyle(base_size = 18) + 
   guides(colour = guide_legend(nrow = 1)) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
@@ -232,7 +234,10 @@ wage_percentiles[, year_pos := year - 1 + 2 * (urban == "Urban")]
   ))
 
 # kfbmisc::ggpreview(plot_9010_urban, device = "pdf", width = 14, height = 6)
-ggsave(glue("{gh}/paper/figures/urbanpremium_9010_urban.pdf"), plot_9010_urban,  width = 14, height = 6)
+ggsave(
+  glue("{gh}/paper/figures/urbanpremium_9010_urban.pdf"), 
+  plot_9010_urban,  width = 14, height = 6
+)
 
 
 
@@ -254,7 +259,7 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_9010_urban.pdf"), plot_9010_urban, 
     "Urban" = "grey10",
     "Non-Urban" = "grey40"
   )) +
-  kfbmisc::theme_kyle(base_size = 20) + 
+  kfbmisc::theme_kyle(base_size = 18) + 
   guides(colour = guide_legend(nrow = 1)) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),

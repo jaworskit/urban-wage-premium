@@ -30,9 +30,7 @@ use "$project/data/dta/urban_wage_final.dta", clear
 
 *-> Summary Table of urban indicator, log(remove own MA), wage_urban, and wage_nonurban
 
-	qui g college_degree = (educ >= 10)
-
-	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 2020 {
+	foreach year of numlist 1940 1950 1960 1970 1980 1990 2000 2010 {
   * foreach year of numlist 1940 {
     qui sum urban [aw=perwt] if year == `year'
     matrix frac_urban_`year' = `r(mean)' * 100
@@ -58,9 +56,9 @@ use "$project/data/dta/urban_wage_final.dta", clear
 		matrix define row_`year' = (premia_`year', frac_urban_`year', frac_college_`year', frac_college_urban_`year', frac_college_nonurban_`year')
 	}
 
-	matrix define results = (row_1940 \ row_1950 \ row_1960 \ row_1970 \ row_1980 \ row_1990 \ row_2000 \ row_2010 \ row_2020)
+	matrix define results = (row_1940 \ row_1950 \ row_1960 \ row_1970 \ row_1980 \ row_1990 \ row_2000 \ row_2010)
 
-	matrix rownames results = 1940 1950 1960 1970 1980 1990 2000 2010 2020
+	matrix rownames results = 1940 1950 1960 1970 1980 1990 2000 2010
 
 
 	esttab matrix(results, fmt(1 1 1 1 1))  ///

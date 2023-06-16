@@ -35,7 +35,6 @@ gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
 # results <- df0
 
 
-
 ## Regression Results ----------------------------------------------------------
 
 data <- NULL
@@ -67,7 +66,8 @@ setFixest_fml(
 )
 
 # Loop through year
-for (i in 1:length(year_seq)) {
+for (i in seq_along(year_seq)) {
+  
   y <- year_seq[i]
   cli::cli_alert_info("Starting on year {y}")
 
@@ -105,8 +105,6 @@ for (i in 1:length(year_seq)) {
       educ + white + agegroup,
     data = data, cluster = ~metarea, weights = ~perwt, lean = TRUE
   )
-  # coef(est3)[["urban::1"]]
-  # se(est3)[["urban::1"]]
 
   ests_group[[i]] <- est3
 
@@ -122,8 +120,9 @@ for (i in 1:length(year_seq)) {
         se(x)[["urban::1"]]
       }) |>
       unlist(),
-    group = c("Urban Only", "Controls", "Group Averages")
+    group = c("Urban Only", "Individual Controls", "Group Averages")
   ))
+
 }
 
 
@@ -131,7 +130,6 @@ for (i in 1:length(year_seq)) {
 # save(results, ests_unadjusted, ests_controls, ests_group, file = glue("{gh}/data/estimates-urban_indicator.RData"))
 
 # load(file = glue("{gh}/data/estimates-urban_indicator.RData"))
-
 
 
 # Tables -----------------------------------------------------------------------
@@ -190,8 +188,6 @@ cat(
 )
 
 
-
-
 # Plot Point Estimates ---------------------------------------------------------
 
 # exponentiate log differences
@@ -207,7 +203,7 @@ results <- results %>%
     exp_est_upper90 = exp(est_upper90) - 1,
     exp_est_lower95 = exp(est_lower95) - 1,
     exp_est_upper95 = exp(est_upper95) - 1,
-    group = factor(group, levels = c("Raw", "Urban Only", "Controls", "Group Averages"))
+    group = factor(group, levels = c("Raw", "Urban Only", "Individual Controls", "Group Averages"))
   )
 
 ## Unadjusted ------------------------------------------------------------------
@@ -225,9 +221,13 @@ results <- results %>%
   labs(
     x = NULL, y = "Urban Wage Premium"
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.02, 0.42)) +
+  scale_y_continuous(
+  labels = scales::percent,
+  limits = c(-0.02, 0.44),
+  expand = c(0, 0)
+) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 20) +
+  kfbmisc::theme_kyle(base_size = 18) +
   # pilot::theme_pilot() +
   guides(colour = guide_legend(title.position = "top", nrow = 1)) +
   theme(
@@ -246,8 +246,12 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 14, hei
 (controls <- ggplot(
   # results,
   results |> 
-    subset(results$group != "Group Averages") |>
-    DT(, year_shift := ifelse(group == "Controls", year + 0.5, year - 0.5)),
+    filter(results$group != "Group Averages") |>
+    mutate(
+      year_shift = ifelse(
+        group == "Individual Controls", year + 0.5, year - 0.5
+      )
+    ),
   aes(x = year_shift, y = exp_est, group = group, color = group, ymin = exp_est_lower95, ymax = exp_est_upper95)
 ) +
   geom_line(aes(linetype = group), linewidth = 2) +
@@ -257,17 +261,21 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 14, hei
   ) +
   geom_point(aes(shape = group), size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium", group = "Specification",
-    shape = "Specification", color = "Specification",
-    linetype = "Specification"
+    x = NULL, y = "Urban Wage Premium", 
+    group = NULL, shape = NULL,
+    color = NULL, linetype = NULL
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.02, 0.42)) +
+  scale_y_continuous(
+    labels = scales::percent, 
+    limits = c(-0.02, 0.44),
+    expand = c(0, 0)
+  ) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
   # ggsci::scale_color_jama() +
   scale_color_manual(values = c(
     # "Raw" = "grey40",
     "Urban Only" = "grey70",
-    "Controls" = "grey40",
+    "Individual Controls" = "grey40",
     # "Market Access" = "grey10",
     "Group Averages" = "grey10"
     # "Rent" = "grey10"
@@ -275,7 +283,7 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 14, hei
   scale_linetype_manual(values = c(
     # "Raw" = 2,
     "Urban Only" = 1,
-    "Controls" = 1,
+    "Individual Controls" = 1,
     # "Market Access" = 1,
     "Group Averages" = 1
     # "Rent" = 1
@@ -283,12 +291,12 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 14, hei
   scale_shape_manual(values = c(
     # "Raw" = 15,
     "Urban Only" = 15,
-    "Controls" = 16,
+    "Individual Controls" = 16,
     # "Market Access" = 17,
     "Group Averages" = 18
     # "Rent" = 4
   )) +
-  kfbmisc::theme_kyle(base_size = 20) +
+  kfbmisc::theme_kyle(base_size = 18) +
   guides(
     colour = guide_legend(
       title.position = "top", nrow = 1,
@@ -298,8 +306,9 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_urban.pdf"), urban, width = 14, hei
   theme(
     axis.title.y = element_text(size = rel(0.8)),
     legend.position = c(0.5, 0.88),
-    panel.grid.minor.x = element_blank(),
     legend.background = element_rect(fill = "white", color = "gray20"),
+    legend.margin = margin(4, 12, 12, 12),
+    panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
     axis.line.x = element_blank(), axis.ticks.x = element_blank()
   ))
@@ -323,9 +332,13 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_controls.pdf"), controls, width = 1
   labs( 
     x = NULL, y = "Urban Wage Premium"
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.02, 0.42)) +
+  scale_y_continuous(
+  labels = scales::percent,
+  limits = c(-0.02, 0.44),
+  expand = c(0, 0)
+) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
-  kfbmisc::theme_kyle(base_size = 20) +
+  kfbmisc::theme_kyle(base_size = 18) +
   guides(colour = guide_legend(title.position = "top", nrow = 1)) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
@@ -335,6 +348,88 @@ ggsave(glue("{gh}/paper/figures/urbanpremium_controls.pdf"), controls, width = 1
     axis.line.x = element_blank(), axis.ticks.x = element_blank()
   ))
 
-ggsave(glue("{gh}/paper/figures/urbanpremium_causal.pdf"), causal, width = 14, height = 6)
+ggsave(
+  glue("{gh}/paper/figures/urbanpremium_causal.pdf"), 
+  causal, width = 14, height = 6
+)
+
+
+## Controls and Casual Estimates -----------------------------------------------
+
+(combined <- ggplot(
+  # results,
+  results |> 
+    filter(results$group != "Urban Only") |>
+    mutate(
+      year_shift = ifelse(
+        group == "Individual Controls", year - 0.5, year + 0.5
+      )
+    ),
+  aes(x = year_shift, y = exp_est, group = group, color = group, ymin = exp_est_lower95, ymax = exp_est_upper95)
+) +
+  geom_line(aes(linetype = group), linewidth = 2) +
+  geom_errorbar(
+    aes(ymin = exp_est_lower95, ymax = exp_est_upper95), 
+    linewidth = 1.5, width = 1
+  ) +
+  geom_point(aes(shape = group), size = 5) +
+  labs(
+    x = NULL, y = "Urban Wage Premium", 
+    group = NULL, shape = NULL, 
+    color = NULL, linetype = NULL
+  ) +
+  scale_y_continuous(
+    labels = scales::percent, 
+    limits = c(-0.02, 0.44),
+    expand = c(0, 0)
+  ) +
+  scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
+  # ggsci::scale_color_jama() +
+  scale_color_manual(values = c(
+    # "Raw" = "grey40",
+    "Urban Only" = "grey70",
+    "Individual Controls" = "grey40",
+    # "Market Access" = "grey10",
+    "Group Averages" = "grey10"
+    # "Rent" = "grey10"
+  )) +
+  scale_linetype_manual(values = c(
+    # "Raw" = 2,
+    "Urban Only" = 1,
+    "Individual Controls" = 1,
+    # "Market Access" = 1,
+    "Group Averages" = 1
+    # "Rent" = 1
+  )) +
+  scale_shape_manual(values = c(
+    # "Raw" = 15,
+    "Urban Only" = 15,
+    "Individual Controls" = 16,
+    # "Market Access" = 17,
+    "Group Averages" = 18
+    # "Rent" = 4
+  )) +
+  kfbmisc::theme_kyle(base_size = 18) +
+  guides(
+    colour = guide_legend(
+      title.position = "top", nrow = 1,
+      override.aes = list(linetype = 0)
+    )
+  ) +
+  theme(
+    axis.title.y = element_text(size = rel(0.8)),
+    legend.position = c(0.5, 0.88),
+    legend.background = element_rect(fill = "white", color = "gray20"),
+    legend.margin = margin(4, 12, 12, 12),
+    panel.grid.minor.x = element_blank(),
+    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+  ))
+
+ggsave(
+  glue("{gh}/paper/figures/urbanpremium_controls_and_causal.pdf"), 
+  causal, width = 14, height = 6
+)
+
 
 

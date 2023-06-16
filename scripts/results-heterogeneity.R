@@ -300,11 +300,15 @@ results_top20_clean <- results_top20 |>
   geom_line(aes(linetype = group), size = 2) +
   geom_point(aes(shape = group), size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium", group = "Specification",
-    shape = "Specification", color = "Specification",
-    linetype = "Specification"
+    x = NULL, y = "Urban Wage Premium", 
+    group = NULL, shape = NULL, 
+    color = NULL, linetype = NULL
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.02, 0.42)) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(-0.02, 0.44),
+    expand = c(0, 0)
+  ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   # ggsci::scale_color_jama() +
   scale_color_manual(values = c(
@@ -328,8 +332,9 @@ results_top20_clean <- results_top20 |>
   ) +
   theme(
     legend.position = c(0.5, 0.88),
-    panel.grid.minor.x = element_blank(),
     legend.background = element_rect(fill = "white", color = "gray20"),
+    legend.margin = margin(4, 12, 12, 12),
+    panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
     axis.line.x = element_blank(), axis.ticks.x = element_blank()
   ))
@@ -352,14 +357,18 @@ results_region_clean <- results_region |>
     results_region_clean, 
     aes(x = year, y = exp_est, group = group, color = group)
   ) +
-  geom_line(aes(linetype = group), size = 2) +
+  geom_line(aes(linetype = group), linewidth = 2) +
   geom_point(aes(shape = group), size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium", group = "Specification",
-    shape = "Specification", color = "Specification",
-    linetype = "Specification"
+    x = NULL, y = "Urban Wage Premium", 
+    group = NULL, shape = NULL, 
+    color = NULL, linetype = NULL
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.02, 0.42)) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(-0.02, 0.44),
+    expand = c(0, 0)
+  ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   scale_color_manual(values = c(
     "North" = ggsci::pal_jama("default")(4)[1],
@@ -388,8 +397,9 @@ results_region_clean <- results_region |>
   ) +
   theme(
     legend.position = c(0.5, 0.88),
-    panel.grid.minor.x = element_blank(),
     legend.background = element_rect(fill = "white", color = "gray20"),
+    legend.margin = margin(4, 12, 12, 12),
+    panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
     axis.line.x = element_blank(), axis.ticks.x = element_blank()
   ))
@@ -415,15 +425,18 @@ results_college <- results_college |>
   )
 
 (plot_college <- ggplot(results_college, aes(x = year, y = exp_est, group = group, color = group, shape = group)) + 
-  geom_line(size = 2, linetype = 1) +
+  geom_line(linewidth = 2, linetype = 1) +
   geom_point(size = 5) +
   labs(
     x = NULL, y = "Urban Wage Premium", 
-    group = "Specification",
-    shape = "Specification", color = "Specification",
-    linetype = "Specification"
+    group = NULL, shape = NULL, 
+    color = NULL, linetype = NULL
   ) +
-  scale_y_continuous(labels = scales::percent, limits = c(-0.02, 0.42)) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(-0.02, 0.44),
+    expand = c(0, 0)
+  ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   scale_color_manual(values = c(
     "College" = "grey10",
@@ -446,13 +459,17 @@ results_college <- results_college |>
   ) +
   theme(
     legend.position = c(0.5, 0.88),
-    panel.grid.minor.x = element_blank(),
     legend.background = element_rect(fill = "white", color = "gray20"),
+    legend.margin = margin(4, 12, 12, 12),
+    panel.grid.minor.x = element_blank(),
     axis.line.y = element_blank(), axis.ticks.y = element_blank(),
     axis.line.x = element_blank(), axis.ticks.x = element_blank()
   ))
 
-ggsave(glue("{gh}/paper/figures/urbanpremium_college.pdf"), plot_college, width = 14, height = 4)
+ggsave(
+  glue("{gh}/paper/figures/urbanpremium_college.pdf"), 
+  plot_college, width = 14, height = 4
+)
 
 
 

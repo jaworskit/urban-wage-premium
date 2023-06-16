@@ -16,8 +16,6 @@ library(kfbmisc)
 project <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
 gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
 
-# TODO: Windsorize rent variable
-
 # Results ----------------------------------------------------------------------
 
 ## Regression Results ----------------------------------------------------------
@@ -62,7 +60,7 @@ for (i in 1:length(year_seq)) {
     collect()
 
   data = data |> 
-    filter(rent > 0) |> 
+    tidylog::filter(!is.na(rent)) |>
     # filter(!(year == 1940 & rent > 500)) |> 
     # filter(!(year == 1940 & rent > 100)) |> 
     mutate(
