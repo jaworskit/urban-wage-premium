@@ -1,29 +1,4 @@
-# The Urban Wage Premium in Historical Perspective
-
-[Kyle Butts](https://www.kylebutts.com/)<sup>1</sup>, [Taylor Jaworski](https://jaworskit.github.io/)<sup>1</sup>, and [Carl Kitchens](https://sites.google.com/site/kitchct/)<sup>2</sup>
-<br>
-<sup>1</sup>University of Colorado: Boulder and <sup>2</sup>Florida State University
-
-#### [Paper](https://github.com/jaworskit/urban-wage-premium/blob/master/paper/urban_wage.pdf) 
-
-
-## Abstract
-
-We estimate the urban wage premium in the United States from 1940 to 2010. 
-Drawing on recent advances in the literature on selection on unobservables, 
-we show how to control for heterogeneity in the characteristics of individuals 
-that choose to live in cities to address endogenous sorting. Estimates from 
-naive comparisons of individuals living in urban versus rural areas 
-substantially overstate the urban wage premium. We find that the premium is 
-highest in the middle of the twentieth century (about 12 percent in 1940 and 
-1950) relative to the early in twenty-first century (declining to a few percent 
-by mid-2020). Overall, the urban wage premium is decreasing and sorting 
-explains a larger fraction of the difference in urban versus rural earnings 
-across our sample period.
-
-## Replication
-
-### Data Cleaning
+## Data Cleaning
 
 - `metarea.do`
   - Creates MSA crosswalk from 1940-2020
@@ -50,9 +25,9 @@ across our sample period.
 - `convert_to_parquet.R`
   - Makes loading data quicker in R by converting to arrow parquet format
 
-### Analysis 
+## Analysis
 
-#### Summary Statistics
+### Summary Statistics
 
 - `results-summary.do`
   - Creates summary table of Year, Wage Gap (%), Urban Overall (%), % With College Degree (Overall, in Urban Areas, and in Nonurban Areas)
@@ -63,7 +38,7 @@ across our sample period.
 - `results-PCA_group_averages.R`
   - A simple script to calculate the PCA of the used group averages
 
-#### Regression Results
+### Regression Results
 
 - `results-urban_premium.R`
   - Calculates raw urban wage premium observed in data as the average difference of log weekly wages
@@ -89,18 +64,5 @@ across our sample period.
 - `results-distribution.R`
   - Plots the distribution over time of residualized log weekly wages after controlling for individual controls and group averages
   - Plots seperately for urban/non-urban workers
-
-
-
-## Citation
-
-```
-@article{butts2023urban,
-  title={The Urban Wage Premium in Historical Perspective},
-  author={Butts, Kyle and Jaworski, Taylor and Kitchens, Carl},
-  journal={Working Paper},
-  year={2023}
-}
-```
 
 

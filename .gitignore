@@ -1,11 +1,11 @@
 .DS_Store
 
-
 ## R files
 .RData
 .RHistory
+.Rproj.user
 
-## Core latex/pdflatex auxiliary files:
+## Latex
 *.aux
 *.lof
 *.log
@@ -22,13 +22,9 @@
 *.bbl
 *.bdg_latexmk
 *.xdv
-
-## Build tool auxiliary files:
 *.fdb_latexmk
 *.synctex
 *.synctex(busy)
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
-
-.Rproj.user
