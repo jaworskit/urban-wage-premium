@@ -124,8 +124,8 @@
 
 % Commands for leaving comments \kyle{...}
 \newtoggle{INCLUDECOMMENTS}
-% \toggletrue{INCLUDECOMMENTS}
-\togglefalse{INCLUDECOMMENTS}
+\toggletrue{INCLUDECOMMENTS}
+% \togglefalse{INCLUDECOMMENTS}
 
 \newcommand{\taylor}[1]{\iftoggle{INCLUDECOMMENTS}{{\color{magenta}\textbf{Taylor:} #1}}{}}
 \newcommand{\kyle}[1]{\iftoggle{INCLUDECOMMENTS}{{\color{magenta}\textbf{Kyle:} #1}}{}}
@@ -195,13 +195,24 @@ For example, \citet*{Glaeser_Mare_2001} estimate an urban wage premium between 4
 \citet{rosenthal2004evidence} and, more recently, \citet{diamond2021spatial} survey the large literature that describes the theoretical underpinnings and empirical findings related to agglomeration and urban sorting.}
 
 Due to limited data availability the existing literature has focused primarily on the last three decades and little is known about the evolution of the urban wage premium before 1980.
-In this paper, we show how to use readily available census data to estimate the urban wage premium while controlling for observed individual characteristics as well as unobserved characteristics following the approach in \citet*{altonji2018estimating}.\footnote{
+The primary challenge is that census data only provides a cross-sectional snapshot of who lives in an urban area and how much they earn, preventing the standard strategy of tracking workers when they move into or out of an urban area. 
+Hence, any cross-sectional estimates comparing urban to non-urban workers will be confounded by unobserved worker characteristics that drive sorting.
+
+In this paper, we show how to use readily available census data to estimate the urban wage premium while controlling for observed individual characteristics as well as unobserved characteristics following the approach in \citet*{altonji2018estimating}.
+Their setup is based on the classic urban location choice model. 
+Workers vary in their willingness to pay for location-specific amenities based on observable and, importantly, \emph{unobservable} characteristics.
+% Workers then  draw location-specific idiosyncratic errors (assumed to be distributed type-1 extreme value). 
+% The choice model gives rise to create two important mappings. 
+Because of differences in willingness-to-pay, location-specific averages of observable characteristics vary based on a location's underlying amenities. 
+Similarly, the averages of unobservable characteristics vary because of (potentially different) location-specific amenities. 
+If the amenities driving both observable and unobservable sorting are the same, the model suggests that controlling for observable location-specific averages is sufficient to control for unobservable averages.\footnote{
+  We discuss this assumption below and provide evidence that builds confidence in the plausibility.
+}
+This approach is crucial as it allows us to address sorting when estimating the historical urban wage premium without individual-level longitudinal data.
+
+We estimate the urban wage premium from 1940 to 2010.\footnote{
   Specifically, we use only repeated cross-sections from the US decennial censuses and American Community Survey beginning in 1940 when information on individual wages was first reported.
 }
-In their setup, the classic urban location choice model gives rise to a set of sufficient statistics that control for sorting based on unobserved characteristics.
-Importantly, this approach allows us to address sorting in the context of estimating the historical urban wage premium in the absence of individual-level longitudinal data.
-
-We estimate the urban wage premium from 1940 to 2010.
 Focusing first on the period since 1980, where we can make direct comparisons to the existing literature, we document an urban wage premium starting at 7.7 percent in 1980 and declining to around 5 percent in the following decades.
 This is consistent with the results reported in \citet*{Glaeser_Mare_2001}, \cite*{Yankow_2006}, and \citet*{BaumSnow_Pavan_2012} and provides support that our approach (drawing on \citet*{altonji2018estimating}) addresses the key identification concern related to sorting.
 Second, moving to earlier decades, we estimate an urban wage premium of 12.9 percent in 1940, 16.2 percent in 1950, 13.3 percent in 1960, and 9.2 percent in 1970. % Exponentiate table 3
@@ -210,25 +221,71 @@ The pattern suggests that agglomeration forces were relatively more important pr
   Due to changes in the definition of cities over time (smaller cities being added over-time), we also estimate the urban wage premium on consistent set of locations based on the urban status in 1940. 
   The results remain very similar.
 }
-We also show that our estimates are robust to adjusting wages for local housing costs. 
-\kyle{New language: We also show that after adjusting for housing costs, the observed wage premium is decreased significantly. However, our causal estimates that adjust for sorting remain roughly unchanged.}
 
-The increasing role of sorting for explaining the difference between urban and non-urban wages over time is consistent with a large literature that highlights increased migration by highly educated workers to cities \citep*{shapiro2006smart, moretti2013real, Diamond_2016}, changes in the structure of manufacturing after 1950 \citep*{dumais2002geographic, glaeser2010did}, the increased mobility of highly skilled workers in response to tax policy \citep*{moretti2017effect, verginer2021talent, akcigit2016taxation}, and recent evidence of skilled workers sorting on improved local amenities \citep*{baum2020accounting, Diamond_2016, su2022rising, glaeser2001consumer, glaeser2003urban, glaeser2009wealth}.\footnote{
-Our results are also consistent with a growing literature that emphasizes the potential to overstate agglomeration forces in small samples \citep*{ahlfeldt2022granular, dingel2020spatial, schoefer2022productivity}.
-For example, \citet*{schoefer2022productivity} note that up to three-quarters of the variation in regional productivity dispersion is due to small sample bias.
-Similarly, \citet*{dingel2020spatial} demonstrate that the potential impacts of Amazon's HQ2 are  smaller when accounting for granularity relative to the traditional spatial equilibrium models.} 
+The increasing role of sorting for explaining the difference between urban and non-urban wages over time is consistent with multiple explanations found in the literature. 
+Increased migration by highly educated workers to cities \citep*{shapiro2006smart, moretti2013real, Diamond_2016}.
+Changes in the structure of manufacturing after 1950 \citep*{dumais2002geographic, glaeser2010did}. 
+The increased mobility of highly skilled workers in response to tax policy \citep*{moretti2017effect, verginer2021talent, akcigit2016taxation}. 
+Recent evidence of skilled workers sorting on improved local amenities \citep*{baum2020accounting, Diamond_2016, su2022rising, glaeser2001consumer, glaeser2003urban, glaeser2009wealth}.\footnote{
+  Our results are also consistent with a growing literature that emphasizes the potential to overstate agglomeration forces in small samples \citep*{ahlfeldt2022granular, dingel2020spatial, schoefer2022productivity}.
+  For example, \citet*{schoefer2022productivity} note that up to three-quarters of the variation in regional productivity dispersion is due to small sample bias.
+  Similarly, \citet*{dingel2020spatial} demonstrate that the potential impacts of Amazon's HQ2 are  smaller when accounting for granularity relative to the traditional spatial equilibrium models.
+}  
+
+We find that the causal urban wage premium, which reflects the fact that workers moving to cities earn more, was large in 1940 but steadily declined over time, reaching its lowest point by 2010, the most recent year in our data. 
+This pattern aligns with several well-documented trends in the literature. 
+First, the increasing role of sorting in explaining the wage differential between urban and non-urban areas is consistent with the rising migration of highly educated workers to cities \citep*{shapiro2006smart, moretti2013real, Diamond_2016}. 
+Though raw wage premiums have been growing in recent years, this migration and our results suggest this is a compositional effect rather than a growth in the causal premium. 
+This trend is also linked to structural changes in manufacturing after 1950 \citep*{dumais2002geographic, glaeser2010did}, which contributed to shifting economic activity toward urban areas. 
+Historically, cities were manufacturing hubs with large agglomeration forces which enhanced worker's productivity. 
+The shift away from manufacturing in cities could be a driver of the decline in the causal wage premium. 
+Moreover, the increased mobility of highly skilled workers in response to tax policy further supports these findings \citep*{moretti2017effect, verginer2021talent, akcigit2016taxation}.
+
+\kyle{We have these, but not sure where to put them}
+Another contributing factor is the growing body of evidence that highly skilled workers are increasingly sorting into cities based on improved local amenities \citep*{baum2020accounting, Diamond_2016, su2022rising, glaeser2001consumer, glaeser2003urban, glaeser2009wealth}. 
+\footnote{
+  Our results are also consistent with a growing literature that emphasizes the potential to overstate agglomeration effects in small samples \citep*{ahlfeldt2022granular, dingel2020spatial, schoefer2022productivity}. 
+  For instance, \citet*{schoefer2022productivity} show that as much as three-quarters of the variation in regional productivity dispersion may be due to small sample bias. Likewise, \citet*{dingel2020spatial} illustrate that when accounting for granularity, the potential impacts of Amazon's HQ2 are smaller compared to predictions from traditional spatial equilibrium models.
+}
+
+The first concern with our results is that while urban workers might earn more in wages, they also face larger housing costs and hence there might not be a \emph{real} benefit to urbanity after adjusting for housing costs.
+We calculate a wage meausre that subtracts off housing costs following \citet{ganong2017has}, and reestimate both the raw and causal (net-)wage premium. 
+After adjusting for housing costs, the raw wage premium is decreased significantly between around 18\% in recent years and . 
+The decline is smallest around 1970 with around a 5 percentage point decline and larger at the beginning and end of our sample with around 15 percentage point decline. 
+However, our causal estimates remain roughly unchanged. 
+There is a 3-4 percentage point decline in 1940 and 1950, but otherwise our estimates remain stable. 
+\kyle{This is likely due to the fact that \emph{rent} is an amenity that people sort on and we absorb that impact already.}
 
 In addition to the main findings, we explore several potential sources of heterogeneity.
 First, we examine changes in the urban wage premium across the distribution of city sizes.
-We show that in 1940, the largest cities had stronger agglomeration forces relative to smaller urban areas; however, since the 1980s, the gap has narrowed.
+To do so, we estimate wage premiums separately for the 20 largest urban areas (based on 1940 populations) and other urban areas.
+We show that in 1940, the largest cities had larger urban wage premiums relative to smaller urban areas.
+However, the gap has narrowed since the 1980s.
 The pattern we document is consistent with the transition of cities from heavy manufacturing bases to idea-generating locations.
+
 Second, we consider regional differences and confirm that urban wage premium is falling \textit{within} each region.
-This suggests that it is not changes in regional development (i.e., the deindustrialization of the North and rise of the Sunbelt) driving changes in the urban wage premium.
-Third, we show that the urban wage premium is higher for college-educated workers.
-Despite the decline in the share of the premium attributable to agglomeration over time, college-educated workers continue to earn an urban premium.
-This is consistent with the role of skills in cities emphasized by \citet{moretti2013real}.
+The consistent fall of the premium within each region suggests that it is not changes in regional development (i.e., the deindustrialization of the North and rise of the Sunbelt) driving changes in the urban wage premium.
+We do find important regional trends that are consistent with the historical narrative.
+The Midwest had the largest urban wage premia in the middle of the century (around 25\% in 1950) that could reflect the strong agglomeration forces of manufacturing employment. 
+The west has had a growth in estimated urban wage premium since 1990, perhaps picking up on the growth of the technology sector in Silicon Valley and other regions. 
+
+Third, we estimate urban wage premium for college and non-college educated workers. 
+We find that throughout our sample, the urban wage premium is higher for college-educated workers.
+This is consistent with the complentary between skilled workers and cities emphasized by \citet{moretti2013real}.
+
+Fourth, we estimate urban wage premium separately for Black and White workers. 
+In all years, the premium for Black workers is no smaller than for White workers and is particularly larger between 1950 and 1970.
+The Black urban wage premium is estimated to be five to ten percentage points larger in the middle of the 20th century which is in line with the timing of the Great Migration \citep{derenoncourt2022can}.
+
+Fifth, we try to understand the role of urban \emph{wage-growth} premium as first documented by \citet{BaumSnow_Pavan_2012}. 
+We are fundamentally limited by cross-sectional data and can not observe directly whether a worker's wage grows faster in an urban area. 
+However, we estimate separate wage premia for older and younger workers assuming that the former has more years of urban experience and should presumably have larger wage premia.
+We indeed find that older workers have higher premia in most years, but the gap shrinks to zero in later years. 
+
+
 Finally, we provide evidence that the decline in the urban wage premium is consistent with the pattern of national wage compression documented by \citet{goldin1992great}.
-\kyle{Add new results to this section}
+\kyle{Do we think we should still include this?}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -425,19 +482,27 @@ The latter is a more precise estimate for average percent difference in wages.}
 \section{Sorting and the Urban Wage Premium}\label{sec:sorting}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this section, we move on to quantifying the urban wage premium by controlling for unobserved characteristics that may drive sorting.
+In this section, we turn to quantifying the causal urban wage premium by controlling for unobserved characteristics that may drive sorting.
+Sorting behaviors by workers can lead the urban indicator to be correlated with the average unobservable differences between urban and non-urban workers.
+The urban wage premium estimate therefore is contaminated by the fact that urban workers and non-urban workers have different underlying productivities. 
 The urban wage premium literature often uses individual panel data to isolate the effect of living in an urban area by observing individuals who transition across urban and rural locations.\footnote{
-For a recent example that uses matched employee-employer data, see \citet{FRINGS2022103786}.
-Additionally, \citet{eckert2022return} utilizes the placement of refugees in Denmark to estimate the returns to urban experience.} Given the cross-sectional nature of our data, we cannot adopt these panel data methods.
-To overcome the empirical challenge of addressing selection in the absence of individual-level panel data, we use properties of a location choice model to control for sorting as proposed by \citet{altonji2018estimating}. 
+  For a recent example that uses matched employee-employer data, see \citet{FRINGS2022103786}.
+  Additionally, \citet{eckert2022return} utilizes the placement of refugees in Denmark to estimate the returns to urban experience.
+} 
+Given the cross-sectional nature of our data, we cannot adopt these panel data methods.
 
-Individuals with different characteristics sort to different locations based on location-specific amenities.
-This is apparent in the data based on differences in location decisions across individuals with different observable characteristics \citep[e.g.][]{Diamond_2016}.
-Differences in average characteristics of residents in a location is linked to differences in the location's amenities.
-The key insight from the approach in \citet{altonji2018estimating} is that individuals also sort based on unobservables for the \emph{same} amenities.
-Thus, observing differences in the average observable characteristics is informative about differences in the average unobservable characteristics (even if the specific mapping is unknown). 
-\citet{altonji2018estimating} show that in a setting where the indirect utility function is additively separable, the mapping from location-level averages of observable variables to averages of unobservable variables is linear. 
-We utilize this mapping in our empirical approach by adding group-level averages of individual characteristics to our baseline estimating equation to control for sorting on unobservable characteristics.\footnote{
+To overcome the empirical challenge of worker's selection into urban locations in cross-sectional data, we use properties of a location choice model to control for sorting as proposed by \citet{altonji2018estimating}. 
+The canonical location choice model assumes that willingness to pay for amenities varies based on both observable and unobservable characteristics of the worker.  
+This leads workers to sort across locations based on differences in location-specific amenities.
+Empirical data clearly show differences in location decisions across individuals with varying observable characteristics \citep[e.g.][]{Diamond_2016}.
+
+At the core of our approach is the following intuition.
+One observable characteristic that varies across locations is the percentage of workers with a college degree.
+This variation could be driven by differences in consumptive amenities across locations, such as access to cultural activities, restaurants, or recreational spaces.
+Workers with different unobserved characteristics (such as varying work ethics and levels of creative intelligence) may also sort based on consumptive amenities.
+Hence, the average observable characteristics of workers can provide insights into differences in average unobservable characteristics, even if the precise relationship between them is unknown. 
+\citet{altonji2018estimating} show that under the standard location choice model, the mapping from location-level averages of observable variables to averages of unobservable variables is linear, which is crucial for our estimation approach.
+We utilize this linear mapping by incorporating group-level averages of observable individual characteristics into our baseline estimating equation to control for sorting on unobservable traits.\footnote{
   In this setting, observable and unobservable characteristics are a function of amenities, and  can be inverted as a function of observed characteristics (i.e., group average observables).
 }
 
@@ -445,28 +510,35 @@ More formally, consider an indirect utility function over locations $s$ that is 
 \begin{equation} \label{eq:loc choice}
     \text{V}_i(s) = {W}_i{A}_s + \varepsilon_{si} - {P}_s.
 \end{equation} 
-${W}_i$ represents individuals' underlying weights on each latent amenity. \citet{altonji2018estimating} then define the weights, $\text{W}_i$, as a function of observable characteristics ${X}_i$, unobservable characteristics ${X}_i^\text{U}$.\footnote{
-This multinomial model of utility is common in urban economics \citep*[e.g.][]{Kline_Moretti_2014,diamond2021spatial}.} Under these assumptions, the utility function can be rewritten as a function of individual-level observables, individual-level unobservables, amenities, and prices. 
+${W}_i$ represents individuals' underlying willingness to pay for each latent amenity.\footnote{
+  This multinomial model of utility is common in urban economics \citep*[e.g.][]{Kline_Moretti_2014,diamond2021spatial}.
+}
+\citet{altonji2018estimating} then define $\text{W}_i$ as an additive function of observable characteristics ${X}_i$ and unobservable characteristics ${X}_i^\text{U}$. 
+Under the assumptions, the utility function can be rewritten as a function of individual-level observables, individual-level unobservables, amenities, and prices:
 \begin{equation}\label{eq:loc choice sub}
     \text{V}_i(s) = ({X}_i\Theta + {X}_i^\text{U}\Theta^\text{U}) {A}_s + \varepsilon_{si} - {P}_s.
 \end{equation} 
 Individuals choose where to live to maximize utility over all locations, taking the amenities, prices, and individual characteristics as given. 
-Importantly, housing prices are allowed to adjust from sorting in the aggregate and our model only imposes that individuals do not consider their own affect on the prices when making their decision.
 
 \citet{altonji2018estimating} make five modeling assumptions: First, preferences are given by equation \eqref{eq:loc choice sub}.
 Second, $\varepsilon_{si}$ has mean zero and is independent of observables, unobservables, and amenities for all locations.
 Third, prices and amenities in each location are viewed as exogenous to the individual when choosing their location.
-Fourth, the expectation of ${X}_i$ conditional on ${W}_i$ and the conditional expectation of ${X}_i^U$ are both linear in ${W}_i$.  Fifth, there are at least as many observable characteristics as unobservable characteristics.
-The last assumption is called a rank condition and requires that the set of location-specific factors that drive sorting on \emph{observable} covariates contains \emph{all} location-specific factors that drive sorting based on \emph{unobservable} covariates.\footnote{
-\citet{Diamond_2016} provides evidence using a principal component analysis on a very detailed set of amenities and documents that the effective rank of amenities is around five (with three components explaining most of the variation).
-In the context of this paper, the key identifying assumption is that our group-average variables have a rank larger than five.
-Empirically, we run principal components analysis and find more than five components that explain more than 5 percent of the total variance across years.
-This provides support for using the approach in \citet{altonji2018estimating} to address sorting.} The intuition for this approach is that the regression will first ``invert'' the observed group-level averages to location-specific amenities from the fourth assumption above.
+Importantly, housing prices are allowed to adjust from sorting in the aggregate and our we only assume that individuals do not consider their own effect on the prices when making their decision.
+Fourth, the expectation of ${X}_i$ conditional on ${W}_i$ and the conditional expectation of ${X}_i^U$ are both linear in ${W}_i$.  
+Fifth, there are at least as many observable characteristics as unobservable characteristics.
+The last two conditions require that the set of location-specific factors that drive sorting on \emph{observable} covariates contains \emph{all} location-specific factors that drive sorting based on \emph{unobservable} covariates.\footnote{
+  \citet{Diamond_2016} provides evidence using a principal component analysis on a very detailed set of amenities and documents that the effective rank of amenities is around five (with three components explaining most of the variation).
+  In the context of this paper, the key identifying assumption is that our group-average variables have an effective (column) rank larger than five.
+  Empirically, we run principal components analysis and find more than five components that explain more than 5 percent of the total variance across years.
+  This provides support for using the approach in \citet{altonji2018estimating} to address sorting.
+} 
+The intuition for this approach is that the regression will first ``invert'' the observed group-level averages to location-specific amenities from the fourth assumption above.
 Then these amenities can be linearly projected to group averages of the unobservable covariates using the fourth and fifth assumption.
 Hence, controlling for group averages of observed characteristics is sufficient to control for the sorting based unobserved characteristics.\footnote{
-The above ``inversion'' is only possible if the mapping between group averages and location-specific amenities is one-to-one.
-If there are more amenities than group-average variables, then a unique inverse will not exist.
-Hence, the rank condition is necessary.}
+  The above ``inversion'' is only possible if the mapping between group averages and location-specific amenities is one-to-one.
+  If there are more amenities than group-average variables, then a unique inverse will not exist.
+  Hence, the rank of observables must be larger than the unobservables.
+}
 
 Taking this approach, we rewrite equation (\ref{eq:controls}) to include group-level averages of the individual characteristics in each location.
 In particular, we estimate:
@@ -523,18 +595,6 @@ Our estimates for the earlier period are more than twice the size of those repor
 The recent literature has sought to explain the widening urban versus non-urban wage gap since 1970, largely focusing on the differential return to skill in urban areas \citep*{ganong2017has, baum2018has, dauth2018matching, autorWorkPastFuture}.
 For example, \citet{baum2018has} and \citet{autorWorkPastFuture} highlight that the returns to education in urban areas increased starting in 2000 due to agglomeration forces that are skill-biased. 
 
-Our estimates suggest that earlier periods of rapid change affected the wage differential between urban and non-urban areas.
-We show that sorting became increasingly important in postwar period, which is earlier than previously documented.
-Broadly, these results reinforce the focus of \citet{autorWorkPastFuture} and \citet{papageorgiou2022occupational} on the changing number and composition of occupations available for low-skill workers in this period.
-For example, our estimates are consistent with the wave of factory automation in the 1950s and early 1960s. 
-
-Over time, the number of MSAs grows as new cities increase in size.
-This raises a concern that our estimates may reflect a change in the composition of MSAs.
-To rule this out, we re-estimate equation \eqref{eq:AM} with a fixed sample of MSAs based on their 1940 designations and drop observations from MSAs designated after 1940 from the sample.
-In Figure \ref{fig:premium_msa_in_all_yrs} we report the estimates holding the set of MSAs constant.
-The results are similar to our baseline estimates, suggesting that the changing composition of cities does not bias our estimates.    
-
-
 \begin{figure}[t]
   \caption{Urban Wage Premium Using the 1940 Definition of MSAs, 1940-2010}
   \label{fig:premium_msa_in_all_yrs}
@@ -550,39 +610,31 @@ The estimates from Figure \ref{fig:causal_premium} are reproduced for comparison
   }
 \end{figure}
 
-\subsection*{Urban Wage Premium Adjusted for Housing Costs}
+Our estimates suggest that earlier periods of rapid change affected the wage differential between urban and non-urban areas.
+We show that sorting became increasingly important in postwar period, which is earlier than previously documented.
+Broadly, these results reinforce the focus of \citet{autorWorkPastFuture} and \citet{papageorgiou2022occupational} on the changing number and composition of occupations available for low-skill workers in this period.
+For example, our estimates are consistent with the wave of factory automation in the 1950s and early 1960s. 
+
+Over time, the number of MSAs grows as new cities increase in size.
+This raises a concern that our estimates may reflect a change in the composition of MSAs.
+To rule this out, we re-estimate equation \eqref{eq:AM} with a fixed sample of MSAs based on their 1940 designations and drop observations from MSAs designated after 1940 from the sample.
+In Figure \ref{fig:premium_msa_in_all_yrs} we report the estimates holding the set of MSAs constant.
+The results are similar to our baseline estimates, suggesting that the changing composition of cities does not bias our estimates.    
+
+\section{Urban Wage Premium Adjusted for Housing Costs}
 
 So far we have ignored the role that rents have in determining an individual's `real wage'.
 Canonical urban models suggest that urban rents will adjust in response to higher wages and partially absorb the wage premium, such that utility is equalized across space.  
 
-\begin{figure}
-  \caption{Urban Wage Premium Adjusted for Housing Costs, 1940-2010}
-  \label{fig:inc_rent}
-  \vspace{5mm}
-    {\centering
-      \includegraphics[width=\linewidth]{figures/housing_costs/net_causal.pdf}
-    }
- 
-
-  \vspace{-7.5mm}
-  {\footnotesize\singlespacing
-      \textit{Notes:} The figure plots the coefficient for survey-year level estimates of the urban wage premium following the methodology in Section \ref{sec:sorting} using the individual wage adjusted for housing costs as the dependent variable.
-All specifications include individual-level controls and group-level averages.
-      
-  }
-\end{figure}
-
 To ensure that the urban wage premium we estimate is not driven by rent differentials, we re-estimate equation \eqref{eq:AM} using a measure of income that accounts for location-specific differences in housing costs.\footnote{
-For example, between 1960 and 2010, the average rent in an MSA was between 50 and 70 percent higher than non-MSA regions.} 
-As described above, we calculate the average rent for each MSA and non-urban area in a given year and subtract it from our measure of annual income.
-Figure \ref{fig:inc_rent} reports the results with the original urban wage premium estimates for comparison.
-The results are remarkably similar, suggesting that the higher urban wages are still present when considering real wages. 
-
+  For example, between 1960 and 2010, the average rent in an MSA was between 50 and 70 percent higher than non-MSA regions.
+}
 Following \citet{ganong2017has} and \citet{hoxie2020moving}, we use both rent and home value in calculating the cost of housing. 
 For rent, we use the monthly rent and divide it by 4 to get weekly rent.\footnote{
   For 1950, microdata on rent is not available, so instead we use the average rent as reported in census summary tables.
 }
 For home values, we set the annual housing cost at 5\% of the home value and divide by 48 for weekly costs. 
+Then our housing cost is subtracted from the reported weekly wage to get that individual's net-wage.
 
 Figure \ref{fig:raw_net_premium} plots the raw wage premium after subtracting the cost of housing. This figure shows that in the raw data, a portion of the wage premium is extracted by landlords via a higher rent premium. 
 Turning to our causal estimates in figure \ref{fig:causal_net_premium}, the results after 1970 do not seem to significantly change. 
