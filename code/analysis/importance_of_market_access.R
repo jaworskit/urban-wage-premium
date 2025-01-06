@@ -8,8 +8,8 @@ library(collapse)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
-gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
+gh <- "~/Documents/Projects/urban-wage-premium"
 
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
@@ -110,6 +110,6 @@ tab_combined <- c(
 
 cat(
   tab_combined,
-  file = here("paper/tables/urban_premium/ests_without_ma.tex"),
+  file = here("out/tables/urban_premium/ests_without_ma.tex"),
   sep = "\n"
 )

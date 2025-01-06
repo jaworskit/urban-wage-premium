@@ -9,8 +9,8 @@ library(collapse)
 library(kfbmisc)
 library(patchwork)
 
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
-gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
+gh <- "~/Documents/Projects/urban-wage-premium"
 
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
@@ -80,7 +80,7 @@ process_ests <- function(ests) {
 rent_premium <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
   data_y <- data_y |>
-    filter(net_weeklywage > 0, net_weeklywage_rent_only > 0)
+    filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
 
   est <- feols(
     ln_weekly_housing_costs ~ i(urban),
@@ -103,7 +103,7 @@ rent_premium <- rent_premium |>
 ests <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
   data_y <- data_y |>
-    filter(net_weeklywage > 0, net_weeklywage_rent_only > 0)
+    filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
 
   est_weeklywage <- feols(
     ln_weeklywage ~ i(urban),
@@ -139,7 +139,7 @@ ests <- ests |>
 ests_group <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
   data_y <- data_y |>
-    filter(net_weeklywage > 0, net_weeklywage_rent_only > 0)
+    filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
 
   est_weeklywage <- feols(
     ln_weeklywage ~ i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
@@ -200,7 +200,7 @@ ests_rent_only <- map(year_seq, function(y) {
     cluster = ~metarea, lean = TRUE
   )
   est_net_weeklywage <- feols(
-    ln_net_weeklywage_rent_only ~ i(urban),
+    ln_net_weeklywage_rentonly ~ i(urban),
     data = data_y, weights = ~perwt,
     cluster = ~metarea, lean = TRUE
   )
@@ -233,7 +233,7 @@ ests_group_rent_only <- map(year_seq, function(y) {
     cluster = ~metarea, lean = TRUE
   )
   est_net_weeklywage <- feols(
-    ln_net_weeklywage_rent_only ~ i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
+    ln_net_weeklywage_rentonly ~ i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
     data = data_y, weights = ~perwt,
     cluster = ~metarea, lean = TRUE
   )
@@ -269,7 +269,7 @@ ests_group_rent_only <- ests_group_rent_only |>
   ) +
   geom_point(size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium",
+    x = NULL, y = "Urban Housing Cost Premium",
     group = NULL, shape = NULL, color = NULL
   ) +
   scale_y_continuous(
@@ -482,32 +482,32 @@ ests_group_rent_only <- ests_group_rent_only |>
 
 # %%
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/raw_housing_costs_differences.pdf"),
+  glue("{gh}/out/figures/raw_housing_costs_differences.pdf"),
   plot_rent_premium,
   width = 11, height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/net_urbanpremium_raw.pdf"),
+  glue("{gh}/out/figures/net_urbanpremium_raw.pdf"),
   plot_raw,
   width = 11, height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/net_urbanpremium_causal.pdf"),
+  glue("{gh}/out/figures/net_urbanpremium_causal.pdf"),
   plot_group_avgs,
   width = 11, height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/raw_housing_costs_differences_rent_only.pdf"),
+  glue("{gh}/out/figures/raw_housing_costs_differences_rent_only.pdf"),
   plot_rent_premium_rent_only,
   width = 11, height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/net_urbanpremium_raw_rent_only.pdf"),
+  glue("{gh}/out/figures/net_urbanpremium_raw_rent_only.pdf"),
   plot_raw_rent_only,
   width = 11, height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/net_urbanpremium_causal_rent_only.pdf"),
+  glue("{gh}/out/figures/net_urbanpremium_causal_rent_only.pdf"),
   plot_group_avgs_rent_only,
   width = 11, height = 5
 )

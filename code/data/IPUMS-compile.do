@@ -9,8 +9,8 @@ clear all
 
 * global ipums "/Users/taylorjaworski/Dropbox/Research/Data/IPUMS"
 * global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium"
-global ipums "/Users/kylebutts/Dropbox/IPUMS"
-global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+global ipums "~/Dropbox/IPUMS"
+global project "~/Dropbox/UrbanWagePremium"
 
 *-> Clean each year's data
 

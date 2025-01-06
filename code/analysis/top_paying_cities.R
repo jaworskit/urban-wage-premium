@@ -9,8 +9,8 @@ library(tinytable)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
-gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
+gh <- "~/Documents/Projects/urban-wage-premium"
 
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
@@ -90,7 +90,7 @@ cat(extract_body(tab_top10), sep = "\n")
 cat(
   extract_body(tab_top10),
   sep = "\n",
-  file = here("paper/tables/summary_stats/top10_1940_2010.tex")
+  file = here("out/tables/summary_stats/top10_1940_2010.tex")
 )
 # Flint, MI & 48.7\% & San Jose-Sunnyvale-Santa Clara, CA & 63.2\% \\
 # Detroit, MI & 46.2\% & Bridgeport-Stamford-Norwalk, CT & 54.7\% \\

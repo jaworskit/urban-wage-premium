@@ -1,0 +1,1 @@
+There are 18 group averages that we use. The row-rank of the betas is 18.

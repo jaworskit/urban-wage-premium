@@ -10,8 +10,8 @@ library(arrow)
 library(kfbmisc)
 
 # Local
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
-gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
+gh <- "~/Documents/Projects/urban-wage-premium"
 
 # Results ----------------------------------------------------------------------
 
@@ -192,12 +192,12 @@ results <- results |>
 
 # %%
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/urban_premium/1940_msas.pdf"),
+  glue("{gh}/out/figures/urban_premium/1940_msas.pdf"),
   urban_1940_msas,
   width = 14, height = 6
 )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/urban_premium/1940_msas_compared.pdf"),
+  glue("{gh}/out/figures/urban_premium/1940_msas_compared.pdf"),
   urban_compared,
   width = 14, height = 6
 )

@@ -6,8 +6,8 @@ library(collapse)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
-gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
+gh <- "~/Documents/Projects/urban-wage-premium"
 
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>

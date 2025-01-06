@@ -3,7 +3,7 @@ library(arrow)
 library(tidyverse)
 library(here)
 library(glue)
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
 source(here("code/utils/dta_to_parquet_dataset.R"))
 
 #' This will proceed in two steps:

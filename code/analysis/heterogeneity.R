@@ -10,7 +10,7 @@ library(broom)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
 source("code/utils/calculate_group_averages.R")
 
 # Flags:
@@ -483,37 +483,37 @@ basic_heterogeneity_plot <- function(ests) {
 
 # %%
 kfbmisc::tikzsave(
-  here("paper/figures/heterogeneity/by_top20.pdf"),
+  here("out/figures/heterogeneity/by_top20.pdf"),
   plot_top20,
   width = 14, height = 4
 )
 kfbmisc::tikzsave(
-  here("paper/figures/heterogeneity/by_region.pdf"),
+  here("out/figures/heterogeneity/by_region.pdf"),
   plot_region,
   width = 14, height = 4
 )
 kfbmisc::tikzsave(
-  here("paper/figures/heterogeneity/by_college.pdf"),
+  here("out/figures/heterogeneity/by_college.pdf"),
   plot_college,
   width = 14, height = 4
 )
 kfbmisc::tikzsave(
-  here("paper/figures/heterogeneity/by_race.pdf"),
+  here("out/figures/heterogeneity/by_race.pdf"),
   plot_race,
   width = 14, height = 4
 )
 kfbmisc::tikzsave(
-  here("paper/figures/heterogeneity/by_older.pdf"),
+  here("out/figures/heterogeneity/by_older.pdf"),
   plot_older,
   width = 14, height = 4
 )
 kfbmisc::tikzsave(
-  here("paper/figures/heterogeneity/by_region_white.pdf"),
+  here("out/figures/heterogeneity/by_region_white.pdf"),
   plot_region_white,
   width = 14, height = 4
 )
 kfbmisc::tikzsave(
-  here("paper/figures/heterogeneity/by_region_black.pdf"),
+  here("out/figures/heterogeneity/by_region_black.pdf"),
   plot_region_black,
   width = 14, height = 4
 )

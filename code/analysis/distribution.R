@@ -13,8 +13,8 @@ library(arrow)
 library(kfbmisc)
 
 # Local
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
-gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
+gh <- "~/Documents/Projects/urban-wage-premium"
 
 
 
@@ -136,7 +136,7 @@ gap_9010 <- wage_percentiles[, .(year, gap_9010 = ln_weeklywage_resid_90 - ln_we
 )
 
 # kfbmisc::ggpreview(plot_gap_9010, device = "pdf", width = 14, height = 6)
-ggsave(glue("{gh}/paper/figures/distribution/gap_9010.pdf"), plot_gap_9010, width = 14, height = 6)
+ggsave(glue("{gh}/out/figures/distribution/gap_9010.pdf"), plot_gap_9010, width = 14, height = 6)
 
 (plot_9010 <- ggplot(wage_percentiles) +
   geom_linerange(
@@ -174,7 +174,7 @@ ggsave(glue("{gh}/paper/figures/distribution/gap_9010.pdf"), plot_gap_9010, widt
 
 # kfbmisc::ggpreview(plot_9010, device = "pdf", width = 14, height = 6)
 ggsave(
-  glue("{gh}/paper/figures/distribution/9010.pdf"),
+  glue("{gh}/out/figures/distribution/9010.pdf"),
   plot_9010,
   width = 14, height = 6
 )
@@ -239,7 +239,7 @@ wage_percentiles[, year_pos := year - 1 + 2 * (urban == "Urban")]
 
 # kfbmisc::ggpreview(plot_9010_urban, device = "pdf", width = 14, height = 6)
 ggsave(
-  glue("{gh}/paper/figures/distribution/9010_urban.pdf"),
+  glue("{gh}/out/figures/distribution/9010_urban.pdf"),
   plot_9010_urban,
   width = 14, height = 6
 )
@@ -275,4 +275,4 @@ ggsave(
   ))
 
 # kfbmisc::ggpreview(distributions, device = "pdf", width = 20, height = 14)
-ggsave(glue("{gh}/paper/figures/distribution/density.pdf"), distributions, width = 20, height = 14)
+ggsave(glue("{gh}/out/figures/distribution/density.pdf"), distributions, width = 20, height = 14)

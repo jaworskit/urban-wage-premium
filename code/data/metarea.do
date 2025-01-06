@@ -9,7 +9,7 @@ clear all
 global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium/"
 global gh "/Users/taylorjaworski/Github/urban-wage-premium"
 if c(username) == "kylebutts" {
-	global project "/Users/kylebutts/Dropbox/UrbanWagePremium"
+	global project "~/Dropbox/UrbanWagePremium"
 	global gh "~/Documents/Projects/urban-wage-premium"
 }
 ********************************************************************************

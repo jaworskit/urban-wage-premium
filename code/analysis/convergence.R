@@ -8,8 +8,8 @@ library(collapse)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
-gh <- "/Users/kylebutts/Documents/Projects/urban-wage-premium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
+gh <- "~/Documents/Projects/urban-wage-premium"
 
 source("code/utils/calculate_group_averages.R")
 
@@ -48,33 +48,8 @@ get_data_y <- function(data, y) {
 }
 year_seq <- seq(1940, 2010, by = 10)
 
-# %%
-# ests_city_specific <- map(year_seq, function(y) {
-#   cat(sprintf("On year %s", y), "\n")
-#
-#   data_y <- get_data_y(data, y)
-#
-#   tictoc::tic(sprintf("Year %s", y))
-#   est <- data_y |>
-#     feols(
-#       ln_weeklywage ~ ..group_averages | urban^code + ..individual_fe,
-#       weights = ~perwt, combine.quick = FALSE
-#     )
-#   tictoc::toc()
-#
-#   fixef(est)[["urban^code"]] |>
-#     enframe("term", "est") |>
-#     separate_wider_delim(term, delim = "_", names = c("urban", "code")) |>
-#     mutate(across(c(urban, code), as.numeric)) |>
-#     mutate(year = y, .before = 1) |>
-#     mutate(est = est - est[urban == 0])
-# })
-#
-# ests_city_specific <- ests_city_specific |>
-#   list_rbind() |>
-#   filter(urban != 0) |>
-#   mutate(exp_est = exp(est) - 1)
 
+#' # City-specific Estimates ---------------------------------------------------
 # %%
 if (FALSE) {
   walk(year_seq, function(y) {
@@ -132,16 +107,8 @@ ests_city_specific <- ests_city_specific |>
 # %%
 with(ests_city_specific, collapse::qsu(exp_est, g = year))
 
-# %%
-ggplot(ests_city_specific |> filter(year == 2010)) +
-  geom_point(
-    aes(x = code, y = exp_est, color = year)
-  ) +
-  geom_errorbar(
-    aes(x = code, ymin = exp(est - 1.96 * se) - 1, ymax = exp(est + 1.96 * se) - 1, color = year)
-  ) +
-  kfbmisc::theme_kyle(base_size = 16)
 
+#' # Plotting City-specific Estimates ------------------------------------------
 # %%
 # Not currently used
 city_speicific_summ <- ests_city_specific |>
@@ -152,19 +119,18 @@ city_speicific_summ <- ests_city_specific |>
   )
 
 (plot_city_specific <- ggplot() +
-  geom_linerange(
-    aes(x = year, ymin = exp_est_lower, ymax = exp_est_upper),
-    data = city_speicific_summ,
-    linewidth = 5, alpha = 0.4
-  ) +
   geom_point(
     mapping = aes(x = year, y = exp_est),
     data = ests_city_specific,
     alpha = 0.25
   ) +
+  geom_linerange(
+    aes(x = year, ymin = exp_est_lower, ymax = exp_est_upper),
+    data = city_speicific_summ,
+    linewidth = 8, alpha = 0.4
+  ) +
   labs(
     y = "City-specific Wage Premium", x = NULL,
-    group = NULL, color = NULL
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   scale_y_continuous(
@@ -174,6 +140,7 @@ city_speicific_summ <- ests_city_specific |>
   kfbmisc::theme_kyle(base_size = 16)
 )
 
+#' # Convergence ---------------------------------------------------------------
 # %%
 changes <- ests_city_specific |>
   filter(year %in% c(1940, 2010)) |>
@@ -220,27 +187,13 @@ feols(
   filter(year == 1940) |>
   ggplot() +
   geom_point(
-    aes(x = exp_est_2010, y = delta_exp_est)
+    aes(x = exp_est_1940, y = delta_exp_est)
   ) +
-  # geom_errorbar(
-  #   aes(y = delta_exp_est, xmin = exp(est_1940 - 1.96 * se_1940) - 1, xmax = exp(est_1940 + 1.96 * se_1940) - 1)
-  # ) +
   geom_smooth(
-    aes(x = exp_est_2010, y = delta_exp_est),
+    aes(x = exp_est_1940, y = delta_exp_est),
     method = "lm", formula = y ~ x,
     color = "#e64173", fill = "#e64173", alpha = 0.2
   ) +
-  # geom_point(
-  #   aes(x = est, y = delta_est)
-  # ) +
-  # geom_errorbar(
-  #   aes(y = delta_est, xmin = est_1940 - 1.96 * se_1940, xmax = est_1940 + 1.96 * se_1940)
-  # ) +
-  # geom_smooth(
-  #   aes(x = est, y = delta_est),
-  #   method = "lm", formula = y ~ x,
-  #   color = "#e64173", fill = "#e64173", alpha = 0.2
-  # ) +
   labs(
     x = "Estimated Wage Premium in 1940",
     y = "1940 to 2010 Change in Estimated Wage Premium"
@@ -257,20 +210,20 @@ feols(
     axis.title = element_text(size = rel(1 / 1.125^2))
   ))
 
+
+#' # ----
 # %%
-(plot_ests <- ggplot(changes |> filter(year == 1940)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey60") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey60") +
+(plot_1940_vs_2010 <- ggplot(changes |> filter(year == 1940)) +
+  geom_hline(yintercept = 0, linetype = "dotted", color = "grey60") +
+  geom_vline(xintercept = 0, linetype = "dotted", color = "grey60") +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  annotate(
+    "label",
+    x = 0.42, y = 0.39, label = "45 degree line",
+    hjust = 0, fill = "white", label.size = 0
+  ) +
   geom_point(
     aes(x = est_1940, y = est_2010)
-  ) +
-  geom_errorbar(
-    aes(
-      y = est_2010,
-      xmin = est_1940 - 1.96 * se_1940,
-      xmax = est_1940 + 1.96 * se_1940
-    )
   ) +
   labs(
     x = "Estimated Wage Premium in 1940",
@@ -288,7 +241,7 @@ feols(
     axis.title = element_text(size = rel(1 / 1.125^2))
   ))
 
-
+#' # City-specific changes -----------------------------------------------------
 # %%
 (plot_changes <- ggplot(changes) +
   geom_line(
@@ -326,20 +279,75 @@ feols(
   )
 )
 
+#' # Rank-rank regression ------------------------------------------------------
+# %%
+ranks <- ests_city_specific |>
+  filter(year %in% c(1940, 2010)) |>
+  filter(n() == 2, .by = code) |>
+  select(code, est, se, exp_est, year) |>
+  mutate(
+    .by = year,
+    rank = rank(est)
+  ) |>
+  mutate(
+    .by = code,
+    rank_2010 = rank[year == 2010],
+    rank_1940 = rank[year == 1940],
+    delta_rank = rank_2010 - rank_1940
+  ) |>
+  arrange(rank_1940)
+
+(plot_rank_rank <- ranks |>
+  filter(year == 1940) |>
+  ggplot() +
+  geom_point(
+    aes(x = rank_1940, y = rank_2010)
+  ) +
+  geom_smooth(
+    aes(x = rank_1940, y = rank_2010),
+    method = "lm", formula = y ~ x,
+    color = "#e64173", fill = "#e64173", alpha = 0.2
+  ) +
+  labs(
+    x = "City-wage Premium Rank in 1940",
+    y = "City-wage Premium Rank in 2010"
+  ) +
+  kfbmisc::theme_kyle(base_size = 16) +
+  theme(
+    legend.title = element_text(size = rel(1 / 1.125)),
+    legend.text = element_text(size = rel(1 / 1.125^2)),
+    legend.position = "bottom",
+    legend.justification = "center",
+    panel.grid.minor.x = element_blank(),
+    axis.title = element_text(size = rel(1 / 1.125^2))
+  ))
+
+
+
 
 # %%
 # kfbmisc::tikzsave(
-#   glue("{gh}/paper/figures/city_specific/distribution.pdf"),
+#   glue("{gh}/out/figures/city_specific/distribution.pdf"),
 #   plot_city_specific,
 #   width = 10, height = 5
 # )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/city_specific/convergence.pdf"),
+  glue("{gh}/out/figures/city_specific/convergence.pdf"),
   plot_convergence,
   width = 10, height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/city_specific/changes.pdf"),
+  glue("{gh}/out/figures/city_specific/changes.pdf"),
   plot_changes,
+  width = 10, height = 6
+)
+kfbmisc::tikzsave(
+  glue("{gh}/out/figures/city_specific/rank_rank.pdf"),
+  plot_rank_rank,
+  width = 10, height = 6
+)
+kfbmisc::tikzsave(
+  glue("{gh}/out/figures/city_specific/1940_vs_2010.pdf"),
+  plot_1940_vs_2010,
   width = 10, height = 6
 )

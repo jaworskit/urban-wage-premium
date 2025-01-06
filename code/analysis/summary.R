@@ -6,7 +6,7 @@ library(arrow)
 library(duckplyr)
 library(tinytable)
 library(collapse)
-dropbox = "/Users/kylebutts/Dropbox/UrbanWagePremium"
+dropbox = "~/Dropbox/UrbanWagePremium"
 
 data <- glue("{dropbox}/data/urban_wage_with_ma/") |>
   arrow::open_dataset()
@@ -64,6 +64,6 @@ print(summ_tab, "latex")
 # %% 
 summ_tab |> 
   extract_body() |>
-  cat(file = here("paper/tables/summary_stats/summary.tex"), sep = "\n")
+  cat(file = here("out/tables/summary_stats/summary.tex"), sep = "\n")
 
 

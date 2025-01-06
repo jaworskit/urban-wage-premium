@@ -8,7 +8,7 @@ library(collapse)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
-dropbox <- "/Users/kylebutts/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/UrbanWagePremium"
 source("code/utils/calculate_group_averages.R")
 
 options(pillar.print_max = 30)
@@ -142,7 +142,7 @@ tab_combined <- c(
 
 cat(tab_combined, sep = "\n")
 
-cat(tab_combined, sep = "\n", file = here("paper/tables/urban_premium/ests.tex"))
+cat(tab_combined, sep = "\n", file = here("out/tables/urban_premium/ests.tex"))
 
 #' ## Plot Point Estimates
 # %%
@@ -259,27 +259,32 @@ plot_ests <- function(ests, which_groups, base_size = 16) {
 
 # %%
 kfbmisc::tikzsave(
-  here("paper/figures/urban_premium/raw.pdf"),
+  here("out/figures/urban_premium/raw.pdf"),
   urban,
   width = 11, height = 5
 )
 kfbmisc::tikzsave(
-  here("paper/figures/urban_premium/controls.pdf"),
+  here("out/figures/slides/raw_premium.pdf"),
+  urban,
+  width = 11, height = 3.5
+)
+kfbmisc::tikzsave(
+  here("out/figures/urban_premium/controls.pdf"),
   controls,
   width = 11, height = 5
 )
 kfbmisc::tikzsave(
-  here("paper/figures/urban_premium/causal.pdf"),
+  here("out/figures/urban_premium/causal.pdf"),
   causal,
   width = 11, height = 5
 )
 kfbmisc::tikzsave(
-  here("paper/figures/urban_premium/controls_and_causal.pdf"),
+  here("out/figures/urban_premium/controls_and_causal.pdf"),
   controls_and_causal,
   width = 11, height = 5
 )
 kfbmisc::tikzsave(
-  here("paper/figures/urban_premium/combined.pdf"),
+  here("out/figures/urban_premium/combined.pdf"),
   combined,
   width = 11, height = 5
 )

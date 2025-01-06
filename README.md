@@ -4,7 +4,7 @@
 <br>
 <sup>1</sup>University of Colorado: Boulder and <sup>2</sup>Florida State University
 
-#### [Paper](https://github.com/jaworskit/urban-wage-premium/blob/master/paper/urban_wage.pdf) 
+#### [Paper](https://github.com/jaworskit/urban-wage-premium/blob/master/out/urban_wage.pdf) 
 
 
 ## Abstract

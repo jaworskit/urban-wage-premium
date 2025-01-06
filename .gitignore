@@ -28,3 +28,7 @@
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+*.bcf
+*.nav
+*.run.xml
+*.snm

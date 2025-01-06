@@ -155,17 +155,17 @@ ma_change <- ma_allyrs %>%
 
 # %%
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/ma_over_time.jpg"),
+  glue("{gh}/out/figures/ma_over_time.jpg"),
   ma_over_time_plot,
   width = 12, height = 6
 )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/ma_deviations_over_time.jpg"),
+  glue("{gh}/out/figures/ma_deviations_over_time.jpg"),
   ma_deviations_over_time_plot,
   width = 12, height = 6
 )
 kfbmisc::tikzsave(
-  glue("{gh}/paper/figures/ma_1940_to_2010.jpg"),
+  glue("{gh}/out/figures/ma_1940_to_2010.jpg"),
   ma_change_plot,
   width = 12, height = 6
 )
