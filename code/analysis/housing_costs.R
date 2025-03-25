@@ -24,21 +24,31 @@ setFixest_fml(
     # Share white
     share_white +
       # Share age groups
-      share_agegroup_5 + share_agegroup_6 + share_agegroup_7 + share_agegroup_8 +
-      share_agegroup_9 + share_agegroup_10 + share_agegroup_11 + share_agegroup_12 +
+      share_agegroup_5 +
+      share_agegroup_6 +
+      share_agegroup_7 +
+      share_agegroup_8 +
+      share_agegroup_9 +
+      share_agegroup_10 +
+      share_agegroup_11 +
+      share_agegroup_12 +
       # Share veteran
       share_vetstat_1 +
       # Share marital status
-      share_marst_1 + share_marst_6 +
+      share_marst_1 +
+      share_marst_6 +
       share_marst_2 +
       # < HS
-      I(share_educ_1 + share_educ_2 + share_educ_3 + share_educ_4 + share_educ_5) +
+      I(
+        share_educ_1 + share_educ_2 + share_educ_3 + share_educ_4 + share_educ_5
+      ) +
       # HS
       share_educ_6 +
       # Some College
       I(share_educ_7 + share_educ_8 + share_educ_9) +
       # BA and >BA
-      share_educ_10 + share_educ_11
+      share_educ_10 +
+      share_educ_11
 )
 
 formula_vars <- getFixest_fml() |>
@@ -46,8 +56,13 @@ formula_vars <- getFixest_fml() |>
   list_c()
 
 included_vars <- c(
-  "metarea", "perwt", "urban",
-  "ln_weeklywage", "weeklywage", "rent", "valueh",
+  "metarea",
+  "perwt",
+  "urban",
+  "ln_weeklywage",
+  "weeklywage",
+  "rent",
+  "valueh",
   "ln_ma_removeown",
   formula_vars
 )
@@ -84,8 +99,10 @@ rent_premium <- map(year_seq, function(y) {
 
   est <- feols(
     ln_weekly_housing_costs ~ i(urban),
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
 
   est |>
@@ -107,13 +124,17 @@ ests <- map(year_seq, function(y) {
 
   est_weeklywage <- feols(
     ln_weeklywage ~ i(urban),
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
   est_net_weeklywage <- feols(
     ln_net_weeklywage ~ i(urban),
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
 
   bind_rows(
@@ -142,14 +163,20 @@ ests_group <- map(year_seq, function(y) {
     filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
 
   est_weeklywage <- feols(
-    ln_weeklywage ~ i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    ln_weeklywage ~
+      i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
   est_net_weeklywage <- feols(
-    ln_net_weeklywage ~ i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    ln_net_weeklywage ~
+      i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
 
   bind_rows(
@@ -176,8 +203,10 @@ rent_premium_rent_only <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
   est <- feols(
     ln_weekly_housing_costs_rent_only ~ i(urban),
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
 
   est |>
@@ -196,13 +225,17 @@ ests_rent_only <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
   est_weeklywage <- feols(
     ln_weeklywage ~ i(urban),
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
   est_net_weeklywage <- feols(
     ln_net_weeklywage_rentonly ~ i(urban),
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
 
   bind_rows(
@@ -228,14 +261,20 @@ ests_rent_only <- ests_rent_only |>
 ests_group_rent_only <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
   est_weeklywage <- feols(
-    ln_weeklywage ~ i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    ln_weeklywage ~
+      i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
   est_net_weeklywage <- feols(
-    ln_net_weeklywage_rentonly ~ i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
-    data = data_y, weights = ~perwt,
-    cluster = ~metarea, lean = TRUE
+    ln_net_weeklywage_rentonly ~
+      i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE
   )
 
   bind_rows(
@@ -265,52 +304,74 @@ ests_group_rent_only <- ests_group_rent_only |>
   geom_line(linewidth = 2) +
   geom_errorbar(
     aes(ymin = exp_est_lower95, ymax = exp_est_upper95),
-    linewidth = 1.5, width = 1
+    linewidth = 1.5,
+    width = 1
   ) +
   geom_point(size = 5) +
   labs(
-    x = NULL, y = "Urban Housing Cost Premium",
-    group = NULL, shape = NULL, color = NULL
+    x = NULL,
+    y = "Urban Housing Cost Premium",
+    group = NULL,
+    shape = NULL,
+    color = NULL
   ) +
   scale_y_continuous(
     labels = scales::label_percent(suffix = "\\%"),
-    limits = c(0, NA), expand = expansion(add = c(0, 0.1))
+    limits = c(0, NA),
+    expand = expansion(add = c(0, 0.1))
   ) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
   kfbmisc::theme_kyle(base_size = 16) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
   ))
 
 # %%
 (plot_raw <- ggplot(
   ests,
-  aes(x = year, y = exp_est, group = outcome, color = outcome, ymin = exp_est_lower95, ymax = exp_est_upper95)
+  aes(
+    x = year,
+    y = exp_est,
+    group = outcome,
+    color = outcome,
+    ymin = exp_est_lower95,
+    ymax = exp_est_upper95
+  )
 ) +
   geom_line(linewidth = 2) +
   geom_errorbar(
     aes(ymin = exp_est_lower95, ymax = exp_est_upper95),
-    linewidth = 1.5, width = 1
+    linewidth = 1.5,
+    width = 1
   ) +
   geom_point(aes(shape = outcome), size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium",
-    group = NULL, shape = NULL, color = NULL
+    x = NULL,
+    y = "Urban Wage Premium",
+    group = NULL,
+    shape = NULL,
+    color = NULL
   ) +
   scale_y_continuous(
     labels = scales::label_percent(suffix = "\\%"),
-    limits = c(-0.05, 0.5), expand = c(0, 0)
+    limits = c(-0.05, 0.5),
+    expand = c(0, 0)
   ) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
   scale_color_manual(values = c("grey70", "grey10")) +
   scale_shape_manual(values = c(15, 16)) +
-  guides(color = guide_legend(
-    title.position = "top", nrow = 1,
-    override.aes = list(linetype = 0)
-  )) +
+  guides(
+    color = guide_legend(
+      title.position = "top",
+      nrow = 1,
+      override.aes = list(linetype = 0)
+    )
+  ) +
   kfbmisc::theme_kyle(base_size = 16) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
@@ -319,36 +380,53 @@ ests_group_rent_only <- ests_group_rent_only |>
     legend.background = element_rect(fill = "white", color = "gray20"),
     legend.margin = margin(4, 6, 6, 6),
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
   ))
 
 # %%
 (plot_group_avgs <- ggplot(
   ests_group,
-  aes(x = year, y = exp_est, group = outcome, color = outcome, ymin = exp_est_lower95, ymax = exp_est_upper95)
+  aes(
+    x = year,
+    y = exp_est,
+    group = outcome,
+    color = outcome,
+    ymin = exp_est_lower95,
+    ymax = exp_est_upper95
+  )
 ) +
   geom_line(linewidth = 2) +
   geom_errorbar(
     aes(ymin = exp_est_lower95, ymax = exp_est_upper95),
-    linewidth = 1.5, width = 1
+    linewidth = 1.5,
+    width = 1
   ) +
   geom_point(aes(shape = outcome), size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium",
-    group = NULL, shape = NULL, color = NULL
+    x = NULL,
+    y = "Urban Wage Premium",
+    group = NULL,
+    shape = NULL,
+    color = NULL
   ) +
   scale_y_continuous(
     labels = scales::label_percent(suffix = "\\%"),
-    limits = c(-0.05, 0.5), expand = c(0, 0)
+    limits = c(-0.05, 0.5),
+    expand = c(0, 0)
   ) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
   scale_color_manual(values = c("grey70", "grey10")) +
   scale_shape_manual(values = c(15, 16)) +
-  guides(color = guide_legend(
-    title.position = "top", nrow = 1,
-    override.aes = list(linetype = 0)
-  )) +
+  guides(
+    color = guide_legend(
+      title.position = "top",
+      nrow = 1,
+      override.aes = list(linetype = 0)
+    )
+  ) +
   kfbmisc::theme_kyle(base_size = 16) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
@@ -357,8 +435,10 @@ ests_group_rent_only <- ests_group_rent_only |>
     legend.background = element_rect(fill = "white", color = "gray20"),
     legend.margin = margin(4, 6, 6, 6),
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
   ))
 
 # %%
@@ -369,52 +449,74 @@ ests_group_rent_only <- ests_group_rent_only |>
   geom_line(linewidth = 2) +
   geom_errorbar(
     aes(ymin = exp_est_lower95, ymax = exp_est_upper95),
-    linewidth = 1.5, width = 1
+    linewidth = 1.5,
+    width = 1
   ) +
   geom_point(size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium",
-    group = NULL, shape = NULL, color = NULL
+    x = NULL,
+    y = "Urban Wage Premium",
+    group = NULL,
+    shape = NULL,
+    color = NULL
   ) +
   scale_y_continuous(
     labels = scales::label_percent(suffix = "\\%"),
-    limits = c(0, NA), expand = expansion(add = c(0, 0.1))
+    limits = c(0, NA),
+    expand = expansion(add = c(0, 0.1))
   ) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
   kfbmisc::theme_kyle(base_size = 16) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
   ))
 
 # %%
 (plot_raw_rent_only <- ggplot(
   ests_rent_only,
-  aes(x = year, y = exp_est, group = outcome, color = outcome, ymin = exp_est_lower95, ymax = exp_est_upper95)
+  aes(
+    x = year,
+    y = exp_est,
+    group = outcome,
+    color = outcome,
+    ymin = exp_est_lower95,
+    ymax = exp_est_upper95
+  )
 ) +
   geom_line(linewidth = 2) +
   geom_errorbar(
     aes(ymin = exp_est_lower95, ymax = exp_est_upper95),
-    linewidth = 1.5, width = 1
+    linewidth = 1.5,
+    width = 1
   ) +
   geom_point(aes(shape = outcome), size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium",
-    group = NULL, shape = NULL, color = NULL
+    x = NULL,
+    y = "Urban Wage Premium",
+    group = NULL,
+    shape = NULL,
+    color = NULL
   ) +
   scale_y_continuous(
     labels = scales::label_percent(suffix = "\\%"),
-    limits = c(-0.05, 0.5), expand = c(0, 0)
+    limits = c(-0.05, 0.5),
+    expand = c(0, 0)
   ) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
   scale_color_manual(values = c("grey70", "grey10")) +
   scale_shape_manual(values = c(15, 16)) +
-  guides(color = guide_legend(
-    title.position = "top", nrow = 1,
-    override.aes = list(linetype = 0)
-  )) +
+  guides(
+    color = guide_legend(
+      title.position = "top",
+      nrow = 1,
+      override.aes = list(linetype = 0)
+    )
+  ) +
   kfbmisc::theme_kyle(base_size = 16) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
@@ -423,36 +525,53 @@ ests_group_rent_only <- ests_group_rent_only |>
     legend.background = element_rect(fill = "white", color = "gray20"),
     legend.margin = margin(4, 6, 6, 6),
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
   ))
 
 # %%
 (plot_group_avgs_rent_only <- ggplot(
   ests_group_rent_only,
-  aes(x = year, y = exp_est, group = outcome, color = outcome, ymin = exp_est_lower95, ymax = exp_est_upper95)
+  aes(
+    x = year,
+    y = exp_est,
+    group = outcome,
+    color = outcome,
+    ymin = exp_est_lower95,
+    ymax = exp_est_upper95
+  )
 ) +
   geom_line(linewidth = 2) +
   geom_errorbar(
     aes(ymin = exp_est_lower95, ymax = exp_est_upper95),
-    linewidth = 1.5, width = 1
+    linewidth = 1.5,
+    width = 1
   ) +
   geom_point(aes(shape = outcome), size = 5) +
   labs(
-    x = NULL, y = "Urban Wage Premium",
-    group = NULL, shape = NULL, color = NULL
+    x = NULL,
+    y = "Urban Wage Premium",
+    group = NULL,
+    shape = NULL,
+    color = NULL
   ) +
   scale_y_continuous(
     labels = scales::label_percent(suffix = "\\%"),
-    limits = c(-0.05, 0.5), expand = c(0, 0)
+    limits = c(-0.05, 0.5),
+    expand = c(0, 0)
   ) +
   scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
   scale_color_manual(values = c("grey70", "grey10")) +
   scale_shape_manual(values = c(15, 16)) +
-  guides(color = guide_legend(
-    title.position = "top", nrow = 1,
-    override.aes = list(linetype = 0)
-  )) +
+  guides(
+    color = guide_legend(
+      title.position = "top",
+      nrow = 1,
+      override.aes = list(linetype = 0)
+    )
+  ) +
   kfbmisc::theme_kyle(base_size = 16) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
@@ -461,8 +580,10 @@ ests_group_rent_only <- ests_group_rent_only |>
     legend.background = element_rect(fill = "white", color = "gray20"),
     legend.margin = margin(4, 6, 6, 6),
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
   ))
 
 # %%
@@ -484,30 +605,36 @@ ests_group_rent_only <- ests_group_rent_only |>
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/raw_housing_costs_differences.pdf"),
   plot_rent_premium,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/net_urbanpremium_raw.pdf"),
   plot_raw,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/net_urbanpremium_causal.pdf"),
   plot_group_avgs,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/raw_housing_costs_differences_rent_only.pdf"),
   plot_rent_premium_rent_only,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/net_urbanpremium_raw_rent_only.pdf"),
   plot_raw_rent_only,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/net_urbanpremium_causal_rent_only.pdf"),
   plot_group_avgs_rent_only,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )

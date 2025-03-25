@@ -19,16 +19,33 @@ group_averages_pca_decomp <- function(data, y = 2010) {
     mutate(
       code = if_else(code == 0, paste0(statefip, "0000"), as.character(code)),
       share_some_college = share_educ_7 + share_educ_8 + share_educ_9,
-      share_less_than_hs = share_educ_1 + share_educ_2 + share_educ_3 + share_educ_4 + share_educ_5
+      share_less_than_hs = share_educ_1 +
+        share_educ_2 +
+        share_educ_3 +
+        share_educ_4 +
+        share_educ_5
     ) |>
     select(
-      code, ln_ma_removeown,
+      code,
+      ln_ma_removeown,
       share_white,
-      share_agegroup_5, share_agegroup_6, share_agegroup_7, share_agegroup_8, share_agegroup_9, share_agegroup_10, share_agegroup_11, share_agegroup_12,
+      share_agegroup_5,
+      share_agegroup_6,
+      share_agegroup_7,
+      share_agegroup_8,
+      share_agegroup_9,
+      share_agegroup_10,
+      share_agegroup_11,
+      share_agegroup_12,
       share_vetstat_1,
-      share_marst_1, share_marst_6, share_marst_2,
+      share_marst_1,
+      share_marst_6,
+      share_marst_2,
       share_less_than_hs,
-      share_educ_6, share_some_college, share_educ_10, share_educ_11
+      share_educ_6,
+      share_some_college,
+      share_educ_10,
+      share_educ_11
     ) |>
     collect() |>
     slice(1, .by = code)

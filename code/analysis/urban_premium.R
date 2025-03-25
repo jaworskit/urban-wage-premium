@@ -34,16 +34,33 @@ data <- glue("{dropbox}/data/parquet/urban_wage") |>
 # %%
 group_averages <- c(
   "share_nonwhite",
-  "share_agegroup_5", "share_agegroup_6", "share_agegroup_7", "share_agegroup_8", "share_agegroup_9", "share_agegroup_10", "share_agegroup_11", "share_agegroup_12",
+  "share_agegroup_5",
+  "share_agegroup_6",
+  "share_agegroup_7",
+  "share_agegroup_8",
+  "share_agegroup_9",
+  "share_agegroup_10",
+  "share_agegroup_11",
+  "share_agegroup_12",
   "share_vetstat_1",
-  "share_marst_1", "share_marst_2", "share_marst_6",
-  "share_educ_lt_hs", "share_educ_hs", "share_educ_some_college", "share_educ_college_plus"
+  "share_marst_1",
+  "share_marst_2",
+  "share_marst_6",
+  "share_educ_lt_hs",
+  "share_educ_hs",
+  "share_educ_some_college",
+  "share_educ_college_plus"
 )
 individual_dummy_vars <- c("agegroup", "educ", "white")
 included_vars <- c(
-  "msacode", "metarea", "perwt",
-  "ln_weeklywage", "urban",
-  individual_dummy_vars, "ln_ma_removeown", group_averages
+  "msacode",
+  "metarea",
+  "perwt",
+  "ln_weeklywage",
+  "urban",
+  individual_dummy_vars,
+  "ln_ma_removeown",
+  group_averages
 )
 setFixest_fml(
   ..individual_fe = reformulate(individual_dummy_vars),
@@ -68,20 +85,33 @@ ests <- map(year_seq, function(y) {
   cat("  -> est_unadjusted\n")
   est_unadjusted <- feols(
     ln_weeklywage ~ i(urban),
-    data = data_y, weights = ~perwt, cluster = ~metarea,
-    lean = TRUE, notes = FALSE, warn = FALSE
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE,
+    notes = FALSE,
+    warn = FALSE
   )
   cat("  -> est_controls\n")
   est_controls <- feols(
     ln_weeklywage ~ i(urban) | ..individual_fe,
-    data = data_y, weights = ~perwt, cluster = ~metarea,
-    lean = TRUE, notes = FALSE, warn = FALSE
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE,
+    notes = FALSE,
+    warn = FALSE
   )
   cat("  -> est_group\n")
   est_group <- feols(
-    ln_weeklywage ~ i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
-    data = data_y, weights = ~perwt, cluster = ~metarea,
-    lean = TRUE, notes = FALSE, warn = FALSE
+    ln_weeklywage ~
+      i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
+    data = data_y,
+    weights = ~perwt,
+    cluster = ~metarea,
+    lean = TRUE,
+    notes = FALSE,
+    warn = FALSE
   )
 
   list(
@@ -101,8 +131,8 @@ ests_group <- map(ests, ~ .x$est_group)
 setFixest_etable(
   dict = c(
     "ln_weeklywage" = "$\\log(\\text{Weekly Wage})$",
-    "urban::1"      = "$\\text{Urban} = 1$",
-    "metarea"       = "MSA/CBSA"
+    "urban::1" = "$\\text{Urban} = 1$",
+    "metarea" = "MSA/CBSA"
   ),
   fitstat = c("n")
 )
@@ -110,15 +140,18 @@ setFixest_etable(
 # %%
 table_unadjusted <- fixest::etable(
   ests_unadjusted,
-  keep = "Urban", tex = TRUE
+  keep = "Urban",
+  tex = TRUE
 )
 table_controls <- fixest::etable(
   ests_controls,
-  keep = "Urban", tex = TRUE
+  keep = "Urban",
+  tex = TRUE
 )
 table_group <- fixest::etable(
   ests_group,
-  keep = "Urban", tex = TRUE
+  keep = "Urban",
+  tex = TRUE
 )
 
 get_urban_row <- function(tab) {
@@ -166,7 +199,10 @@ ests <- imap(year_seq, function(y, i) {
 }) |>
   list_rbind() |>
   mutate(
-    group = factor(group, levels = c("Raw", "Urban Only", "Individual Controls", "Group Averages"))
+    group = factor(
+      group,
+      levels = c("Raw", "Urban Only", "Individual Controls", "Group Averages")
+    )
   ) |>
   mutate(
     est_lower90 = est - 1.65 * se,
@@ -185,10 +221,13 @@ plot_ests <- function(ests, which_groups, base_size = 16) {
   stopifnot(is.character(which_groups))
   plot_guides <- if (length(which_groups) > 1) {
     list(
-      guides(color = guide_legend(
-        title.position = "top", nrow = 1,
-        override.aes = list(linetype = 0)
-      ))
+      guides(
+        color = guide_legend(
+          title.position = "top",
+          nrow = 1,
+          override.aes = list(linetype = 0)
+        )
+      )
     )
   } else {
     list(
@@ -199,33 +238,49 @@ plot_ests <- function(ests, which_groups, base_size = 16) {
   ggplot(
     ests |>
       filter(group %in% .env$which_groups),
-    aes(x = year, y = exp_est, group = group, color = group, ymin = exp_est_lower95, ymax = exp_est_upper95)
+    aes(
+      x = year,
+      y = exp_est,
+      group = group,
+      color = group,
+      ymin = exp_est_lower95,
+      ymax = exp_est_upper95
+    )
   ) +
     geom_line(linewidth = 2) +
     geom_errorbar(
       aes(ymin = exp_est_lower95, ymax = exp_est_upper95),
-      linewidth = 1.5, width = 1
+      linewidth = 1.5,
+      width = 1
     ) +
     geom_point(aes(shape = group), size = 3) +
     labs(
-      x = NULL, y = "Urban Wage Premium",
-      group = NULL, shape = NULL, color = NULL
+      x = NULL,
+      y = "Urban Wage Premium",
+      group = NULL,
+      shape = NULL,
+      color = NULL
     ) +
     scale_y_continuous(
       labels = scales::label_percent(suffix = "\\%"),
-      limits = c(-0.02, 0.44), expand = c(0, 0)
+      limits = c(-0.02, 0.44),
+      expand = c(0, 0)
     ) +
     scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +
-    scale_color_manual(values = c(
-      "Urban Only" = "grey70",
-      "Individual Controls" = "grey40",
-      "Group Averages" = "grey10"
-    )) +
-    scale_shape_manual(values = c(
-      "Urban Only" = 15,
-      "Individual Controls" = 16,
-      "Group Averages" = 18
-    )) +
+    scale_color_manual(
+      values = c(
+        "Urban Only" = "grey70",
+        "Individual Controls" = "grey40",
+        "Group Averages" = "grey10"
+      )
+    ) +
+    scale_shape_manual(
+      values = c(
+        "Urban Only" = 15,
+        "Individual Controls" = 16,
+        "Group Averages" = 18
+      )
+    ) +
     plot_guides +
     kfbmisc::theme_kyle(base_size = base_size) +
     theme(
@@ -235,56 +290,59 @@ plot_ests <- function(ests, which_groups, base_size = 16) {
       legend.background = element_rect(fill = "white", color = "gray20"),
       legend.margin = margin(4, 6, 6, 6),
       panel.grid.minor.x = element_blank(),
-      axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-      axis.line.x = element_blank(), axis.ticks.x = element_blank()
+      axis.line.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.line.x = element_blank(),
+      axis.ticks.x = element_blank()
     )
 }
 
 # %%
 (urban <- ests |>
-  plot_ests("Urban Only")
-)
+  plot_ests("Urban Only"))
 (controls <- ests |>
-  plot_ests(c("Urban Only", "Individual Controls"))
-)
+  plot_ests(c("Urban Only", "Individual Controls")))
 (causal <- ests |>
-  plot_ests("Group Averages")
-)
+  plot_ests("Group Averages"))
 (controls_and_causal <- ests |>
-  plot_ests(c("Individual Controls", "Group Averages"))
-)
+  plot_ests(c("Individual Controls", "Group Averages")))
 (combined <- ests |>
-  plot_ests(c("Urban Only", "Individual Controls", "Group Averages"))
-)
+  plot_ests(c("Urban Only", "Individual Controls", "Group Averages")))
 
 # %%
 kfbmisc::tikzsave(
   here("out/figures/urban_premium/raw.pdf"),
   urban,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )
 kfbmisc::tikzsave(
   here("out/figures/slides/raw_premium.pdf"),
   urban,
-  width = 11, height = 3.5
+  width = 11,
+  height = 3.5
 )
 kfbmisc::tikzsave(
   here("out/figures/urban_premium/controls.pdf"),
   controls,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )
 kfbmisc::tikzsave(
   here("out/figures/urban_premium/causal.pdf"),
   causal,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )
 kfbmisc::tikzsave(
   here("out/figures/urban_premium/controls_and_causal.pdf"),
   controls_and_causal,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )
 kfbmisc::tikzsave(
   here("out/figures/urban_premium/combined.pdf"),
   combined,
-  width = 11, height = 5
+  width = 11,
+  height = 5
 )

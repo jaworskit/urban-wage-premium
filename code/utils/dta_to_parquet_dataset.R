@@ -6,8 +6,16 @@
 #' @param chunk_size Number of rows per chunk
 #' @param callback Function that is called on `current_chunk` (e.g. to filter data)
 #'
-dta_to_parquet_dataset <- function(file, outfile, chunk_size = 2.5e5, callback = NULL, ...) {
-  stopifnot("callback must be a function" = is.function(callback) || is.null(callback))
+dta_to_parquet_dataset <- function(
+  file,
+  outfile,
+  chunk_size = 2.5e5,
+  callback = NULL,
+  ...
+) {
+  stopifnot(
+    "callback must be a function" = is.function(callback) || is.null(callback)
+  )
   stopifnot("outfile must be a string" = is.character(outfile))
   if (!grepl("\\{i\\}", outfile)) {
     stop(
@@ -24,7 +32,10 @@ dta_to_parquet_dataset <- function(file, outfile, chunk_size = 2.5e5, callback =
 
     # import and check
     current_chunk <- haven::read_dta(
-      file = file, skip = chunk_size * i, n_max = chunk_size, ...
+      file = file,
+      skip = chunk_size * i,
+      n_max = chunk_size,
+      ...
     )
     current_chunk <- haven::zap_labels(current_chunk)
     current_chunk <- haven::zap_label(current_chunk)

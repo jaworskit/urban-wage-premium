@@ -24,16 +24,33 @@ data <- glue("{dropbox}/data/parquet/urban_wage") |>
 # %%
 group_averages <- c(
   "share_nonwhite",
-  "share_agegroup_5", "share_agegroup_6", "share_agegroup_7", "share_agegroup_8", "share_agegroup_9", "share_agegroup_10", "share_agegroup_11", "share_agegroup_12",
+  "share_agegroup_5",
+  "share_agegroup_6",
+  "share_agegroup_7",
+  "share_agegroup_8",
+  "share_agegroup_9",
+  "share_agegroup_10",
+  "share_agegroup_11",
+  "share_agegroup_12",
   "share_vetstat_1",
-  "share_marst_1", "share_marst_2", "share_marst_6",
-  "share_educ_lt_hs", "share_educ_hs", "share_educ_some_college", "share_educ_college_plus"
+  "share_marst_1",
+  "share_marst_2",
+  "share_marst_6",
+  "share_educ_lt_hs",
+  "share_educ_hs",
+  "share_educ_some_college",
+  "share_educ_college_plus"
 )
 individual_dummy_vars <- c("agegroup", "educ", "white")
 included_vars <- c(
-  "msacode", "metarea", "perwt",
-  "ln_weeklywage", "urban",
-  individual_dummy_vars, "ln_ma_removeown", group_averages
+  "msacode",
+  "metarea",
+  "perwt",
+  "ln_weeklywage",
+  "urban",
+  individual_dummy_vars,
+  "ln_ma_removeown",
+  group_averages
 )
 setFixest_fml(
   ..individual_fe = reformulate(individual_dummy_vars),
@@ -65,9 +82,12 @@ if (FALSE) {
     tictoc::tic(sprintf("Year %s", y))
     est <- data_y |>
       feols(
-        ln_weeklywage ~ ..group_averages + i(urban, i.code, ref = 0) | +..individual_fe,
-        weights = ~perwt, combine.quick = FALSE,
-        lean = TRUE, vcov = "hc1"
+        ln_weeklywage ~
+          ..group_averages + i(urban, i.code, ref = 0) | +..individual_fe,
+        weights = ~perwt,
+        combine.quick = FALSE,
+        lean = TRUE,
+        vcov = "hc1"
       )
     tictoc::toc()
 
@@ -127,18 +147,19 @@ city_speicific_summ <- ests_city_specific |>
   geom_linerange(
     aes(x = year, ymin = exp_est_lower, ymax = exp_est_upper),
     data = city_speicific_summ,
-    linewidth = 8, alpha = 0.4
+    linewidth = 8,
+    alpha = 0.4
   ) +
   labs(
-    y = "City-specific Wage Premium", x = NULL,
+    y = "City-specific Wage Premium",
+    x = NULL,
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   scale_y_continuous(
     labels = scales::label_percent(suffix = "\\%"),
     limits = c(-0.25, 0.5)
   ) +
-  kfbmisc::theme_kyle(base_size = 16)
-)
+  kfbmisc::theme_kyle(base_size = 16))
 
 #' # Convergence ---------------------------------------------------------------
 # %%
@@ -191,8 +212,11 @@ feols(
   ) +
   geom_smooth(
     aes(x = exp_est_1940, y = delta_exp_est),
-    method = "lm", formula = y ~ x,
-    color = "#e64173", fill = "#e64173", alpha = 0.2
+    method = "lm",
+    formula = y ~ x,
+    color = "#e64173",
+    fill = "#e64173",
+    alpha = 0.2
   ) +
   labs(
     x = "Estimated Wage Premium in 1940",
@@ -219,8 +243,12 @@ feols(
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
   annotate(
     "label",
-    x = 0.42, y = 0.39, label = "45 degree line",
-    hjust = 0, fill = "white", label.size = 0
+    x = 0.42,
+    y = 0.39,
+    label = "45 degree line",
+    hjust = 0,
+    fill = "white",
+    label.size = 0
   ) +
   geom_point(
     aes(x = est_1940, y = est_2010)
@@ -252,17 +280,29 @@ feols(
     size = 1
   ) +
   labs(
-    y = "City-specific Wage Premium", x = NULL,
-    group = NULL, color = "Change in City-specific Wage Premium (pct. pt.)"
+    y = "City-specific Wage Premium",
+    x = NULL,
+    group = NULL,
+    color = "Change in City-specific Wage Premium (pct. pt.)"
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   scale_y_continuous(
     labels = scales::label_percent(suffix = "\\%")
   ) +
   scale_color_manual(
-    values = c("#d73027", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#66bd63", "#1a9850"),
+    values = c(
+      "#d73027",
+      "#fdae61",
+      "#fee08b",
+      "#ffffbf",
+      "#d9ef8b",
+      "#66bd63",
+      "#1a9850"
+    ),
     guide = guide_legend(
-      title.position = "top", nrow = 2, byrow = TRUE,
+      title.position = "top",
+      nrow = 2,
+      byrow = TRUE,
       override.aes = list(size = 2),
       direction = "horizontal"
     )
@@ -274,10 +314,11 @@ feols(
     legend.position = "bottom",
     legend.justification = "center",
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
-  )
-)
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
+  ))
 
 #' # Rank-rank regression ------------------------------------------------------
 # %%
@@ -305,8 +346,11 @@ ranks <- ests_city_specific |>
   ) +
   geom_smooth(
     aes(x = rank_1940, y = rank_2010),
-    method = "lm", formula = y ~ x,
-    color = "#e64173", fill = "#e64173", alpha = 0.2
+    method = "lm",
+    formula = y ~ x,
+    color = "#e64173",
+    fill = "#e64173",
+    alpha = 0.2
   ) +
   labs(
     x = "City-wage Premium Rank in 1940",
@@ -323,8 +367,6 @@ ranks <- ests_city_specific |>
   ))
 
 
-
-
 # %%
 # kfbmisc::tikzsave(
 #   glue("{gh}/out/figures/city_specific/distribution.pdf"),
@@ -334,20 +376,24 @@ ranks <- ests_city_specific |>
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/city_specific/convergence.pdf"),
   plot_convergence,
-  width = 10, height = 5
+  width = 10,
+  height = 5
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/city_specific/changes.pdf"),
   plot_changes,
-  width = 10, height = 6
+  width = 10,
+  height = 6
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/city_specific/rank_rank.pdf"),
   plot_rank_rank,
-  width = 10, height = 6
+  width = 10,
+  height = 6
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/city_specific/1940_vs_2010.pdf"),
   plot_1940_vs_2010,
-  width = 10, height = 6
+  width = 10,
+  height = 6
 )

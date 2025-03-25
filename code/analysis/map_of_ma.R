@@ -28,7 +28,11 @@ load(glue("{dropbox}/data/msa_with_shape/msa_with_shape.RData"))
 ## Plot: Market Access over Time -----------------------------------------------
 
 ma_over_time_plot <- ggplot() +
-  geom_sf(data = ma_allyrs %>% filter(!is.na(year)), aes(fill = log_ma_removeown), color = NA) +
+  geom_sf(
+    data = ma_allyrs %>% filter(!is.na(year)),
+    aes(fill = log_ma_removeown),
+    color = NA
+  ) +
   geom_sf(data = us, fill = NA, color = "grey30", size = 0.2) +
   facet_wrap(~year, ncol = 5) +
   # Remove Coordinates, leaving just the map
@@ -51,7 +55,9 @@ ma_over_time_plot <- ggplot() +
 
 ma_norm <- ma_allyrs %>%
   group_by(year) %>%
-  mutate(log_ma_removeown = log_ma_removeown - mean(log_ma_removeown, na.rm = TRUE)) %>%
+  mutate(
+    log_ma_removeown = log_ma_removeown - mean(log_ma_removeown, na.rm = TRUE)
+  ) %>%
   ungroup() %>%
   filter(!is.na(year))
 
@@ -157,15 +163,18 @@ ma_change <- ma_allyrs %>%
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/ma_over_time.jpg"),
   ma_over_time_plot,
-  width = 12, height = 6
+  width = 12,
+  height = 6
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/ma_deviations_over_time.jpg"),
   ma_deviations_over_time_plot,
-  width = 12, height = 6
+  width = 12,
+  height = 6
 )
 kfbmisc::tikzsave(
   glue("{gh}/out/figures/ma_1940_to_2010.jpg"),
   ma_change_plot,
-  width = 12, height = 6
+  width = 12,
+  height = 6
 )

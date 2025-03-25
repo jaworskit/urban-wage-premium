@@ -30,7 +30,8 @@ premias <- map(c(1940, 2010), function(y) {
     collect() |>
     feols(
       ln_weeklywage ~ 0 | metarea,
-      weights = ~perwt, lean = TRUE
+      weights = ~perwt,
+      lean = TRUE
     ) |>
     fixef()
 

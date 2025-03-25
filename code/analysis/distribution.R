@@ -17,7 +17,6 @@ dropbox <- "~/Dropbox/UrbanWagePremium"
 gh <- "~/Documents/Projects/urban-wage-premium"
 
 
-
 # Regression Results -----------------------------------------------------------
 
 dataset <- NULL
@@ -29,20 +28,30 @@ setFixest_fml(
     # Share white
     share_white + # share_nonwhite +
       # Share age groups
-      share_agegroup_5 + share_agegroup_6 + share_agegroup_7 + share_agegroup_8 +
-      share_agegroup_9 + share_agegroup_10 + share_agegroup_11 + share_agegroup_12 + # share_agegroup_13 +
+      share_agegroup_5 +
+      share_agegroup_6 +
+      share_agegroup_7 +
+      share_agegroup_8 +
+      share_agegroup_9 +
+      share_agegroup_10 +
+      share_agegroup_11 +
+      share_agegroup_12 + # share_agegroup_13 +
       # Share veteran
       share_vetstat_1 + # share_vetstat_2 +
-      share_marst_1 + share_marst_6 +
+      share_marst_1 +
+      share_marst_6 +
       share_marst_2 +
       # < HS
-      I(share_educ_1 + share_educ_2 + share_educ_3 + share_educ_4 + share_educ_5) +
+      I(
+        share_educ_1 + share_educ_2 + share_educ_3 + share_educ_4 + share_educ_5
+      ) +
       # HS
       share_educ_6 +
       # Some College
       I(share_educ_7 + share_educ_8 + share_educ_9) +
       # BA and >BA
-      share_educ_10 + share_educ_11
+      share_educ_10 +
+      share_educ_11
 )
 
 # Loop through year
@@ -68,22 +77,34 @@ for (i in 1:length(year_seq)) {
 
   est <- feols(
     ln_weeklywage ~
-      i(urban, ref = 0) + ln_ma_removeown + ..group_averages |
+      i(urban, ref = 0) +
+        ln_ma_removeown +
+        ..group_averages |
         educ + white + agegroup,
-    data = data, cluster = ~metarea, weights = ~perwt
+    data = data,
+    cluster = ~metarea,
+    weights = ~perwt
   )
 
   urban_premium <- coef(est)["urban::1"]
   average_ln_weeklywage <- data[, weighted.mean(ln_weeklywage, w = perwt)]
 
-  data[
-    ,
+  data[,
     ln_weeklywage_resid := ln_weeklywage - predict(est) + urban_premium * urban
   ]
   data$average_ln_weeklywage <- average_ln_weeklywage
   data$urban_premium <- urban_premium
 
-  dataset <- rbind(dataset, data[, .(year, urban, ln_weeklywage_resid, average_ln_weeklywage, urban_premium)])
+  dataset <- rbind(
+    dataset,
+    data[, .(
+      year,
+      urban,
+      ln_weeklywage_resid,
+      average_ln_weeklywage,
+      urban_premium
+    )]
+  )
 }
 
 # Export Results ---------------------------------------------------------------
@@ -99,18 +120,24 @@ dataset[, year := as.numeric(year)]
 # dataset[, mean(ln_weeklywage_resid), by = .(year, urban)]
 
 ## 90th-10th percentile
-wage_percentiles <- dataset[, .(
-  ln_weeklywage_resid_mean = mean(ln_weeklywage_resid),
-  ln_weeklywage_resid_05   = quantile(ln_weeklywage_resid, 0.05),
-  ln_weeklywage_resid_10   = quantile(ln_weeklywage_resid, 0.1),
-  ln_weeklywage_resid_20   = quantile(ln_weeklywage_resid, 0.2),
-  ln_weeklywage_resid_50   = quantile(ln_weeklywage_resid, 0.5),
-  ln_weeklywage_resid_80   = quantile(ln_weeklywage_resid, 0.8),
-  ln_weeklywage_resid_90   = quantile(ln_weeklywage_resid, 0.9),
-  ln_weeklywage_resid_95   = quantile(ln_weeklywage_resid, 0.95)
-), by = year]
+wage_percentiles <- dataset[,
+  .(
+    ln_weeklywage_resid_mean = mean(ln_weeklywage_resid),
+    ln_weeklywage_resid_05 = quantile(ln_weeklywage_resid, 0.05),
+    ln_weeklywage_resid_10 = quantile(ln_weeklywage_resid, 0.1),
+    ln_weeklywage_resid_20 = quantile(ln_weeklywage_resid, 0.2),
+    ln_weeklywage_resid_50 = quantile(ln_weeklywage_resid, 0.5),
+    ln_weeklywage_resid_80 = quantile(ln_weeklywage_resid, 0.8),
+    ln_weeklywage_resid_90 = quantile(ln_weeklywage_resid, 0.9),
+    ln_weeklywage_resid_95 = quantile(ln_weeklywage_resid, 0.95)
+  ),
+  by = year
+]
 
-gap_9010 <- wage_percentiles[, .(year, gap_9010 = ln_weeklywage_resid_90 - ln_weeklywage_resid_10)]
+gap_9010 <- wage_percentiles[, .(
+  year,
+  gap_9010 = ln_weeklywage_resid_90 - ln_weeklywage_resid_10
+)]
 
 (plot_gap_9010 <- ggplot(gap_9010) +
   geom_point(
@@ -122,30 +149,40 @@ gap_9010 <- wage_percentiles[, .(year, gap_9010 = ln_weeklywage_resid_90 - ln_we
     size = 1.2
   ) +
   labs(
-    y = "Log Wage Residaul, 90th - 10th", x = NULL,
-    group = NULL, color = NULL
+    y = "Log Wage Residaul, 90th - 10th",
+    x = NULL,
+    group = NULL,
+    color = NULL
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   kfbmisc::theme_kyle(base_size = 16) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
-  )
-)
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
+  ))
 
 # kfbmisc::ggpreview(plot_gap_9010, device = "pdf", width = 14, height = 6)
-ggsave(glue("{gh}/out/figures/distribution/gap_9010.pdf"), plot_gap_9010, width = 14, height = 6)
+ggsave(
+  glue("{gh}/out/figures/distribution/gap_9010.pdf"),
+  plot_gap_9010,
+  width = 14,
+  height = 6
+)
 
 (plot_9010 <- ggplot(wage_percentiles) +
   geom_linerange(
     aes(x = year, ymin = ln_weeklywage_resid_10, ymax = ln_weeklywage_resid_90),
-    size = 2, alpha = 0.4
+    size = 2,
+    alpha = 0.4
   ) +
   geom_linerange(
     aes(x = year, ymin = ln_weeklywage_resid_20, ymax = ln_weeklywage_resid_80),
-    size = 2, alpha = 0.8
+    size = 2,
+    alpha = 0.8
   ) +
   # geom_point(
   #   aes(x = year, y = ln_weeklywage_resid_50),
@@ -153,45 +190,54 @@ ggsave(glue("{gh}/out/figures/distribution/gap_9010.pdf"), plot_gap_9010, width 
   # ) +
   geom_point(
     aes(x = year, y = ln_weeklywage_resid_10),
-    size = 3, color = "grey20"
+    size = 3,
+    color = "grey20"
   ) +
   geom_point(
     aes(x = year, y = ln_weeklywage_resid_90),
-    size = 3, color = "grey20"
+    size = 3,
+    color = "grey20"
   ) +
   labs(
-    y = "Wage Residual", x = NULL,
-    group = NULL, color = NULL
+    y = "Wage Residual",
+    x = NULL,
+    group = NULL,
+    color = NULL
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
   kfbmisc::theme_kyle(base_size = 16) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
   ))
 
 # kfbmisc::ggpreview(plot_9010, device = "pdf", width = 14, height = 6)
 ggsave(
   glue("{gh}/out/figures/distribution/9010.pdf"),
   plot_9010,
-  width = 14, height = 6
+  width = 14,
+  height = 6
 )
 
 
-
 ## 90th-10th percentile by Urban/Non-urban
-wage_percentiles <- dataset[, .(
-  ln_weeklywage_resid_mean = mean(ln_weeklywage_resid),
-  ln_weeklywage_resid_05   = quantile(ln_weeklywage_resid, 0.05),
-  ln_weeklywage_resid_10   = quantile(ln_weeklywage_resid, 0.1),
-  ln_weeklywage_resid_20   = quantile(ln_weeklywage_resid, 0.2),
-  ln_weeklywage_resid_50   = quantile(ln_weeklywage_resid, 0.5),
-  ln_weeklywage_resid_80   = quantile(ln_weeklywage_resid, 0.8),
-  ln_weeklywage_resid_90   = quantile(ln_weeklywage_resid, 0.9),
-  ln_weeklywage_resid_95   = quantile(ln_weeklywage_resid, 0.95)
-), by = .(year, urban)]
+wage_percentiles <- dataset[,
+  .(
+    ln_weeklywage_resid_mean = mean(ln_weeklywage_resid),
+    ln_weeklywage_resid_05 = quantile(ln_weeklywage_resid, 0.05),
+    ln_weeklywage_resid_10 = quantile(ln_weeklywage_resid, 0.1),
+    ln_weeklywage_resid_20 = quantile(ln_weeklywage_resid, 0.2),
+    ln_weeklywage_resid_50 = quantile(ln_weeklywage_resid, 0.5),
+    ln_weeklywage_resid_80 = quantile(ln_weeklywage_resid, 0.8),
+    ln_weeklywage_resid_90 = quantile(ln_weeklywage_resid, 0.9),
+    ln_weeklywage_resid_95 = quantile(ln_weeklywage_resid, 0.95)
+  ),
+  by = .(year, urban)
+]
 
 # wage_percentiles[,
 #   .(year, gap_90_10 = ln_weeklywage_resid_90 - ln_weeklywage_resid_10),
@@ -202,24 +248,42 @@ wage_percentiles[, year_pos := year - 1 + 2 * (urban == "Urban")]
 
 (plot_9010_urban <- ggplot(wage_percentiles) +
   geom_linerange(
-    aes(x = year_pos, ymin = ln_weeklywage_resid_10, ymax = ln_weeklywage_resid_90, color = urban, group = urban),
-    size = 2, alpha = 0.4
+    aes(
+      x = year_pos,
+      ymin = ln_weeklywage_resid_10,
+      ymax = ln_weeklywage_resid_90,
+      color = urban,
+      group = urban
+    ),
+    size = 2,
+    alpha = 0.4
   ) +
   geom_linerange(
-    aes(x = year_pos, ymin = ln_weeklywage_resid_20, ymax = ln_weeklywage_resid_80, color = urban, group = urban),
-    size = 2, alpha = 0.8
+    aes(
+      x = year_pos,
+      ymin = ln_weeklywage_resid_20,
+      ymax = ln_weeklywage_resid_80,
+      color = urban,
+      group = urban
+    ),
+    size = 2,
+    alpha = 0.8
   ) +
   geom_point(
     aes(x = year_pos, y = ln_weeklywage_resid_90, color = urban),
-    size = 3, color = "grey20"
+    size = 3,
+    color = "grey20"
   ) +
   geom_point(
     aes(x = year_pos, y = ln_weeklywage_resid_10, color = urban),
-    size = 3, color = "grey20"
+    size = 3,
+    color = "grey20"
   ) +
   labs(
-    y = "Wage Residual", x = NULL,
-    group = NULL, color = NULL
+    y = "Wage Residual",
+    x = NULL,
+    group = NULL,
+    color = NULL
   ) +
   scale_color_manual(
     values = c("Urban" = "grey10", "Non-Urban" = "grey40")
@@ -233,17 +297,19 @@ wage_percentiles[, year_pos := year - 1 + 2 * (urban == "Urban")]
     axis.title.y = element_text(size = rel(0.8)),
     legend.position = "bottom",
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
   ))
 
 # kfbmisc::ggpreview(plot_9010_urban, device = "pdf", width = 14, height = 6)
 ggsave(
   glue("{gh}/out/figures/distribution/9010_urban.pdf"),
   plot_9010_urban,
-  width = 14, height = 6
+  width = 14,
+  height = 6
 )
-
 
 
 ## Distributional Facet Plot
@@ -258,21 +324,33 @@ ggsave(
   ) +
   facet_wrap(~year) +
   labs(
-    x = "Residaulized Log Weekly Wage", y = "Density", group = NULL, color = NULL
+    x = "Residaulized Log Weekly Wage",
+    y = "Density",
+    group = NULL,
+    color = NULL
   ) +
-  scale_color_manual(values = c(
-    "Urban" = "grey10",
-    "Non-Urban" = "grey40"
-  )) +
+  scale_color_manual(
+    values = c(
+      "Urban" = "grey10",
+      "Non-Urban" = "grey40"
+    )
+  ) +
   kfbmisc::theme_kyle(base_size = 16) +
   guides(colour = guide_legend(nrow = 1)) +
   theme(
     axis.title.y = element_text(size = rel(0.8)),
     legend.position = "bottom",
     panel.grid.minor.x = element_blank(),
-    axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-    axis.line.x = element_blank(), axis.ticks.x = element_blank()
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank()
   ))
 
 # kfbmisc::ggpreview(distributions, device = "pdf", width = 20, height = 14)
-ggsave(glue("{gh}/out/figures/distribution/density.pdf"), distributions, width = 20, height = 14)
+ggsave(
+  glue("{gh}/out/figures/distribution/density.pdf"),
+  distributions,
+  width = 20,
+  height = 14
+)

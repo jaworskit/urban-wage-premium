@@ -39,21 +39,41 @@ codes_top_20 <- pop_1940 |>
 # %%
 group_averages <- c(
   "share_nonwhite",
-  "share_agegroup_5", "share_agegroup_6", "share_agegroup_7", "share_agegroup_8", "share_agegroup_9", "share_agegroup_10", "share_agegroup_11", "share_agegroup_12",
+  "share_agegroup_5",
+  "share_agegroup_6",
+  "share_agegroup_7",
+  "share_agegroup_8",
+  "share_agegroup_9",
+  "share_agegroup_10",
+  "share_agegroup_11",
+  "share_agegroup_12",
   "share_vetstat_1",
-  "share_marst_1", "share_marst_2", "share_marst_6",
-  "share_educ_lt_hs", "share_educ_hs", "share_educ_some_college", "share_educ_college_plus"
+  "share_marst_1",
+  "share_marst_2",
+  "share_marst_6",
+  "share_educ_lt_hs",
+  "share_educ_hs",
+  "share_educ_some_college",
+  "share_educ_college_plus"
 )
 individual_dummy_vars <- c("agegroup", "educ", "white")
 included_vars <- c(
-  "msacode", "metarea", "perwt",
-  "ln_weeklywage", "urban",
-  individual_dummy_vars, "ln_ma_removeown", group_averages
+  "msacode",
+  "metarea",
+  "perwt",
+  "ln_weeklywage",
+  "urban",
+  individual_dummy_vars,
+  "ln_ma_removeown",
+  group_averages
 )
 setFixest_fml(
   ..individual_fe = reformulate(individual_dummy_vars),
   ..group_averages = reformulate(group_averages),
-  ..by_college_degree_group_averages = reformulate(paste0("by_college_degree_", group_averages)),
+  ..by_college_degree_group_averages = reformulate(paste0(
+    "by_college_degree_",
+    group_averages
+  )),
   ..by_race_group_averages = reformulate(paste0("by_race_", group_averages)),
   ..by_older_group_averages = reformulate(paste0("by_older_", group_averages))
 )
@@ -68,7 +88,10 @@ est_1940_msas <- function(data_y) {
     filter(is_1940_msa == TRUE | code == 0) |>
     feols(
       ln_weeklywage ~ i(urban) + ..group_averages | ..individual_fe,
-      weights = ~perwt, cluster = ~metarea, lean = TRUE, notes = FALSE
+      weights = ~perwt,
+      cluster = ~metarea,
+      lean = TRUE,
+      notes = FALSE
     )
 
   broom::tidy(est) |>
@@ -86,7 +109,10 @@ est_top20 <- function(data_y) {
     feols(
       ln_weeklywage ~
         i(urban, i.top20, ref = "0") + ..group_averages | ..individual_fe,
-      weights = ~perwt, cluster = ~metarea, lean = TRUE, notes = FALSE
+      weights = ~perwt,
+      cluster = ~metarea,
+      lean = TRUE,
+      notes = FALSE
     ) |>
     broom::tidy() |>
     filter(str_detect(term, "^urban")) |>
@@ -103,8 +129,14 @@ est_region <- function(data_y) {
 
   data_y |>
     feols(
-      ln_weeklywage ~ i(urban, i.census_region, ref = "0") + ..group_averages | ..individual_fe,
-      weights = ~perwt, cluster = ~metarea, lean = TRUE, notes = FALSE
+      ln_weeklywage ~
+        i(urban, i.census_region, ref = "0") +
+          ..group_averages |
+          ..individual_fe,
+      weights = ~perwt,
+      cluster = ~metarea,
+      lean = TRUE,
+      notes = FALSE
     ) |>
     broom::tidy() |>
     filter(str_detect(term, "^urban")) |>
@@ -121,10 +153,15 @@ est_by_college <- function(data_y) {
   est <- data_y |>
     feols(
       ln_weeklywage ~
-        i(urban, ref = 0) + ln_ma_removeown + ..by_college_degree_group_averages |
+        i(urban, ref = 0) +
+          ln_ma_removeown +
+          ..by_college_degree_group_averages |
           agegroup + educ + white,
-      weights = ~perwt, split = ~college_degree,
-      cluster = ~metarea, lean = TRUE, notes = FALSE
+      weights = ~perwt,
+      split = ~college_degree,
+      cluster = ~metarea,
+      lean = TRUE,
+      notes = FALSE
     )
 
   unname(est) |>
@@ -149,10 +186,15 @@ est_by_race <- function(data_y) {
     filter(white == TRUE | black == TRUE) |>
     feols(
       ln_weeklywage ~
-        i(urban, ref = 0) + ln_ma_removeown + ..by_race_group_averages |
+        i(urban, ref = 0) +
+          ln_ma_removeown +
+          ..by_race_group_averages |
           agegroup + educ + white,
-      weights = ~perwt, split = ~race,
-      cluster = ~metarea, lean = TRUE, notes = FALSE
+      weights = ~perwt,
+      split = ~race,
+      cluster = ~metarea,
+      lean = TRUE,
+      notes = FALSE
     )
 
   unname(est) |>
@@ -176,10 +218,15 @@ est_by_race_and_region <- function(data_y) {
     filter(white == TRUE | black == TRUE) |>
     feols(
       ln_weeklywage ~
-        i(urban, i.census_region, ref = "0") + ln_ma_removeown + ..by_race_group_averages |
+        i(urban, i.census_region, ref = "0") +
+          ln_ma_removeown +
+          ..by_race_group_averages |
           agegroup + educ + white,
-      weights = ~perwt, split = ~race,
-      cluster = ~metarea, lean = TRUE, notes = FALSE
+      weights = ~perwt,
+      split = ~race,
+      cluster = ~metarea,
+      lean = TRUE,
+      notes = FALSE
     )
 
   unname(est) |>
@@ -208,10 +255,15 @@ est_by_older <- function(data_y) {
   est <- data_y |>
     feols(
       ln_weeklywage ~
-        i(urban, ref = 0) + ln_ma_removeown + ..by_older_group_averages |
+        i(urban, ref = 0) +
+          ln_ma_removeown +
+          ..by_older_group_averages |
           agegroup + educ + white,
-      weights = ~perwt, split = ~older,
-      cluster = ~metarea, lean = TRUE, notes = FALSE
+      weights = ~perwt,
+      split = ~older,
+      cluster = ~metarea,
+      lean = TRUE,
+      notes = FALSE
     )
 
   unname(est) |>
@@ -355,18 +407,23 @@ basic_heterogeneity_plot <- function(ests) {
     geom_line(linewidth = 2) +
     geom_point(size = 5) +
     labs(
-      x = NULL, y = "Urban Wage Premium",
-      group = NULL, shape = NULL, color = NULL
+      x = NULL,
+      y = "Urban Wage Premium",
+      group = NULL,
+      shape = NULL,
+      color = NULL
     ) +
     scale_y_continuous(
       labels = scales::label_percent(suffix = "\\%"),
-      limits = c(-0.05, 0.52), expand = c(0, 0, 0, 0)
+      limits = c(-0.05, 0.52),
+      expand = c(0, 0, 0, 0)
     ) +
     scale_x_continuous(breaks = seq(1940, 2020, by = 10)) +
     kfbmisc::theme_kyle(base_size = 16) +
     guides(
       colour = guide_legend(
-        title.position = "top", nrow = 1,
+        title.position = "top",
+        nrow = 1,
         override.aes = list(linetype = 0)
       )
     ) +
@@ -376,144 +433,174 @@ basic_heterogeneity_plot <- function(ests) {
       legend.background = element_rect(fill = "white", color = "gray20"),
       legend.margin = margin(4, 6, 6, 6),
       panel.grid.minor.x = element_blank(),
-      axis.line.y = element_blank(), axis.ticks.y = element_blank(),
-      axis.line.x = element_blank(), axis.ticks.x = element_blank()
+      axis.line.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.line.x = element_blank(),
+      axis.ticks.x = element_blank()
     )
 }
 
 # %%
 (plot_top20 <- basic_heterogeneity_plot(ests_top20) +
-  scale_color_manual(values = c(
-    "Top 20" = "grey10",
-    "Other Urban" = "grey40"
-  )) +
-  scale_shape_manual(values = c(
-    "Top 20" = 15,
-    "Other Urban" = 16
+  scale_color_manual(
+    values = c(
+      "Top 20" = "grey10",
+      "Other Urban" = "grey40"
+    )
+  ) +
+  scale_shape_manual(
+    values = c(
+      "Top 20" = 15,
+      "Other Urban" = 16
+    )
   ))
-)
 
 # %%
 (plot_region <- basic_heterogeneity_plot(ests_region) +
-  scale_color_manual(values = c(
-    "North" = ggsci::pal_jama("default")(4)[1],
-    "South" = ggsci::pal_jama("default")(4)[2],
-    "West" = ggsci::pal_jama("default")(4)[3],
-    "Midwest" = ggsci::pal_jama("default")(4)[4]
-  )) +
-  scale_shape_manual(values = c(
-    "North" = 15,
-    "South" = 16,
-    "West" = 17,
-    "Midwest" = 18
+  scale_color_manual(
+    values = c(
+      "North" = ggsci::pal_jama("default")(4)[1],
+      "South" = ggsci::pal_jama("default")(4)[2],
+      "West" = ggsci::pal_jama("default")(4)[3],
+      "Midwest" = ggsci::pal_jama("default")(4)[4]
+    )
+  ) +
+  scale_shape_manual(
+    values = c(
+      "North" = 15,
+      "South" = 16,
+      "West" = 17,
+      "Midwest" = 18
+    )
   ))
-)
 
 # %%
 (plot_college <- basic_heterogeneity_plot(ests_by_college) +
-  scale_color_manual(values = c(
-    "College" = "grey10",
-    "No College" = "grey40"
-  )) +
-  scale_shape_manual(values = c(
-    "College" = 15,
-    "No College" = 16
+  scale_color_manual(
+    values = c(
+      "College" = "grey10",
+      "No College" = "grey40"
+    )
+  ) +
+  scale_shape_manual(
+    values = c(
+      "College" = 15,
+      "No College" = 16
+    )
   ))
-)
 
 # %%
 (plot_race <- basic_heterogeneity_plot(ests_by_race) +
-  scale_color_manual(values = c(
-    "White" = "grey10",
-    "Black" = "grey40"
-  )) +
-  scale_shape_manual(values = c(
-    "White" = 15,
-    "Black" = 16
+  scale_color_manual(
+    values = c(
+      "White" = "grey10",
+      "Black" = "grey40"
+    )
+  ) +
+  scale_shape_manual(
+    values = c(
+      "White" = 15,
+      "Black" = 16
+    )
   ))
-)
 
 # %%
 (plot_older <- basic_heterogeneity_plot(ests_by_older) +
-  scale_color_manual(values = c(
-    "Older" = "grey10",
-    "Younger" = "grey40"
-  )) +
-  scale_shape_manual(values = c(
-    "Older" = 15,
-    "Younger" = 16
+  scale_color_manual(
+    values = c(
+      "Older" = "grey10",
+      "Younger" = "grey40"
+    )
+  ) +
+  scale_shape_manual(
+    values = c(
+      "Older" = 15,
+      "Younger" = 16
+    )
   ))
-)
 
 # %%
 (plot_region_white <- ests_by_race_and_region |>
   mutate(group = region) |>
   filter(race == "White") |>
   basic_heterogeneity_plot() +
-  scale_color_manual(values = c(
-    "North" = ggsci::pal_jama("default")(4)[1],
-    "South" = ggsci::pal_jama("default")(4)[2],
-    "West" = ggsci::pal_jama("default")(4)[3],
-    "Midwest" = ggsci::pal_jama("default")(4)[4]
-  )) +
-  scale_shape_manual(values = c(
-    "North" = 15,
-    "South" = 16,
-    "West" = 17,
-    "Midwest" = 18
+  scale_color_manual(
+    values = c(
+      "North" = ggsci::pal_jama("default")(4)[1],
+      "South" = ggsci::pal_jama("default")(4)[2],
+      "West" = ggsci::pal_jama("default")(4)[3],
+      "Midwest" = ggsci::pal_jama("default")(4)[4]
+    )
+  ) +
+  scale_shape_manual(
+    values = c(
+      "North" = 15,
+      "South" = 16,
+      "West" = 17,
+      "Midwest" = 18
+    )
   ))
-)
 (plot_region_black <- ests_by_race_and_region |>
   mutate(group = region) |>
   filter(race == "Black") |>
   basic_heterogeneity_plot() +
-  scale_color_manual(values = c(
-    "North" = ggsci::pal_jama("default")(4)[1],
-    "South" = ggsci::pal_jama("default")(4)[2],
-    "West" = ggsci::pal_jama("default")(4)[3],
-    "Midwest" = ggsci::pal_jama("default")(4)[4]
-  )) +
-  scale_shape_manual(values = c(
-    "North" = 15,
-    "South" = 16,
-    "West" = 17,
-    "Midwest" = 18
+  scale_color_manual(
+    values = c(
+      "North" = ggsci::pal_jama("default")(4)[1],
+      "South" = ggsci::pal_jama("default")(4)[2],
+      "West" = ggsci::pal_jama("default")(4)[3],
+      "Midwest" = ggsci::pal_jama("default")(4)[4]
+    )
+  ) +
+  scale_shape_manual(
+    values = c(
+      "North" = 15,
+      "South" = 16,
+      "West" = 17,
+      "Midwest" = 18
+    )
   ))
-)
 
 # %%
 kfbmisc::tikzsave(
   here("out/figures/heterogeneity/by_top20.pdf"),
   plot_top20,
-  width = 14, height = 4
+  width = 14,
+  height = 4
 )
 kfbmisc::tikzsave(
   here("out/figures/heterogeneity/by_region.pdf"),
   plot_region,
-  width = 14, height = 4
+  width = 14,
+  height = 4
 )
 kfbmisc::tikzsave(
   here("out/figures/heterogeneity/by_college.pdf"),
   plot_college,
-  width = 14, height = 4
+  width = 14,
+  height = 4
 )
 kfbmisc::tikzsave(
   here("out/figures/heterogeneity/by_race.pdf"),
   plot_race,
-  width = 14, height = 4
+  width = 14,
+  height = 4
 )
 kfbmisc::tikzsave(
   here("out/figures/heterogeneity/by_older.pdf"),
   plot_older,
-  width = 14, height = 4
+  width = 14,
+  height = 4
 )
 kfbmisc::tikzsave(
   here("out/figures/heterogeneity/by_region_white.pdf"),
   plot_region_white,
-  width = 14, height = 4
+  width = 14,
+  height = 4
 )
 kfbmisc::tikzsave(
   here("out/figures/heterogeneity/by_region_black.pdf"),
   plot_region_black,
-  width = 14, height = 4
+  width = 14,
+  height = 4
 )

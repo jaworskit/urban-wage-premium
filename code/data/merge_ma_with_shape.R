@@ -48,32 +48,35 @@ msa_1950 <- sf::read_sf("data/shapefiles/MSA_1950/US_smsa_1950.shp") %>%
   rmapshaper::ms_simplify(keep = 0.01) %>%
   select(code = SMAA, metarea = SMA, geometry) %>%
   # Not in Ipums
-  filter(!(code %in% c(
-    # Bay City, MI SMA
-    "0800",
-    # Lowell, MA SMA
-    "4560",
-    # Springfield, OH SMA
-    "7960",
-    # Wilkes-Barre--Hazleton, PA SMA
-    "9120",
-    # New Britain-Bristol, CT SMA
-    "5440",
-    # Ogden, UT SMA
-    "5840",
-    # Winston-Salem, NC SMA
-    "9220",
-    # Lawrence, MA SMA
-    "4160",
-    # Waterbury CT
-    "8880",
-    # Durham, NC SMA
-    "2280",
-    # New Bedford, MA SMA
-    "5400",
-    # Stamford-Norwalk, CT SMA
-    "8040"
-  ))) %>%
+  filter(
+    !(code %in%
+      c(
+        # Bay City, MI SMA
+        "0800",
+        # Lowell, MA SMA
+        "4560",
+        # Springfield, OH SMA
+        "7960",
+        # Wilkes-Barre--Hazleton, PA SMA
+        "9120",
+        # New Britain-Bristol, CT SMA
+        "5440",
+        # Ogden, UT SMA
+        "5840",
+        # Winston-Salem, NC SMA
+        "9220",
+        # Lawrence, MA SMA
+        "4160",
+        # Waterbury CT
+        "8880",
+        # Durham, NC SMA
+        "2280",
+        # New Bedford, MA SMA
+        "5400",
+        # Stamford-Norwalk, CT SMA
+        "8040"
+      ))
+  ) %>%
   mutate(
     code = case_when(
       # Fall River, MA-RI SMA
@@ -117,12 +120,15 @@ msa_1960 <- sf::read_sf("data/shapefiles/MSA_1960/") %>%
   rmapshaper::ms_simplify(keep = 0.01) %>%
   select(code = SMSAA, metarea = SMSA, geometry) %>%
   # Not in Ipums
-  filter(!(code %in% c(
-    # Meriden, CT SMSA
-    "4960",
-    # Honolulu, HI SMSA
-    "3320"
-  ))) %>%
+  filter(
+    !(code %in%
+      c(
+        # Meriden, CT SMSA
+        "4960",
+        # Honolulu, HI SMSA
+        "3320"
+      ))
+  ) %>%
   mutate(
     code = case_when(
       # Jacksonville, FL
@@ -186,20 +192,23 @@ msa_1970 <- sf::read_sf("data/shapefiles/MSA_1970/") %>%
   st_transform(st_crs(msa_1950)) %>%
   select(code = SMSAA, metarea = SMSA, geometry) %>%
   # Not in Ipums
-  filter(!(code %in% c(
-    # Meriden, CT SMSA
-    "4960",
-    # Ogden, UT SMSA
-    "5840",
-    # Durham, NC
-    "2280",
-    # Sherman-Denison, TX SMSA
-    "7640",
-    # Pine Bluff, AR SMSA
-    "6240",
-    # Honolulu, HI SMSA
-    "3320"
-  ))) %>%
+  filter(
+    !(code %in%
+      c(
+        # Meriden, CT SMSA
+        "4960",
+        # Ogden, UT SMSA
+        "5840",
+        # Durham, NC
+        "2280",
+        # Sherman-Denison, TX SMSA
+        "7640",
+        # Pine Bluff, AR SMSA
+        "6240",
+        # Honolulu, HI SMSA
+        "3320"
+      ))
+  ) %>%
   mutate(
     code = case_when(
       # Jacksonville, FL
@@ -257,7 +266,20 @@ ma_1970 <- full_join(
   msa_1970,
   ma %>%
     filter(year == 1970) %>%
-    filter(!(code %in% c("2020", "2700", "3980", "4410", "6240", "7161", "7480", "9140", "9260"))),
+    filter(
+      !(code %in%
+        c(
+          "2020",
+          "2700",
+          "3980",
+          "4410",
+          "6240",
+          "7161",
+          "7480",
+          "9140",
+          "9260"
+        ))
+    ),
   by = "code"
 ) %>%
   select(code, metarea, year, log_ma, log_ma_removeown, geometry)
@@ -270,18 +292,21 @@ msa_1980 <- sf::read_sf("data/shapefiles/MSA_1980/") %>%
   st_transform(st_crs(msa_1950)) %>%
   select(code = SMSAA, metarea = SMSA, geometry) %>%
   # Not in Ipums
-  filter(!(code %in% c(
-    # Meriden, CT SMSA
-    "4960",
-    # NORTHEAST PENNSYLVANIA
-    "5745",
-    # Pine Bluff, AR SMSA
-    "6240",
-    # Anchorage, Alaska
-    "0380",
-    # Honolulu, HI SMSA
-    "3320"
-  ))) %>%
+  filter(
+    !(code %in%
+      c(
+        # Meriden, CT SMSA
+        "4960",
+        # NORTHEAST PENNSYLVANIA
+        "5745",
+        # Pine Bluff, AR SMSA
+        "6240",
+        # Anchorage, Alaska
+        "0380",
+        # Honolulu, HI SMSA
+        "3320"
+      ))
+  ) %>%
   mutate(
     code = case_when(
       # Jacksonville, FL
@@ -375,19 +400,22 @@ msa_1990 <- sf::read_sf("data/shapefiles/MSA_1990/") %>%
   st_transform(st_crs(msa_1950)) %>%
   select(code = MSACMSA, geometry, area = SHAPE_AREA) %>%
   # Not in Ipums
-  filter(!(code %in% c(
-    # Meriden, CT SMSA
-    "4960",
-    # Pine Bluff, AR SMSA
-    "6240",
-    # Anchorage, Alaska
-    "0380",
-    # Honolulu, HI SMSA
-    "3320",
+  filter(
+    !(code %in%
+      c(
+        # Meriden, CT SMSA
+        "4960",
+        # Pine Bluff, AR SMSA
+        "6240",
+        # Anchorage, Alaska
+        "0380",
+        # Honolulu, HI SMSA
+        "3320",
 
-    # Next to Anderson, SC
-    "0405"
-  ))) %>%
+        # Next to Anderson, SC
+        "0405"
+      ))
+  ) %>%
   mutate(
     code = case_when(
       # Buffalo, NY
@@ -484,7 +512,22 @@ ma_1990 <- ma %>%
       # Cleveland, OH
       code %in% c("1680", "0080", "4440") ~ "1692",
       # New York, NY
-      code %in% c("5190", "5600", "5601", "5602", "5603", "5604", "5605", "5760", "5950", "8040", "8480", "1930") ~ "5602",
+      code %in%
+        c(
+          "5190",
+          "5600",
+          "5601",
+          "5602",
+          "5603",
+          "5604",
+          "5605",
+          "5760",
+          "5950",
+          "8040",
+          "8480",
+          "1930"
+        ) ~
+        "5602",
       # Pittsburgh, PA
       code %in% c("6280", "6281") ~ "6280",
       # Portland, OR
@@ -497,13 +540,19 @@ ma_1990 <- ma %>%
     )
   ) %>%
   group_by(year, csa) %>%
-  summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
+  summarize(
+    log_ma = mean(log_ma),
+    log_ma_removeown = mean(log_ma_removeown)
+  ) %>%
   mutate(year = 1990) %>%
   select(year, code = csa, log_ma, log_ma_removeown) %>%
-  filter(!(code %in% c(
-    "5790", # Ocala FL
-    "6240" # Pine Bluff FL
-  )))
+  filter(
+    !(code %in%
+      c(
+        "5790", # Ocala FL
+        "6240" # Pine Bluff FL
+      ))
+  )
 
 
 ma_1990 <- full_join(
@@ -516,18 +565,20 @@ ma_1990 <- full_join(
 
 ## 2000 ------------------------------------------------------------------------
 
-
 msa_2000 <- sf::read_sf("data/shapefiles/MSA_2000/") %>%
   rmapshaper::ms_simplify(keep = 0.01) %>%
   st_transform(st_crs(msa_1950)) %>%
   select(code = MSACMSA, geometry, area = SHAPE_AREA) %>%
   # Not in Ipums
-  filter(!(code %in% c(
-    # Anchorage, Alaska
-    "0380",
-    # Honolulu, HI SMSA
-    "3320"
-  ))) %>%
+  filter(
+    !(code %in%
+      c(
+        # Anchorage, Alaska
+        "0380",
+        # Honolulu, HI SMSA
+        "3320"
+      ))
+  ) %>%
   mutate(
     code = case_when(
       # Burlington, VT
@@ -595,13 +646,48 @@ ma_2000 <- ma %>%
       # Washington-Baltimore
       code %in% c("0720", "3180", "8840") ~ "8872",
       # Boston
-      code %in% c("1120", "1200", "1121", "1122", "1123", "5350", "2600", "4760", "5400", "6450", "9240") ~ "1122",
+      code %in%
+        c(
+          "1120",
+          "1200",
+          "1121",
+          "1122",
+          "1123",
+          "5350",
+          "2600",
+          "4760",
+          "5400",
+          "6450",
+          "9240"
+        ) ~
+        "1122",
       # Chicago
-      code %in% c("1600", "1601", "1602", "1603", "1604", "3800", "3740") ~ "1602",
+      code %in% c("1600", "1601", "1602", "1603", "1604", "3800", "3740") ~
+        "1602",
       # Dallas, TX
       code %in% c("1920", "1921") ~ "1922",
       # New York, NY
-      code %in% c("5190", "5600", "5601", "5602", "5603", "5604", "5605", "5760", "5950", "8040", "8480", "2281", "5660", "8880", "1930", "1160", "5480") ~ "5602",
+      code %in%
+        c(
+          "5190",
+          "5600",
+          "5601",
+          "5602",
+          "5603",
+          "5604",
+          "5605",
+          "5760",
+          "5950",
+          "8040",
+          "8480",
+          "2281",
+          "5660",
+          "8880",
+          "1930",
+          "1160",
+          "5480"
+        ) ~
+        "5602",
       # Houstan, TX
       code %in% c("3360", "3361") ~ "3362",
       # Norfolk-Newsport Beach
@@ -612,7 +698,10 @@ ma_2000 <- ma %>%
     )
   ) %>%
   group_by(year, csa) %>%
-  summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
+  summarize(
+    log_ma = mean(log_ma),
+    log_ma_removeown = mean(log_ma_removeown)
+  ) %>%
   mutate(year = 2000) %>%
   select(year, code = csa, log_ma, log_ma_removeown)
 
@@ -660,13 +749,48 @@ ma_2005 <- ma %>%
       # Washington-Baltimore
       code %in% c("0720", "3180", "8840") ~ "8872",
       # Boston
-      code %in% c("1120", "1200", "1121", "1122", "1123", "5350", "2600", "4760", "5400", "6450", "9240") ~ "1122",
+      code %in%
+        c(
+          "1120",
+          "1200",
+          "1121",
+          "1122",
+          "1123",
+          "5350",
+          "2600",
+          "4760",
+          "5400",
+          "6450",
+          "9240"
+        ) ~
+        "1122",
       # Chicago
-      code %in% c("1600", "1601", "1602", "1603", "1604", "3800", "3740") ~ "1602",
+      code %in% c("1600", "1601", "1602", "1603", "1604", "3800", "3740") ~
+        "1602",
       # Dallas, TX
       code %in% c("1920", "1921") ~ "1922",
       # New York, NY
-      code %in% c("5190", "5600", "5601", "5602", "5603", "5604", "5605", "5760", "5950", "8040", "8480", "2281", "5660", "8880", "1930", "1160", "5480") ~ "5602",
+      code %in%
+        c(
+          "5190",
+          "5600",
+          "5601",
+          "5602",
+          "5603",
+          "5604",
+          "5605",
+          "5760",
+          "5950",
+          "8040",
+          "8480",
+          "2281",
+          "5660",
+          "8880",
+          "1930",
+          "1160",
+          "5480"
+        ) ~
+        "5602",
       # Houstan, TX
       code %in% c("3360", "3361") ~ "3362",
       # Norfolk-Newsport Beach
@@ -677,7 +801,10 @@ ma_2005 <- ma %>%
     )
   ) %>%
   group_by(year, csa) %>%
-  summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
+  summarize(
+    log_ma = mean(log_ma),
+    log_ma_removeown = mean(log_ma_removeown)
+  ) %>%
   mutate(year = 2005) %>%
   select(year, code = csa, log_ma, log_ma_removeown)
 
@@ -726,13 +853,48 @@ ma_2010 <- ma %>%
       # Washington-Baltimore
       code %in% c("0720", "3180", "8840") ~ "8872",
       # Boston
-      code %in% c("1120", "1200", "1121", "1122", "1123", "5350", "2600", "4760", "5400", "6450", "9240") ~ "1122",
+      code %in%
+        c(
+          "1120",
+          "1200",
+          "1121",
+          "1122",
+          "1123",
+          "5350",
+          "2600",
+          "4760",
+          "5400",
+          "6450",
+          "9240"
+        ) ~
+        "1122",
       # Chicago
-      code %in% c("1600", "1601", "1602", "1603", "1604", "3800", "3740") ~ "1602",
+      code %in% c("1600", "1601", "1602", "1603", "1604", "3800", "3740") ~
+        "1602",
       # Dallas, TX
       code %in% c("1920", "1921") ~ "1922",
       # New York, NY
-      code %in% c("5190", "5600", "5601", "5602", "5603", "5604", "5605", "5760", "5950", "8040", "8480", "2281", "5660", "8880", "1930", "1160", "5480") ~ "5602",
+      code %in%
+        c(
+          "5190",
+          "5600",
+          "5601",
+          "5602",
+          "5603",
+          "5604",
+          "5605",
+          "5760",
+          "5950",
+          "8040",
+          "8480",
+          "2281",
+          "5660",
+          "8880",
+          "1930",
+          "1160",
+          "5480"
+        ) ~
+        "5602",
       # Houstan, TX
       code %in% c("3360", "3361") ~ "3362",
       # Norfolk-Newsport Beach
@@ -743,7 +905,10 @@ ma_2010 <- ma %>%
     )
   ) %>%
   group_by(year, csa) %>%
-  summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
+  summarize(
+    log_ma = mean(log_ma),
+    log_ma_removeown = mean(log_ma_removeown)
+  ) %>%
   mutate(year = 2010) %>%
   select(year, code = csa, log_ma, log_ma_removeown)
 
@@ -794,7 +959,10 @@ ma_2015 <- ma %>%
     )
   ) %>%
   group_by(year, csa) %>%
-  summarize(log_ma = mean(log_ma), log_ma_removeown = mean(log_ma_removeown)) %>%
+  summarize(
+    log_ma = mean(log_ma),
+    log_ma_removeown = mean(log_ma_removeown)
+  ) %>%
   ungroup() %>%
   mutate(year = 2015) %>%
   select(year, code = csa, log_ma, log_ma_removeown)
@@ -806,10 +974,14 @@ ma_2015 <- left_join(ma_2015, msa_2015, by = "code") %>%
 
 ## Prepare geometries ----------------------------------------------------------
 
-
 states <- tigris::states(cb = TRUE, class = "sf") %>%
   rmapshaper::ms_simplify(keep = 0.025) %>%
-  filter(as.numeric(STATEFP) < 58 & NAME != "Alaska" & NAME != "Hawaii" & STATEFP != 11) %>%
+  filter(
+    as.numeric(STATEFP) < 58 &
+      NAME != "Alaska" &
+      NAME != "Hawaii" &
+      STATEFP != 11
+  ) %>%
   st_transform(st_crs(msa_1950)) %>%
   select(state_fips = STATEFP, geometry)
 
@@ -861,7 +1033,10 @@ nonurban_2010 <- st_difference(states, msa_2000 %>% summarize()) %>%
   left_join(., ma_nonurban %>% filter(year == 2010), by = "state_fips") %>%
   select(code, year, log_ma, log_ma_removeown, geometry)
 
-nonurban_2015 <- st_difference(states, ma_2015 %>% st_make_valid() %>% st_buffer(0) %>% summarize()) %>%
+nonurban_2015 <- st_difference(
+  states,
+  ma_2015 %>% st_make_valid() %>% st_buffer(0) %>% summarize()
+) %>%
   mutate(state_fips = as.numeric(state_fips)) %>%
   left_join(., ma_nonurban %>% filter(year == 2015), by = "state_fips") %>%
   select(code, year, log_ma, log_ma_removeown, geometry)
@@ -877,9 +1052,23 @@ ma_2005_all <- bind_rows(ma_2005, nonurban_2005) %>% st_as_sf()
 ma_2010_all <- bind_rows(ma_2010, nonurban_2010) %>% st_as_sf()
 ma_2015_all <- bind_rows(ma_2015, nonurban_2015) %>% st_as_sf()
 
-ma_allyrs <- bind_rows(ma_1940_all, ma_1950_all, ma_1960_all, ma_1970_all, ma_1980_all, ma_1990_all, ma_2000_all, ma_2005_all, ma_2010_all, ma_2015_all)
+ma_allyrs <- bind_rows(
+  ma_1940_all,
+  ma_1950_all,
+  ma_1960_all,
+  ma_1970_all,
+  ma_1980_all,
+  ma_1990_all,
+  ma_2000_all,
+  ma_2005_all,
+  ma_2010_all,
+  ma_2015_all
+)
 
-save(list = c("ma_allyrs", "us"), file = glue("{dropbox}/data/msa_with_shape/msa_with_shape.RData"))
+save(
+  list = c("ma_allyrs", "us"),
+  file = glue("{dropbox}/data/msa_with_shape/msa_with_shape.RData")
+)
 
 
 ## Extract lat-long
@@ -911,4 +1100,7 @@ states %>%
   ) %>%
   as_tibble() %>%
   select(code, lon, lat) %>%
-  haven::write_dta(., path = glue("{dropbox}/data/crosswalk/state_lat_long.dta"))
+  haven::write_dta(
+    .,
+    path = glue("{dropbox}/data/crosswalk/state_lat_long.dta")
+  )
