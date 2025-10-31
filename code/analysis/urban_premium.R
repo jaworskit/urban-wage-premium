@@ -8,7 +8,7 @@ library(collapse)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
-dropbox <- "~/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 source("code/utils/calculate_group_averages.R")
 
 options(pillar.print_max = 30)
@@ -63,11 +63,15 @@ included_vars <- c(
   group_averages
 )
 setFixest_fml(
+  ..individual_controls = ~ I(marst == 1) +
+    I(marst == 2) +
+    I(marst == 6) +
+    I(vetstat == 1),
   ..individual_fe = reformulate(individual_dummy_vars),
   ..group_averages = reformulate(group_averages)
 )
 
-year_seq <- seq(1940, 2010, by = 10)
+year_seq <- seq(1950, 2010, by = 10)
 
 # %%
 ests <- map(year_seq, function(y) {
@@ -94,7 +98,7 @@ ests <- map(year_seq, function(y) {
   )
   cat("  -> est_controls\n")
   est_controls <- feols(
-    ln_weeklywage ~ i(urban) | ..individual_fe,
+    ln_weeklywage ~ i(urban) + ..individual_controls | ..individual_fe,
     data = data_y,
     weights = ~perwt,
     cluster = ~metarea,
@@ -105,7 +109,11 @@ ests <- map(year_seq, function(y) {
   cat("  -> est_group\n")
   est_group <- feols(
     ln_weeklywage ~
-      i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
+      i(urban) +
+      ..individual_controls +
+      ln_ma_removeown +
+      ..group_averages |
+      ..individual_fe,
     data = data_y,
     weights = ~perwt,
     cluster = ~metarea,

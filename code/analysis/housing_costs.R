@@ -9,7 +9,7 @@ library(collapse)
 library(kfbmisc)
 library(patchwork)
 
-dropbox <- "~/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 gh <- "~/Documents/Projects/urban-wage-premium"
 
 # %%

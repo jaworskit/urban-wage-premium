@@ -6,7 +6,7 @@ library(sf)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
-dropbox <- "~/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 
 states <- tigris::states(cb = TRUE) |>
   rmapshaper::ms_simplify(keep = 0.01) |>

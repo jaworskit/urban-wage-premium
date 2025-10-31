@@ -8,7 +8,7 @@ library(collapse)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
-dropbox <- "~/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 source("code/utils/calculate_group_averages.R")
 
 options(pillar.print_max = 30)

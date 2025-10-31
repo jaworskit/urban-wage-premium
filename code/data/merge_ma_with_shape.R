@@ -17,7 +17,7 @@ library(tigris)
 library(glue)
 
 gh <- "~/Documents/Projects/urban-wage-premium"
-dropbox <- "~/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 setwd(dropbox)
 
 ## Load MA data ----------------------------------------------------------------

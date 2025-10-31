@@ -10,7 +10,7 @@ library(arrow)
 library(kfbmisc)
 
 # Local
-dropbox <- "~/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 gh <- "~/Documents/Projects/urban-wage-premium"
 
 # Results ----------------------------------------------------------------------
@@ -64,10 +64,10 @@ for (y in year_seq) {
   # data <- data[!is.na(pop_1940) | metarea == 0, ]
   data[,
     urban_top20 := fcase(
-      top20,
-      "Top 20",
-      !top20,
-      "Other Urban",
+      top20         ,
+      "Top 20"      ,
+      !top20        ,
+      "Other Urban" ,
       default = "Non-urban"
     )
   ]
@@ -77,9 +77,9 @@ for (y in year_seq) {
   est_full <- feols(
     ln_weeklywage ~
       i(urban, ref = FALSE) +
-        ln_ma_removeown +
-        ..group_averages |
-        educ + white + agegroup,
+      ln_ma_removeown +
+      ..group_averages |
+      educ + white + agegroup,
     data = data,
     cluster = ~metarea,
     weights = ~perwt,

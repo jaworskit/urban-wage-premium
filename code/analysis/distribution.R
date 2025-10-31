@@ -13,7 +13,7 @@ library(arrow)
 library(kfbmisc)
 
 # Local
-dropbox <- "~/Dropbox/UrbanWagePremium"
+dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 gh <- "~/Documents/Projects/urban-wage-premium"
 
 
@@ -78,9 +78,9 @@ for (i in 1:length(year_seq)) {
   est <- feols(
     ln_weeklywage ~
       i(urban, ref = 0) +
-        ln_ma_removeown +
-        ..group_averages |
-        educ + white + agegroup,
+      ln_ma_removeown +
+      ..group_averages |
+      educ + white + agegroup,
     data = data,
     cluster = ~metarea,
     weights = ~perwt
