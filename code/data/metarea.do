@@ -8,8 +8,8 @@ clear all
 
 global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium/"
 global gh "/Users/taylorjaworski/Github/urban-wage-premium"
-if c(username) == "kylebutts" {
-	global project "~/Dropbox/UrbanWagePremium"
+if c(username) == "kbutts" {
+	global project "~/Dropbox/Projects/UrbanWagePremium"
 	global gh "~/Documents/Projects/urban-wage-premium"
 }
 ********************************************************************************

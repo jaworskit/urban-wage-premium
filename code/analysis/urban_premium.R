@@ -9,28 +9,27 @@ library(collapse)
 library(kfbmisc)
 
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
-source("code/utils/calculate_group_averages.R")
+source(here("code/utils/calculate_group_averages.R"))
 
-options(pillar.print_max = 30)
+# %%
+here()
 
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
   arrow::open_dataset() |>
+  filter(ind_main_sample == TRUE) |>
   filter(!is.na(perwt), perwt > 0)
 
-#' ## Replicating Bouston et al.
+## Replicating Bouston et al. ----
 # %%
-# df0 <- data %>%
+# rep_bouston <- data %>%
 #   collapse::collap(totalincome + perwt ~ year + urban, fsum) %>%
 #   mutate(weeklywage = totalincome / perwt) %>%
 #   pivot_wider(id_cols = c("year"), values_from = weeklywage, names_from = urban, names_prefix = "urban_") %>%
 #   mutate(est = log(urban_1 / urban_0), group = "Raw") %>%
 #   select(year, est, group)
-#
-# # Store results
-# results <- df0
 
-#' ## Regression estimates of urban wage premium
+## Regression estimates of urban wage premium ----
 # %%
 group_averages <- c(
   "share_nonwhite",
@@ -52,16 +51,6 @@ group_averages <- c(
   "share_educ_college_plus"
 )
 individual_dummy_vars <- c("agegroup", "educ", "white")
-included_vars <- c(
-  "msacode",
-  "metarea",
-  "perwt",
-  "ln_weeklywage",
-  "urban",
-  individual_dummy_vars,
-  "ln_ma_removeown",
-  group_averages
-)
 setFixest_fml(
   ..individual_controls = ~ I(marst == 1) +
     I(marst == 2) +
@@ -71,9 +60,9 @@ setFixest_fml(
   ..group_averages = reformulate(group_averages)
 )
 
-year_seq <- seq(1950, 2010, by = 10)
+year_seq <- seq(1940, 2010, by = 10)
 
-# %%
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ests <- map(year_seq, function(y) {
   cat(sprintf("On year: %s", y), "\n")
 
@@ -110,10 +99,10 @@ ests <- map(year_seq, function(y) {
   est_group <- feols(
     ln_weeklywage ~
       i(urban) +
-      ..individual_controls +
-      ln_ma_removeown +
-      ..group_averages |
-      ..individual_fe,
+        ..individual_controls +
+        ln_ma_removeown +
+        ..group_averages |
+        ..individual_fe,
     data = data_y,
     weights = ~perwt,
     cluster = ~metarea,
@@ -129,7 +118,6 @@ ests <- map(year_seq, function(y) {
   )
 })
 
-# %%
 ests_unadjusted <- map(ests, ~ .x$est_unadjusted)
 ests_controls <- map(ests, ~ .x$est_controls)
 ests_group <- map(ests, ~ .x$est_group)
@@ -271,7 +259,7 @@ plot_ests <- function(ests, which_groups, base_size = 16) {
     ) +
     scale_y_continuous(
       labels = scales::label_percent(suffix = "\\%"),
-      limits = c(-0.02, 0.44),
+      limits = c(-0.05, 0.44),
       expand = c(0, 0)
     ) +
     scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +

@@ -16,6 +16,7 @@ source("code/utils/calculate_group_averages.R")
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
   arrow::open_dataset() |>
+  filter(ind_main_sample == TRUE) |>
   mutate(msacode = if_else(code == 0, statefip * 10000, code)) |>
   # 1970 does not have vet stat
   mutate(vetstat = if_else(year == 1970 & is.na(vetstat), 0, vetstat))
@@ -42,16 +43,6 @@ group_averages <- c(
   "share_educ_college_plus"
 )
 individual_dummy_vars <- c("agegroup", "educ", "white")
-included_vars <- c(
-  "msacode",
-  "metarea",
-  "perwt",
-  "ln_weeklywage",
-  "urban",
-  individual_dummy_vars,
-  "ln_ma_removeown",
-  group_averages
-)
 setFixest_fml(
   ..individual_fe = reformulate(individual_dummy_vars),
   ..group_averages = reformulate(group_averages)

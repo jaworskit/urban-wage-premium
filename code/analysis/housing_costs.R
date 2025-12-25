@@ -12,70 +12,52 @@ library(patchwork)
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 gh <- "~/Documents/Projects/urban-wage-premium"
 
+source("code/utils/calculate_group_averages.R")
+
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
-  arrow::open_dataset()
+  arrow::open_dataset() |>
+  filter(ind_main_sample == TRUE)
 
-#' ## Regression estimates of urban wage premium
-# %%
+group_averages <- c(
+  "share_nonwhite",
+  "share_agegroup_5",
+  "share_agegroup_6",
+  "share_agegroup_7",
+  "share_agegroup_8",
+  "share_agegroup_9",
+  "share_agegroup_10",
+  "share_agegroup_11",
+  "share_agegroup_12",
+  "share_vetstat_1",
+  "share_marst_1",
+  "share_marst_2",
+  "share_marst_6",
+  "share_educ_lt_hs",
+  "share_educ_hs",
+  "share_educ_some_college",
+  "share_educ_college_plus"
+)
+individual_dummy_vars <- c("agegroup", "educ", "white")
 setFixest_fml(
-  ..individual_fe = ~ agegroup + educ + white,
-  ..group_averages = ~
-    # Share white
-    share_white +
-      # Share age groups
-      share_agegroup_5 +
-      share_agegroup_6 +
-      share_agegroup_7 +
-      share_agegroup_8 +
-      share_agegroup_9 +
-      share_agegroup_10 +
-      share_agegroup_11 +
-      share_agegroup_12 +
-      # Share veteran
-      share_vetstat_1 +
-      # Share marital status
-      share_marst_1 +
-      share_marst_6 +
-      share_marst_2 +
-      # < HS
-      I(
-        share_educ_1 + share_educ_2 + share_educ_3 + share_educ_4 + share_educ_5
-      ) +
-      # HS
-      share_educ_6 +
-      # Some College
-      I(share_educ_7 + share_educ_8 + share_educ_9) +
-      # BA and >BA
-      share_educ_10 +
-      share_educ_11
+  ..individual_controls = ~ I(marst == 1) +
+    I(marst == 2) +
+    I(marst == 6) +
+    I(vetstat == 1),
+  ..individual_fe = reformulate(individual_dummy_vars),
+  ..group_averages = reformulate(group_averages)
 )
 
-formula_vars <- getFixest_fml() |>
-  map(function(x) all.vars(xpd(rhs = x))) |>
-  list_c()
-
-included_vars <- c(
-  "metarea",
-  "perwt",
-  "urban",
-  "ln_weeklywage",
-  "weeklywage",
-  "rent",
-  "valueh",
-  "ln_ma_removeown",
-  formula_vars
-)
-
-# %%
 get_data_y <- function(data, y) {
   data |>
     filter(year == y) |>
+    # 1970 does not have vet stat
+    mutate(vetstat = if_else(year == 1970 & is.na(vetstat), 0, vetstat)) |>
     collect()
 }
+
 year_seq <- seq(1940, 2010, by = 10)
 
-# %%
 process_ests <- function(ests) {
   ests |>
     mutate(
@@ -94,8 +76,9 @@ process_ests <- function(ests) {
 # %%
 rent_premium <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
-  data_y <- data_y |>
-    filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
+
+  # data_y <- data_y |>
+  #   filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
 
   est <- feols(
     ln_weekly_housing_costs ~ i(urban),
@@ -117,10 +100,11 @@ rent_premium <- rent_premium |>
   process_ests()
 
 # %%
-ests <- map(year_seq, function(y) {
+ests_raw <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
-  data_y <- data_y |>
-    filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
+
+  # data_y <- data_y |>
+  #   filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
 
   est_weeklywage <- feols(
     ln_weeklywage ~ i(urban),
@@ -149,7 +133,7 @@ ests <- map(year_seq, function(y) {
   )
 })
 
-ests <- ests |>
+ests_raw <- ests_raw |>
   list_rbind() |>
   process_ests() |>
   mutate(
@@ -160,7 +144,10 @@ ests <- ests |>
 ests_group <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
   data_y <- data_y |>
-    filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
+    calculate_group_averages(by = "msacode")
+
+  # data_y <- data_y |>
+  #   filter(net_weeklywage > 0, net_weeklywage_rentonly > 0)
 
   est_weeklywage <- feols(
     ln_weeklywage ~
@@ -202,7 +189,7 @@ ests_group <- ests_group |>
 rent_premium_rent_only <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
   est <- feols(
-    ln_weekly_housing_costs_rent_only ~ i(urban),
+    ln_weekly_housing_costs_rentonly ~ i(urban),
     data = data_y,
     weights = ~perwt,
     cluster = ~metarea,
@@ -260,6 +247,10 @@ ests_rent_only <- ests_rent_only |>
 # %%
 ests_group_rent_only <- map(year_seq, function(y) {
   data_y <- get_data_y(data, y)
+
+  data_y <- data_y |>
+    calculate_group_averages(by = "msacode")
+
   est_weeklywage <- feols(
     ln_weeklywage ~
       i(urban) + ln_ma_removeown + ..group_averages | ..individual_fe,
@@ -296,6 +287,7 @@ ests_group_rent_only <- ests_group_rent_only |>
     outcome = fct(outcome)
   )
 
+# Plots ----
 # %%
 (plot_rent_premium <- ggplot(
   rent_premium,
@@ -333,7 +325,7 @@ ests_group_rent_only <- ests_group_rent_only |>
 
 # %%
 (plot_raw <- ggplot(
-  ests,
+  ests_raw,
   aes(
     x = year,
     y = exp_est,
@@ -388,7 +380,7 @@ ests_group_rent_only <- ests_group_rent_only |>
 
 # %%
 (plot_group_avgs <- ggplot(
-  ests_group,
+  data = ests_group_52,
   aes(
     x = year,
     y = exp_est,
@@ -587,18 +579,18 @@ ests_group_rent_only <- ests_group_rent_only |>
   ))
 
 # %%
-#  = Using rent and home value
-# _rent_only = Just using rent
+# plot_rent_premium = Using rent and home value
+# plot_rent_premium_rent_only = Just using rent
 (plot_rent_premium / plot_rent_premium_rent_only)
 
 # %%
-#  = Using rent and home value
-# _rent_only = Just using rent
+# plot_raw = Using rent and home value
+# plot_raw_rent_only = Just using rent
 (plot_raw / plot_raw_rent_only)
 
 # %%
-#  = Using rent and home value
-# _rent_only = Just using rent
+# plot_group_avgs = Using rent and home value
+# plot_group_avgs_rent_only = Just using rent
 (plot_group_avgs / plot_group_avgs_rent_only)
 
 # %%

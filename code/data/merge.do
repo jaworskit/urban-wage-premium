@@ -9,8 +9,8 @@ clear all
 
 global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium/"
 global gh "/Users/taylorjaworski/Github/urban-wage-premium"
-if c(username) == "kylebutts" {
-	global project "~/Dropbox/UrbanWagePremium"
+if c(username) == "kbutts" {
+	global project "~/Dropbox/Projects/UrbanWagePremium"
 	global gh "~/Documents/Projects/urban-wage-premium"
 }
 ********************************************************************************
@@ -123,14 +123,10 @@ if c(username) == "kylebutts" {
 *-> Urban indicator
   qui gen urban = (code > 0)
   
+
 ********************************************************************************
 * Prepare Data for Results 
 ********************************************************************************
-	
-*-> Main sample
-  
-  * Male non-farm workers
-	qui keep if sex == 1 & ind1950 != 1
 
 *-> order variables
   order statefip code metarea year perwt, first
@@ -149,13 +145,14 @@ if c(username) == "kylebutts" {
 *-> fix income top codes
 
 	* https://usa.ipums.org/usa-action/variables/INCWAGE#codes_section
+  * Goldin and Margo (1991, QJE) use 1.4 * top code
 	qui drop if incwage==0
 	qui drop if incwage==999998 & year==1940
-	qui replace incwage = 1.5*05001 if incwage>=05001 & year==1940
-	qui replace incwage = 1.5*10000 if incwage>=10000 & year==1950
-	qui replace incwage = 1.5*25000 if incwage>=25000 & year==1960
-	qui replace incwage = 1.5*50000 if incwage>=50000 & year==1970
-	qui replace incwage = 1.5*75000 if incwage==75000 & year==1980
+	qui replace incwage = 1.4*05001 if incwage>=05001 & year==1940
+	qui replace incwage = 1.4*10000 if incwage>=10000 & year==1950
+	qui replace incwage = 1.4*25000 if incwage>=25000 & year==1960
+	qui replace incwage = 1.4*50000 if incwage>=50000 & year==1970
+	qui replace incwage = 1.4*75000 if incwage==75000 & year==1980
 
 *-> use CPI to adjust to 2010 dollars 
 
@@ -188,6 +185,7 @@ if c(username) == "kylebutts" {
 	
 *-> Merge in 1950 median home price
 	
+  replace code = statefip*100000 if code == 0
 	merge m:1 code year using "$project/data/temp/housing_1950.dta"	
 	drop if _merge == 2
 	replace valueh = valueh_1950 if ~missing(valueh_1950)
@@ -195,6 +193,9 @@ if c(username) == "kylebutts" {
   replace rent = rent_avg_1950 if ~missing(rent_avg_1950)
 	drop rent_avg_1950
 	drop _merge
+  * Fix code back to 0 for non-msa workers
+	replace code = 0 if code >= 100000
+
 
 *-> Clean rent and housing value
 
@@ -285,9 +286,14 @@ if c(username) == "kylebutts" {
   qui gen ln_weekly_housing_costs_rentonly = log(weekly_housing_costs_rentonly)
   qui gen ln_net_weeklywage_rentonly = log(net_weeklywage_rentonly)
 
-		
+*-> Define main sample 
+
+  * Male non-farm workers
+	qui gen ind_main_sample = sex == 1 & ind1950 != 1
+
 *-> Label Variables	
 
+  label variable ind_main_sample "=1, main sample == male and ind190 != 1"
 	label variable ma "Market Access"
 	label variable ma_weighted "Market Access (Weighted)"
 	label variable ma_removeown "Market Access"

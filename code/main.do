@@ -11,8 +11,8 @@ clear all
 
 global project "/Users/taylorjaworski/Dropbox/Research/Papers/UrbanWagePremium/"
 global gh "/Users/taylorjaworski/Github/urban-wage-premium/"
-if c(username) == "kylebutts" {
-	global project "~/Dropbox/UrbanWagePremium"
+if c(username) == "kbutts" {
+	global project "~/Dropbox/Projects/UrbanWagePremium"
 	global gh "~/Documents/Projects/urban-wage-premium"
 }
 
@@ -38,9 +38,6 @@ do code/data/marketaccess.do
 * Merges individual survey data with additional variables
 do code/data/merge.do
 
-* Creates group averages 
-do code/data/group-averages.R
-
 * Convert to parquet dataset (much faster loading and filtering)
 shell Rscript code/data/convert_to_parquet.R
 
@@ -52,19 +49,31 @@ shell Rscript code/data/merge_ma_with_shape.R
 * Analysis
 ********************************************************************************
 
-* Summary table
+* Summary statistics
+shell Rscript code/analysis/top_paying_cities.R
 shell Rscript code/analysis/summary.R
+shell Rscript code/analysis/msa_map.R
+* shell Rscript code/analysis/map_of_ma.R
 
-* Replicates Boustan's Urban Wage gap figure in the Urbanization in the United States paper and extends it to include MA and then Controls
-* Uses urban indicator
-shell Rscript code/analysis/results-urban_indicator.R
+* Analysis checking Altonji and Mansfield assumptions
+shell Rscript code/analysis/PCA_group_averages.R
+shell Rscript code/analysis/group_averages_on_diamonds_amenities.R
 
-* Using log urban_size
-shell Rscript code/analysis/results-urban_size.R
+* Estimate wage premium
+shell Rscript code/analysis/urban_premium.R
+shell Rscript code/analysis/female_urban_premium.R
 
-* Replicates Boustan's Urban Wage gap figure in the Urbanization in the United States paper and extends it to include MA and then Controls
-* do code/analysis/results-IPUMS.do
+* Robustness checks on main estimates
+shell Rscript code/analysis/robustness_full_time_employees.R
+shell Rscript code/analysis/importance_of_market_access.R
+shell Rscript code/analysis/plot_leave_one_out_group_averages.R
 
-* A set of robustness checks on main result including a remove-own GDP MA variable
-* do code/analysis/results-IPUMS-robust.do
+* Net-of-housing-costs
+shell Rscript code/analysis/housing_costs.R
+
+* Heterogeneity
+shell Rscript code/analysis/heterogeneity.R
+
+* Distributional estiamtes
+shell Rscript code/analysis/distribution.R
 

@@ -6,10 +6,11 @@ library(arrow)
 library(duckplyr)
 library(tinytable)
 library(collapse)
-dropbox = "~/Dropbox/UrbanWagePremium"
+dropbox = "~/Dropbox/Projects/UrbanWagePremium"
 
-data <- glue("{dropbox}/data/urban_wage_with_ma/") |>
-  arrow::open_dataset()
+data <- glue("{dropbox}/data/parquet/urban_wage") |>
+  arrow::open_dataset() |>
+  filter(ind_main_sample == TRUE)
 
 #' Utilities
 # %%
@@ -26,7 +27,6 @@ summ <- data |>
   ) |>
   summarize(
     .by = c(year),
-    frac_urban_2 = weighted.mean(urban, perwt),
     frac_urban = sum(urban * perwt, na.rm = TRUE) / sum(perwt, na.rm = TRUE),
     frac_college = sum(perwt * college_degree) / sum(perwt),
     frac_college_urban = sum(perwt * urban * college_degree) /

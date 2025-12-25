@@ -11,7 +11,7 @@ clear all
 ********************************************************************************
 
 * global project "/Users/taylorjaworski/Dropbox/Papers/EH/LongRunMarketAccess/"
-global project "~/Dropbox/UrbanWagePremium"
+global project "~/Dropbox/Projects/UrbanWagePremium"
 
 ********************************************************************************
 

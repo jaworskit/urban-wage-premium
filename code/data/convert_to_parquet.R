@@ -15,7 +15,7 @@ tempdir <- glue("{dropbox}/data/temp/urban_wage")
 outdir <- glue("{dropbox}/data/parquet/urban_wage")
 
 # Time-consuming so added a toggle
-if (FALSE) {
+if (TRUE) {
   if (fs::dir_exists(tempdir)) {
     fs::dir_delete(tempdir)
   }

@@ -13,7 +13,8 @@ gh <- "~/Documents/Projects/urban-wage-premium"
 
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
-  arrow::open_dataset()
+  arrow::open_dataset() |>
+  filter(ind_main_sample == TRUE)
 
 
 #' ## Regression estimates of urban wage premium

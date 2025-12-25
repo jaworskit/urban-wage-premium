@@ -5,7 +5,7 @@
 \author{Kyle Butts, Taylor Jaworski, and Carl Kitchens}
 \addbibresource{urban_wage_biblio.bib}
 
-\newcommand{\urban}{{\texttt{Urban}}}
+\newcommand{\urban}{{\text{Urban}}}
 
 \begin{document}
 
@@ -226,13 +226,44 @@
   \begin{itemize}
     \item Follow closely to \citet{altonji2018estimating}
   \end{itemize}
+\end{frame}
 
+\begin{frame}{Omitted Variables Bias}
+  \vspace{-\bigskipamount}
+  $$
+    \log(\text{wage}_i) = \beta_0 + \beta_1 \urban_i + \bm{W}_i \delta + u_i
+  $$
+
+  For intuition, think about the bias of $\hat{\beta}_1$: 
+  \begin{itemize}
+    \item Biased by differences in average of unobservables for urban compared to non-urban areas (multiplied by their marginal effect)
+  \end{itemize}
+
+  \pause
+  \bigskip
+  \hspace{1ex}$\implies$ It would be sufficient to control for location-specific $\bar{\bm{Z}}_{\ell(i)}$, though these are unobservable
+\end{frame}
+
+\begin{frame}{Identification example}
+  Think of a single unobservable characteristic: \emph{curiosity}
 
   \bigskip
-  Say individuals sort based on unobserved characteristics $\bm{X}^U_i$. The difference in $\log$ wages is conflated by differences in average $\bm{X}^U$ in urban and non-urban locations
+  More curious workers might prefer to live in urban locations that offer more consumptive amenities (e.g. \emph{live entertainment} or \emph{more food options})
+  \begin{itemize}
+    \item Biases our urban wage premium estimate
+  \end{itemize}
+\end{frame}
 
-  \medskip
-  \hspace{2ex}$\implies$ It would be sufficient to control for location-specific $\bar{\bm{Z}}_{\ell(i)}$, though these are unobservable
+\begin{frame}{Identification example}
+  However, workers may sort based on age for these very same consumptive amenities.
+  The amenities will `link' observable and unobservable characteristics:
+
+  \begin{center}\large
+    Curiosity $\leftrightarrow$ Live Entertainment $\leftrightarrow$ Age
+  \end{center}
+
+  \bigskip
+  Allows us to correct for differences in unobservables between urban and non-urban workers. 
 \end{frame}
 
 \begin{frame}{Location-choice model}
@@ -274,7 +305,7 @@
 \begin{frame}{Inverting the relationship}
   \vspace*{-1.5\bigskipamount}
   $$
-    \bar{\bm{X}}_\ell = f(\bm{A}_\ell) \text{ and } \bar{\bm{X}}^U_\ell = f^U(\bm{A}_\ell)
+    \bar{\bm{X}}_\ell = f(\bm{A}_\ell) \ \text{ and }\  \bar{\bm{X}}^U_\ell = f^U(\bm{A}_\ell)
   $$
 
   \medskip
@@ -298,11 +329,12 @@
   $$
 
   \medskip
-  Under this set of assumptions, the location choice model implies that $f^U(f^{-1}(\cdot))$ is actually a \emph{linear mapping}, $\bar{\bm{X}}^U_\ell = \bar{\bm{X}}_\ell \Pi$
+  Under the location choice and a set of assumptions, the location choice model implies that $f^U(f^{-1}(\cdot))$ is actually a \emph{linear mapping}, 
+  $$\bar{\bm{X}}^U_\ell = \bar{\bm{X}}_\ell \Pi$$
 
   \pause
-  \bigskip\medskip
-  $\implies$ Upshot: Controlling \emph{linearly} for $\bar{\bm{X}}_\ell$ in our wage premium model is sufficient to control for differences in unobservables between urban and non-urban locations
+  \bigskip
+  \textbf{\blue{Upshot}}: Controlling \emph{linearly} for $\bar{\bm{X}}_\ell$ in our wage premium model is sufficient to control for differences in unobservables between urban and non-urban locations
 \end{frame}
 
 \begin{frame}{Necessary Assumptions}
@@ -311,11 +343,13 @@
   \begin{itemize}
     \item[\color{blue} A1] The indirect utility function is $V_{i \ell} = \bm{W}_i \bm{A}_\ell - {P}_\ell + \varepsilon_{i \ell}$
     
+    \medskip
     \item[\color{blue} A2] $\varepsilon_{i \ell}$ are iid type-1 Extreme Value 
     \begin{itemize}
       \item standard in urban/trade literature
     \end{itemize}
     
+    \medskip
     \item[\color{blue} A3] When choosing locations, workers take prices and amenities as given 
     \begin{itemize}
       \item They do not internalize their own effect on prices and amenities
@@ -450,14 +484,14 @@
   Next, we explored heterogeneity in the causal wage premium.
 
   \bigskip
-  First, the literature has shown that larger cities have a larger causal premium \citep{BaumSnow_Pavan_2012}
+  First, the literature has shown that larger cities have a larger causal premium \citep{BaumSnow_Pavan_2012,Glaeser_Mare_2001}
   \begin{itemize}
-    \item We interact the urban indicator with being a top-20 city in terms of population (based on 1940 population)
+    \item We interact the urban indicator with being a large MSA ($\geq 1$ million population)
   \end{itemize}
 \end{frame}
 
 \begin{frame}[plain]{Heterogeneity by City Size}
-  \includegraphics[width=\textwidth]{figures/heterogeneity/by_top20.pdf}
+  \includegraphics[width=\textwidth]{figures/heterogeneity/big_vs_small_cities.pdf}
 
   \bigskip
   Indeed we see the wage premium is moderately larger across years \citep{BaumSnow_Pavan_2012}, but the difference has shrunk in recent decades
@@ -476,6 +510,16 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}[plain]{Heterogeneity by Manufacturing Sector}
+  \includegraphics[width=\textwidth]{figures/heterogeneity/by_manufacturing.pdf}
+
+  \begin{itemize}
+    \item 
+  \end{itemize}
+\end{frame}
+
+
+
 \begin{frame}{Heterogeneity for groups of workers}
   Next, we present three forms of worker-heterogeneity: college education and race
   \begin{itemize}
@@ -487,7 +531,7 @@
   \includegraphics[width=\textwidth]{figures/heterogeneity/by_college.pdf}
 
   \bigskip
-  The wage-premium is smaller for non-college educated workers, consistent with \citep{gould2007cities}
+  The wage-premium is smaller for non-college educated workers, consistent with \citet{gould2007cities} and \citet{carlsen2016education}
 \end{frame}
 
 \begin{frame}[plain]{Heterogeneity by Race}

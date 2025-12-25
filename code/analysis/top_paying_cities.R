@@ -12,87 +12,106 @@ library(kfbmisc)
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 gh <- "~/Documents/Projects/urban-wage-premium"
 
-# %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
-  arrow::open_dataset()
+  arrow::open_dataset() |>
+  filter(ind_main_sample == TRUE)
+
+code_to_metarea <- data |>
+  mutate(code = as.character(code)) |>
+  select(code, metarea) |>
+  unique() |>
+  collect() |>
+  filter(code != "0")
 
 
-#' Utilities
 # %%
+## Utilities
 extract_body <- function(tt) {
   tinytable:::build_tt(tt, "latex")@body
 }
 
 # %%
-premias <- map(c(1940, 2010), function(y) {
+ests <- map(c(1940, 2010), function(y) {
   metarea_raw_premias <- data |>
     filter(year == y) |>
     collect() |>
     feols(
-      ln_weeklywage ~ 0 | metarea,
+      ln_weeklywage ~ 0 | code,
       weights = ~perwt,
       lean = TRUE
     ) |>
     fixef()
 
   metarea_raw_premias |>
-    _$metarea |>
-    enframe("metarea", "est_premia") |>
-    mutate(est_premia = est_premia - est_premia[metarea == 0]) |>
-    mutate(year = y, .before = 1)
+    _$code |>
+    enframe("code", "est_premia") |>
+    mutate(code = str_replace(code, "code::", "")) |>
+    mutate(est_premia = est_premia - est_premia[code == "0"]) |>
+    mutate(year = y, .before = 1) |>
+    filter(code != "0")
 }) |>
   list_rbind()
 
 
-#' ### Top 10 by year
+### Top 15 by year ----
 # %%
-pop1940 <- glue(
-  "{dropbox}/data/urbanareas/metarea_population_1940_1950.csv"
-) |>
-  read_csv(show_col_types = FALSE) |>
-  mutate(metarea = as.character(metarea))
+## Manually add metarea name:
+## https://cps.ipums.org/cps/codes/msafp_codes_sep1995apr2004.shtml
+premias <- ests |>
+  tidylog::left_join(code_to_metarea, by = "code") |>
+  unique()
 
-premias <- premias |>
-  left_join(pop1940, by = "metarea") |>
-  # Manually add metarea name:
-  # https://cps.ipums.org/cps/codes/msafp_codes_sep1995apr2004.shtml
-  mutate(
-    metarea_name = case_when(
-      metarea == 1930 ~ "Danbury, CT",
-      metarea == 5190 ~ "Monmouth-Ocean, NJ",
-      metarea == 5350 ~ "Nashua, NH",
-      .default = metarea_name
-    )
-  )
 
-top10_by_year <- premias |>
-  arrange(-est_premia) |>
-  slice(1:10, .by = year)
+top15_by_year <- premias |>
+  arrange(desc(est_premia)) |>
+  filter(.by = year, row_number(desc(est_premia)) <= 15)
+
+top15_by_year |> View()
 
 
 #' ### Output to Table
 # %%
-top10_1940 <- top10_by_year |>
+top15_1940 <- top15_by_year |>
   filter(year == 1940) |>
-  select(metarea_name, est_premia)
-top10_2010 <- top10_by_year |>
+  select(metarea, est_premia)
+top15_2010 <- top15_by_year |>
   filter(year == 2010) |>
-  select(metarea_name, est_premia)
+  select(metarea, est_premia)
 
-tab_top10 <- cbind(top10_1940, top10_2010) |>
+tab_top15 <- cbind(top15_1940, top15_2010) |>
   tt() |>
   format_tt(
     j = c(2, 4),
     fn = scales::label_percent(accuracy = 0.1, suffix = "\\%")
   )
 
-print(tab_top10, "markdown")
-cat(extract_body(tab_top10), sep = "\n")
+print(tab_top15, "markdown")
+
+cat(extract_body(tab_top15), sep = "\n")
 cat(
-  extract_body(tab_top10),
+  extract_body(tab_top15),
   sep = "\n",
-  file = here("out/tables/summary_stats/top10_1940_2010.tex")
+  file = here("out/tables/summary_stats/top15_1940_2010.tex")
 )
+
+# Flint, MI & 48.4\% & Stamford, CT & 80.5\% \\
+# Detroit, MI & 45.9\% & Danbury, CT & 56.9\% \\
+# San Francisco-Oakland-Vallejo, CA & 43.4\% & San Jose, CA & 51.5\% \\
+# Seattle-Everett, WA & 42.6\% & Washington, DC/MD/VA & 46.5\% \\
+# Washington, DC/MD/VA & 42.3\% & Monmouth-Ocean, NJ & 45.5\% \\
+# Lansing-E. Lansing, MI & 38.8\% & Boston, MA/NH & 41.5\% \\
+# Sacramento, CA & 38.6\% & Trenton, NJ & 41.3\% \\
+# New York, NY-Northeastern NJ & 38.4\% & Bridgeport, CT & 41.2\% \\
+# Milwaukee, WI & 38.1\% & San Francisco-Oakland-Vallejo, CA & 39.6\% \\
+# Rochester, NY & 38.1\% & Nashua, NH & 37.7\% \\
+
+# Los Angeles-Long Beach, CA & 37.8\% & Seattle-Everett, WA & 36.6\% \\
+# Chicago, IL & 37.7\% & Dutchess Co., NY & 36.1\% \\
+# Minneapolis-St. Paul, MN & 37.5\% & Ventura-Oxnard-Simi Valley, CA & 35.3\% \\
+# Cleveland, OH & 37.5\% & Baltimore, MD & 34.0\% \\
+# Peoria, IL & 37.4\% & Ann Arbor, MI & 32.5\% \\
+
+## OLD:
 # Flint, MI & 48.7\% & San Jose-Sunnyvale-Santa Clara, CA & 63.2\% \\
 # Detroit, MI & 46.2\% & Bridgeport-Stamford-Norwalk, CT & 54.7\% \\
 # San Francisco, CA & 43.8\% & San Francisco-San Mateo-Redwood City,CA & 52\% \\

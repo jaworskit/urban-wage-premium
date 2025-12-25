@@ -16,6 +16,7 @@ options(pillar.print_max = 30)
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
   arrow::open_dataset() |>
+  filter(ind_main_sample == TRUE) |>
   filter(!is.na(perwt), perwt > 0)
 
 diamond_amenities <-
@@ -86,23 +87,32 @@ data_y <- data |>
 merged <- data_y |>
   select(code, all_of(group_averages)) |>
   filter(code != 0) |>
-  tidylog::inner_join(
-    diamond_amenities,
-    by = "code"
-  ) |>
+  tidylog::inner_join(diamond_amenities, by = "code") |>
   drop_na()
 
-X <- merged |> select(all_of(group_averages)) |> as.matrix()
-X <- cbind(1, X)
-Y <- merged |> select(all_of(amenities)) |> as.matrix()
+# %%
+library(fixest)
+ests <- feols(
+  xpd(
+    lhs = paste0("c(", paste0(amenities, collapse = ", "), ")"),
+    rhs = group_averages
+  ),
+  data = merged,
+  vcov = "hc1"
+)
 
-betas <- solve(crossprod(X), crossprod(X, Y))
+betas <- as.matrix(coef(ests)[, 3:ncol(coef(ests))])
+
+etable(ests)
+
+# %%
 # row-rank of \betas shows that all the amenities load onto (at least some) of the group-averages
 msg <- sprintf(
   "There are %s group averages that we use. The row-rank of the betas is %s.",
   ncol(betas),
-  qr(t(betas))$rank
+  qr(betas)$rank
 )
+cat(msg)
 cat(msg, file = here("out/statements/group_averages_on_diamond_amenities.txt"))
 
 # %%

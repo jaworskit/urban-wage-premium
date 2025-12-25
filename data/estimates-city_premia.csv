@@ -243,7 +243,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 7760,0.705830678350506,1950,5,"Sioux Falls, SD",,141
 7800,0.597836011683851,1950,8,"South Bend, IN",89,138
 7840,0.122585578350511,1950,8,"Spokane, WA",28,53
-7880,-0.029727821649495,1950,6,"Springfield, IL",,30
+7880,-0.059727821649495,1950,6,"Springfield, IL",,30
 80,0.149170035493357,1950,8,"Akron, OH",35,62
 8000,0.14438855335051,1950,8,"Springfield-Holyoke, MA",33,60
 8120,0.396566178350505,1950,8,"Stockton, CA",76,120
@@ -404,7 +404,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 7400,0.368676962581837,1960,8,"San Jose, CA",89,175
 7470,0.19079025888712,1960,6,"Santa Barbara-San Maria-Lompac, CA",,99
 7520,0.00723822819657739,1960,7,"Savannah, GA",,41
-7560,-0.0296631614027427,1960,8,"Scranton-Wilkes-Barre-Hazleton, PA",8,32
+7560,-0.0596631614027427,1960,8,"Scranton-Wilkes-Barre-Hazleton, PA",8,32
 7600,0.317372916550706,1960,8,"Seattle-Everett, WA",82,163
 7680,-0.00300086748969409,1960,7,"Shreveport, LA",,40
 7720,0.081899377093638,1960,6,"Sioux City, IA/NE",,58
@@ -431,7 +431,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 8840,0.249256466732526,1960,8,"Washington DC, MD/VA/WV",63,133
 8880,0.230463404667173,1960,5,"Waterbury, CT",,119
 8920,0.291936367582768,1960,6,"Waterloo-Cedar Falls, IA",,158
-8960,-0.0265058714896908,1960,6,"West Palm Beach-Boca Raton, FL",,33
+8960,-0.0565058714896908,1960,6,"West Palm Beach-Boca Raton, FL",,33
 9040,0.211029733774668,1960,8,"Wichita, KS",51,109
 9080,-0.0520973684420849,1960,6,"Wichita Falls, TX",,27
 9160,0.287889492746283,1960,7,"Wilmington, DE/NJ/MD",,153
@@ -578,7 +578,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 1540,-0.0435750396610161,1980,3,"Charlottesville, VA",,38
 1560,0.0243249513678716,1980,7,"Chattanooga, TN/GA",,77
 1600,0.285101704947693,1980,8,"Chicago, IL",80,229
-1620,-0.0221231377697645,1980,4,"Chico, CA",,50
+1620,-0.0521231377697645,1980,4,"Chico, CA",,50
 1640,0.162363698106151,1980,8,"Cincinatti-Hamilton, OH/KY/IN",45,159
 1680,0.233844841128321,1980,8,"Cleveland, OH",69,207
 1720,-0.134045843752671,1980,5,"Colorado Springs, CO",,16
@@ -602,8 +602,8 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 2320,0.189039811402801,1980,4,"Elkhart-Goshen, IN",,181
 2360,0.105763537785787,1980,8,"Erie, PA",25,116
 2400,0.11716497396555,1980,5,"Eugene-Sprinfield, OR",,126
-2440,-0.0261785551871875,1980,6,"Evansville, IN/KY",,47
-2560,-0.0270596740509461,1980,4,"Fayetteville, NC",,46
+2440,-0.0561785551871875,1980,6,"Evansville, IN/KY",,47
+2560,-0.0570596740509461,1980,4,"Fayetteville, NC",,46
 2580,0.0863059177857749,1980,4,"Fayetteville-Springdale, AR",,107
 2640,0.339992207259455,1980,8,"Flint, MI",87,245
 2660,-0.0646130052911438,1980,2,"Florence, SC",,32
@@ -741,12 +741,12 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 7480,0.318201129324251,1980,4,"Santa Cruz, CA",,240
 7500,0.16272670960395,1980,4,"Santa Rosa-Petaluma, CA",,161
 7510,0.0962431530799069,1980,4,Sarasota,,112
-7520,-0.0240273720692931,1980,7,"Savannah, GA",,48
+7520,-0.0540273720692931,1980,7,"Savannah, GA",,48
 7560,-0.0863138360603748,1980,8,"Scranton-Wilkes-Barre-Hazleton, PA",3,28
 7600,0.327144966856989,1980,8,"Seattle-Everett, WA",85,241
 7610,0.154000765611876,1980,4,"Sharon, PA",,152
 7620,0.317405136535785,1980,4,"Sheboygan, WI",,239
-7680,-0.0227359913051457,1980,7,"Shreveport, LA",,49
+7680,-0.0527359913051457,1980,7,"Shreveport, LA",,49
 7720,0.0719773420282023,1980,6,"Sioux City, IA/NE",,97
 7760,0.0259240955635656,1980,5,"Sioux Falls, SD",,78
 7800,0.181947066434418,1980,8,"South Bend, IN",53,178
@@ -766,11 +766,11 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 8400,0.24578203332362,1980,7,"Toledo, OH/MI",,214
 8440,0.0733709795141701,1980,6,"Topeka, KS",,99
 8480,0.154985308410787,1980,8,"Trenton, NJ",42,153
-8520,-0.0212832980036954,1980,6,"Tucson, AZ",,51
+8520,-0.0512832980036954,1980,6,"Tucson, AZ",,51
 8560,0.18479247650464,1980,8,"Tulsa, OK",54,179
 8600,0.0191994562473197,1980,5,"Tuscaloosa, AL",,74
 8640,0.245401838838418,1980,5,"Tyler, TX",,213
-8680,-0.0273210629834479,1980,8,"Utica-Rome, NY",6,45
+8680,-0.0573210629834479,1980,8,"Utica-Rome, NY",6,45
 870,0.180664792785785,1980,4,"Benton Harbor, MI",,177
 8730,0.364718348725005,1980,5,"Ventura-Oxnard, CA",,247
 8760,0.124200584452446,1980,4,"Vineland-Millville-Bridgetown, NJ",,133
@@ -954,7 +954,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 5960,0.0281639546845407,1990,7,"Orlando, FL",,80
 600,0.0806795240029176,1990,7,"Augusta-Aiken, GA/SC",,105
 6030,0.0290293523453859,1990,2,"Pascagoula-Moss Point, MS",,81
-6080,-0.0283724685443685,1990,5,"Pensacola, FL",,48
+6080,-0.0583724685443685,1990,5,"Pensacola, FL",,48
 6120,0.148201657304877,1990,8,"Peoria, IL",38,146
 6160,0.271819404218611,1990,8,"Philadelphia, PA/NJ",76,216
 6200,0.084168530376781,1990,8,"Phoenix-Mesa, AZ",23,109
@@ -979,7 +979,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 6960,0.243123113041743,1990,7,"Saginaw-Bay City-Midland, MI",,208
 6980,0.0884317191600176,1990,4,"St. Cloud, MN",,115
 7040,0.211533490415781,1990,8,"St. Louis, MO/IL",63,192
-7080,-0.0227944296171148,1990,4,"Salem, OR",,49
+7080,-0.0527944296171148,1990,4,"Salem, OR",,49
 7120,0.0927502549563632,1990,5,"Salinas-Sea Side-Monterey, CA",,119
 7160,0.075349542017911,1990,8,"Salt Lake City-Ogden, UT",21,103
 7240,-0.0705877059847748,1990,8,"San Antonio, TX",2,29
@@ -1028,7 +1028,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 8940,0.125667340695575,1990,4,"Wausau, WI",,133
 8960,0.140262264698519,1990,6,"West Palm Beach-Boca Raton, FL",,142
 9040,0.0821975485422118,1990,8,"Wichita, KS",22,107
-9080,-0.0212904985330593,1990,6,"Wichita Falls, TX",,50
+9080,-0.0512904985330593,1990,6,"Wichita Falls, TX",,50
 9140,-0.0341034218085518,1990,4,"Williamsport, PA",,47
 9160,0.340175084137358,1990,7,"Wilmington, DE/NJ/MD",,236
 9200,0.245532479449076,1990,4,"Wilmington, NC",,210
@@ -1091,7 +1091,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 1880,0.248869231032223,2000,8,"Corpus Christi, TX",68,241
 1920,0.247063204111042,2000,8,"Dallas, TX",67,239
 1930,0.618759083540568,2000,3,"Danbury, CT",,280
-1950,-0.02448554012285,2000,4,"Danville, VA",,54
+1950,-0.05448554012285,2000,4,"Danville, VA",,54
 1960,0.0933573156463312,2000,7,"Davenport-Moline-Rock Island, IA/IL",,123
 2000,0.124463164391023,2000,8,"Dayton-Sprinfield, OH",28,144
 2020,0.0385149705414291,2000,4,"Daytona Beach, FL",,88
@@ -1121,7 +1121,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 2680,0.150593875013357,2000,6,"Fort Lauderdale-Hollywood-Pompano Beach, FL",,166
 2700,0.0549917451911782,2000,4,Fort Myers-Cape Coral FL,,103
 2710,0.029002151730348,2000,3,"Fort Piece, FL",,78
-2720,-0.0240831708415924,2000,2,"Fort Smith, AR/OK",,55
+2720,-0.0540831708415924,2000,2,"Fort Smith, AR/OK",,55
 2750,-0.0307846617876389,2000,3,"Fort Walton Beach, FL",,50
 2760,0.126184606666543,2000,8,"Fort Wayne, IN",29,146
 280,-0.249300867095702,2000,6,"Altoona, PA",,6
@@ -1279,7 +1279,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 80,0.170004631671351,2000,8,"Akron, OH",45,187
 8000,0.180710564787761,2000,8,"Springfield-Holyoke, MA",50,197
 8040,0.765586969238608,2000,4,"Stamford, CT",,281
-8050,-0.0263722754776979,2000,4,"State College, PA",,52
+8050,-0.0563722754776979,2000,4,"State College, PA",,52
 8120,0.181306209244069,2000,8,"Stockton, CA",51,198
 8140,-0.122677434958047,2000,2,"Sumter, SC",,20
 8160,0.11998591007162,2000,8,"Syracuse, NY",26,140
@@ -1301,7 +1301,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 8780,-0.120810029977492,2000,4,"Visalia-Tulare-Porterville, CA",,21
 8800,0.0871838860490622,2000,7,"Waco, TX",,117
 8840,0.368833626557156,2000,8,"Washington DC, MD/VA/WV",85,272
-8880,-0.025478119246383,2000,5,"Waterbury, CT",,53
+8880,-0.055478119246383,2000,5,"Waterbury, CT",,53
 8920,-0.0889093639915954,2000,6,"Waterloo-Cedar Falls, IA",,28
 8940,0.161183666433314,2000,4,"Wausau, WI",,179
 8960,0.286920703216366,2000,6,"West Palm Beach-Boca Raton, FL",,255
@@ -1351,7 +1351,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 1200,0.290117404940314,2010,7,"Brockton, MA",,223
 1240,-0.567817819784926,2010,5,"Brownsville-Harlingen, TX",,4
 1260,-0.354794312888623,2010,3,"Bryan-College Station, TX",,12
-1280,-0.0225950164979756,2010,8,"Buffalo, NY",11,71
+1280,-0.0525950164979756,2010,8,"Buffalo, NY",11,71
 1320,0.0632895225413977,2010,8,"Canton, OH",17,112
 1360,0.218384891945799,2010,6,"Cedar Rapids, IA",,192
 1400,-0.162508568181199,2010,5,"Champaign-Urbana-Rantoul, IL",,35
@@ -1500,7 +1500,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 5880,0.111223550779457,2010,8,"Oklahoma City, OK",31,139
 5910,0.261038472820906,2010,4,"Olympia, WA",,216
 5920,-0.306339376670895,2010,7,"Omaha, NE/IA",,14
-5960,-0.0240502523614923,2010,7,"Orlando, FL",,70
+5960,-0.0540502523614923,2010,7,"Orlando, FL",,70
 600,0.289829654455953,2010,7,"Augusta-Aiken, GA/SC",,222
 6010,-0.296847361742714,2010,2,"Panama City, FL",,15
 6080,0.308530171598195,2010,5,"Pensacola, FL",,236
@@ -1605,7 +1605,7 @@ code,premium,year,num_years_in_sample,metarea,rank_balanced,rank_unbalanced
 "Dayton-Springfield, OH",0.159552556440384,2010,7,"Dayton-Springfield, OH",,163
 "Dubuque, IA",0.295567400296767,2010,4,"Dubuque, IA",,226
 "Eugene-Springfield, OR",0.0459368007591469,2010,8,"Eugene-Springfield, OR",14,107
-"Hamilton-Middleton, OH",-0.0290939446926669,2010,7,"Hamilton-Middleton, OH",,69
+"Hamilton-Middleton, OH",-0.0590939446926669,2010,7,"Hamilton-Middleton, OH",,69
 "Little Rock-N. Little Rock, AR",0.304102638518582,2010,5,"Little Rock-N. Little Rock, AR",,231
 "Lubbock, TX",0.350089694337014,2010,5,"Lubbock, TX",,247
 "Mansfield, OH",0.36023229868732,2010,5,"Mansfield, OH",,250

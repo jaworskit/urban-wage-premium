@@ -8,6 +8,12 @@ library(kfbmisc)
 
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 
+msa <- read_sf(glue("{dropbox}/data/shapefiles/MSA_2000")) |>
+  rmapshaper::ms_simplify(keep = 0.01) |>
+  filter(
+    !(MSACMSA %in% c("0380", "3320"))
+  )
+
 states <- tigris::states(cb = TRUE) |>
   rmapshaper::ms_simplify(keep = 0.01) |>
   st_transform(st_crs(msa)) |>
@@ -18,12 +24,6 @@ counties <- tigris::states(cb = TRUE) |>
   st_transform(st_crs(msa)) |>
   filter(!(STATEFP %in% c("02", "15", "60", "66", "69", "72", "78")))
 
-# %%
-msa <- read_sf(glue("{dropbox}/data/shapefiles/MSA_2000")) |>
-  rmapshaper::ms_simplify(keep = 0.01) |>
-  filter(
-    !(MSACMSA %in% c("0380", "3320"))
-  )
 
 # Create indicator for being a 1950 MSA
 msa_1950 <- read_sf(glue("{dropbox}/data/shapefiles/MSA_1950")) |>
@@ -104,7 +104,7 @@ msa <- msa |>
     values = c(
       "TRUE" = colorspace::lighten(
         kfbmisc::kyle_color("blue"),
-        amount = 0.2,
+        amount = 0.1,
         space = "HCL"
       ),
       "FALSE" = colorspace::lighten(
