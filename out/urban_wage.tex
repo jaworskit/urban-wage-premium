@@ -138,8 +138,8 @@
 
 % Commands for leaving comments \kyle{...}
 \newtoggle{INCLUDECOMMENTS}
-\toggletrue{INCLUDECOMMENTS}
-% \togglefalse{INCLUDECOMMENTS}
+% \toggletrue{INCLUDECOMMENTS}
+\togglefalse{INCLUDECOMMENTS}
 
 \newcommand{\taylor}[1]{\iftoggle{INCLUDECOMMENTS}{{\color{magenta}\textbf{Taylor:} #1}}{}}
 \newcommand{\kyle}[1]{\iftoggle{INCLUDECOMMENTS}{{\color{magenta}\textbf{Kyle:} #1}}{}}
@@ -193,39 +193,37 @@ We estimate the urban wage premium in the United States from 1940 to 2010. Drawi
 % Empirical evidence from the last 30 years has found a large portion of the observed wage premium is driven by non-random sorting, but there is still an apparent causal effect of urban status.
 % Our paper asks how the urban wage premium has changed throughout the second half of the twentieth century and to what extent this is due to the role of selection versus the causal effect of living in cities.\footnote{Previous research for the United States shows that the observed raw differences in wages between urban and non-urban workers was around 35 percent in 1940, decreasing by one-third to one half in 1980 to 20-25 percent, and increasing again to 35 percent by 2010 \citep*{Boustan_Bunten_Hearey_2013}.}
 
-\kyle{I really like the first two paragraphs, but I think it works better like this. Above is the original version so we can restore if y'all disagree}
-
 The average US worker living in an urban area in 2010 earned 35 percent more than their non-urban counterparts.\footnote{
 Based on 2010 ACS estimates of average annual wage for individuals living in MSAs and outside of MSAs for individuals in the labor force, report non-negative wage income, and are not missing wage income data.} 
 This pattern of higher average wages in cities holds across the globe and throughout the past century \citep*{Boustan_Bunten_Hearey_2013, carlsen2016education, ahlfeldt2019economic, glaeser2022can, eliasson2023urban}.
 The fact that wages are higher in cities cannot be interpreted as the causal effect of cities due to the potential for non-random sorting into cities based on preferences, skills, or productivity.\footnote{
 For example, positive selection of firms may come from more productive firms paying higher wages, and only high-productivity firms locate and survive in cities where larger markets induce tougher competition.} 
 Is the difference driven by increased productivity stemming from agglomeration economies or high-ability workers sorting into urban areas \citep*[e.g.][]{behrens2014productive,moretti2011handbook,puga2010magnitude}?
-Empirical evidence from the last 30 years has found a large portion of the observed wage premium is driven by non-random sorting, but there is still an apparent causal effect of urban status.
+Empirical work shows that a large portion of the observed urban wage premium is driven by non-random sorting, but there is still evidence for a causal effect of urban status.
 
 While the premium earned by workers has remained consistent, the role of cities in the economy has changed across time and space.
 US cities have undergone a large structural transformation from industrial bases in the middle of the twentieth century to modern service-sector focusing in finance, technology, and professional services \citep*{glaeser2001consumer,glaeser2003urban,shapiro2006smart, diamond2021spatial,connor2024frontier}.
 Our paper asks how the urban wage premium has changed throughout the second half of the twentieth century and to what extent this is due to the role of selection versus the causal effect of living in cities.\footnote{Previous research for the United States shows that the observed raw differences in wages between urban and non-urban workers was around 35 percent in 1940, decreasing by one-third to one half in 1980 to 20-25 percent, and increasing again to 35 percent by 2010 \citep*{Boustan_Bunten_Hearey_2013}.}
 
-Typically, removing the role of sorting into cities is addressed using worker-level panel data.
-By comparing an individual before and after moving to a city, this method removes confounding by a worker's latent unobserved productivity. 
+Typically, removing the role of sorting into cities is addressed using panel data on individual workers and worker-level fixed effects.
+By comparing a person before and after moving to a city, worker fixed effects remove confounding factors due to a worker's latent unobserved productivity. 
 % Comparing the same individuals before and after moving to a city removes time-invariant confounders due to sorting of workers by unobservable characteristics (e.g., ability).
 The remaining gap or subsequent wage growth between urban and rural earnings is attributed to the economic effects of density \citep*{ahlfeldt2019economic, glaeser2008cities}. 
-Research has explored the causes of these agglomeration effects; examples include knowledge sharing between firms, improved firm-worker matching, faster human capital accumulation, labor market pooling, or input-output linkages \citep*{BaumSnow_Pavan_2012,Combes_Duranton_Gobillon_2008,dauth2022matching, Glaeser_Mare_2001,gould2007cities,Yankow_2006,adenbaum2025there,card2024location}.
+Previous research has explored the causes of these agglomeration effects, for example, due to knowledge sharing between firms, improved firm-worker matching, faster human capital accumulation, labor market pooling, or input-output linkages \citep*{BaumSnow_Pavan_2012,Combes_Duranton_Gobillon_2008,dauth2022matching, Glaeser_Mare_2001,gould2007cities,Yankow_2006,adenbaum2025there,card2024location}.
 
 Due to data limitations, the existing literature has focused on more recent decades and little is known about the evolution of the urban wage premium before 1980.
 The main challenge going back in time is that census data only provides a cross-sectional snapshot of who lives in cities and how much they earn, ruling out a strategy that relies on following workers over time.
-In this paper, we show how to use readily available census data to estimate the urban wage premium while controlling for observed individual characteristics as well as unobserved characteristics following the approach in \citet*{altonji2018estimating}.
+In this paper, we show how to use readily available census data to estimate the urban wage premium while controlling for observed individual characteristics as well as unobserved characteristics based on the approach of \citet*{altonji2018estimating}.
 
 The starting point is the standard model of urban location choice \citep*{roback1982wages, bayer2007unified, bayer2016dynamic}. 
 Workers vary in their willingness to pay for location-specific amenities based on their observable and, importantly, \emph{unobservable} characteristics.
 Because of differences in willingness-to-pay, location-specific averages of observable characteristics vary based on the underlying amenities of a location. 
 Similarly, the averages of unobservable characteristics vary because of  location-specific amenities. 
-If the amenities driving both observable and unobservable sorting are the same, \citet{altonji2018estimating} show that controlling for observable location-specific averages is sufficient to control for unobservable averages.
-This approach allows us to address sorting when estimating the historical urban wage premium without requiring individual-level longitudinal data.
+If the amenities driving both observable and unobservable sorting are the same, \citet{altonji2018estimating} show that controlling for observable location-specific averages is sufficient to control for unobservable characteristics.
+This allows us to address sorting when estimating the historical urban wage premium without individual-level panel data.
 
 We estimate the urban wage premium from 1940 to 2010.\footnote{We use only repeated cross-sections from the US decennial censuses and American Community Survey beginning in 1940 when information on wage income was first reported.}
-First, focusing on the period since 1980, where we can make direct comparisons to the existing literature, we document an urban wage premium starting at 7.5 percent in 1980 and declining to around 5 percent in the following decades.
+First, focusing on the period since 1980, where we can make direct comparisons to the existing literature, we document an urban wage premium of 7.5 percent in 1980 and declining to around 5 percent in the following decades.
 The estimates are consistent with the results reported in \citet*{Glaeser_Mare_2001}, \cite*{Yankow_2006}, and \citet*{BaumSnow_Pavan_2012}, and provide support that our approach addresses the key identification concern related to sorting.
 Second, for the earlier decades, we estimate an urban wage premium of 11.9 percent in 1940, 15.2 percent in 1950, 12.7 percent in 1960, and 8.9 percent in 1970. 
 
@@ -244,8 +242,8 @@ The decline is smallest around 1970 with around a 5 percentage point decline, an
 However, our causal estimates are qualitatively similar.
 There is a small decrease in 1940 and 1950, but otherwise our estimates remain stable. 
 
-Given the large changes in the role of cities in the United States over the last 80 years, it is natural to ask how the benefits of urbanity have evolved over time and over space \citep*{glaeser2003rise,glaeser2004cities, glaeser2008rise,glaeser2010did}.
-To answer this, we explore two dimensions of location: differences in city size and differences across regions in the US. 
+Given the change in the role of cities in the United States over the last 80 years, it is natural to ask how the benefits of urbanity have evolved over time and over space \citep*{glaeser2003rise,glaeser2004cities, glaeser2008rise,glaeser2010did}.
+To do this, we explore two dimensions of location: differences in city size and differences across regions in the US. 
 We find that for those living in large urban areas with over 1 million residents, the urban wage premium is larger over the entire period, but the gap has narrowed since the 1980s. 
 Given regional specialization in economic activity across the US, we estimate a separate premium for each census region over time.
 We also find regional patterns that are consistent with the historical narrative regarding regional convergence and structural transformation \citep{barro1992convergence, kim1998economic, Mitchener_McLean_1999}. 
@@ -255,10 +253,8 @@ Given these differences in premium across regions and the general evolution of c
 The general pattern that emerges is that workers in industrial production, construction, or transportation occupations experience declines in the urban wage premium. 
 Workers in managerial positions or sales positions experienced positive and relatively stable premiums over time. 
 
-\kyle{These two paragraphs felt a bit strange to me. I think it's more natural to motivate and preview the results one-by-one for each group. I made these changes, but the original one is below}
-
 Second, we investigate whether workers with different characteristics by eduction, gender, race, and experience within a city, have experienced different wage premia.  
-Given the concentration of highly educated workers in cities and the recent rise of the `consumer city', we ask whether there are increasing premiums for college workers. 
+Given the concentration of highly educated workers in cities and the recent rise of the ``consumer city,'' we ask whether there are increasing premiums for college workers. 
 We estimate the urban wage premium for college versus non-college educated workers and find that the premium is higher for college-educated workers. 
 Our estimate is consistent with the complementarity between skilled workers and cities emphasized by \citet{moretti2013real}. 
 
@@ -268,33 +264,17 @@ However, the female specific urban wage premium is always higher than the premiu
 Importantly, individual characteristics explain a larger share of the gap over time, consistent with work on the changing selection of women into the labor force. 
 
 Beginning in the 1910s and continuing through the 1970s, Black workers migrated from rural areas in the South to urban areas across the country, with a large share moving to industrial cities in the North. 
-This migration raises questions about the changing urban premium for Black workers \citep{boustan2009competition, collins2021great, derenoncourt2022can}. 
-When comparing the premium for Black and white workers, the premium is no smaller than for white workers, and is particularly larger between 1950 and 1970, which is in line with the timing of the Great Migration \citep{boustan2016competition,derenoncourt2022can}.
+This migration may have led to changes in the urban wage premium for Black workers \citep{boustan2009competition, collins2021great, derenoncourt2022can}. 
+When comparing the premium for Black and white workers, the premium is no smaller than for white workers, and is particularly larger between 1950 and 1970, which is in line with the timing of the Great Migration.
 
 We also consider the role of experience within cities and the urban wage growth premium as documented by \citet{BaumSnow_Pavan_2012}. 
 To better understand wage growth dynamics, we estimate separate regressions for older and younger workers, assuming that the former have more years of urban experience, which should be associated with larger wage premia.
-Regarding wage growth, we find that older workers have higher premia in most years, but the gap decreases over time.
-
-% Second, we investigate whether workers with different characteristics by eduction, gender, race, and experience within a city, have experienced different wage premia.  
-% Given the concentration of highly educated workers in cities and the increasing consumption in cities, we ask whether there are increasing premiums for college workers. 
-% There were also sharp changes in female labor participation throughout the twentieth century, raising the question of whether similar patterns emerge for women \citep{goldin1990understanding}. 
-% Beginning in the 1910s and continuing through the 1970s, Black workers migrated from rural areas in the South to urban areas across the country, with a large share moving to industrial cities in the North. 
-% This migration raises questions about the changing urban premium for Black workers \citep{boustan2009competition, collins2021great, derenoncourt2022can}. 
-% We also consider the role of experience within cities and the urban wage growth premium as documented by \citet{BaumSnow_Pavan_2012}. 
-% To better understand wage growth dynamics, we estimate separate regressions for older and younger workers, assuming that the former have more years of urban experience, which should be associated with larger wage premia.
-
-% We estimate the urban wage premium for college versus non-college educated workers and find that the premium is higher for college-educated workers. 
-% Our estimate is consistent with the complementarity between skilled workers and cities emphasized by \citet{moretti2013real}. 
-% For female workers, we estimate a similar pattern, the wage premium falls between 1940 and 1990, and then rises. 
-% However, the female specific urban wage premium is always higher than the premium estimated on our primary sample of male workers. 
-% Importantly, individual characteristics explain a larger share of the gap over time, consistent with work on the changing selection of women into the labor force. 
-% When comparing the premium for Black and white workers, the premium is no smaller than for white workers, and is particularly larger between 1950 and 1970, which is in line with the timing of the Great Migration \citep{boustan2016competition,derenoncourt2022can}.
-% Regarding wage growth, we find that older workers have higher premia in most years, but the gap decreases over time.
+We find that older workers have higher premia in most years, but the gap decreases over time.
 
 Overall, this paper highlights a novel approach to estimating the urban wage premium using widely available data. 
 Our application of \cite{altonji2018estimating} allows us to provide estimates for a period not previously considered in the literature.
 The results show a decreasing urban wage premium over time and that the importance of sorting into cities began relatively early in the twentieth century.
-Importantly, we document that sorting into cities has been prevalent throughout much of the twentieth century and the highly noted widening after 1980 looks less dramatic in the historical context.  
+Importantly, we document that sorting into cities has been prevalent throughout much of the twentieth century and the highly noted widening after 1980 looks less dramatic in historical context.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Data and Summary Statistics}\label{sec:data}
@@ -317,7 +297,7 @@ In section \ref{sec:female_wage_premium}, we explore the wage premium for women.
 To construct average weekly earnings, we follow \citet{goldin1992great} and divide the reported total income by the number of weeks worked in the survey year.\footnote{For individuals earning the top income code, we set income to be the lower top income cutoff multiplied by $1.4$ following \citet{goldin1992great} These cutoffs are reported in the IPUMS documentation for the \texttt{INCWAGE} variable. In 2015 dollars, the cutoffs are \$84,500 for 1940, \$99,2000 for 1950, \$199,500 for 1960, \$309,000 for 1970, and \$225,000 for 1980. Afterward, IPUMS reports income as the median wage above that year's cutoff. Results are robust to dropping all individuals earning the top income code.} 
 We then convert all earnings to 2015 dollars using the Consumer Price Index.
 Since housing costs are higher in urban areas, we construct a measure of ``real wages'' following \citet{ganong2017has}. 
-To do so, we use either (i) five percent of the reported housing value or twelve times the reported monthly rent and divide by 48 to get the weekly housing costs.\footnote{We windsorize our measuring of housing costs at the 1st and 99th percentiles.}
+We use either five percent of the reported housing value or twelve times the reported monthly rent and divide by 48 to get the weekly housing costs.\footnote{We windsorize our measuring of housing costs at the 1st and 99th percentiles.}
 To estimate the net-of-housing-costs wages, we subtract the estimated weekly housing cost from the weekly wages.\footnote{Since 1950 does not have microdata on rent, we use the average rent from the Census tables.} 
 
 In addition to wages, across all samples, consistent information is available on whether the individual is living in an urban area, age, educational attainment, and race.
@@ -338,7 +318,7 @@ Together, these trends highlight that cities have become more populated and more
 The geography of high-wage urban centers has also changed over time.\footnote{Table \ref{tab:top} reports the ten urban areas with the highest urban wage differences in 1940 and 2010.}
 In particular, we calculate the difference in the average log wage in an urban and non-urban area.
 While several of the cities are among the highest paying in both 1940 and in 2010 (i.e., San Francisco, Washington, DC, San Jose, Seattle), centers of manufacturing in the industrial North and Midwest (i.e., Flint, MI, Detroit, MI, Lansing, MI, Chicago, IL, Rochester, NY) have lost their prominence in favor of cities closely associated with high-tech manufacturing.
-This descriptive pattern reflects the combination of several changes in the US economy since 1940.
+This descriptive pattern reflects the combination of several changes since 1940.
 In the remainder of the paper, we develop an empirical strategy to quantify and better understand changes in the urban wage premium over time and the relative importance of the causal effect of cities (i.e., due to agglomeration) versus sorting. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -443,7 +423,7 @@ Our estimate $\beta_1$ now captures the causal urban wage premium since the grou
 Note that by controlling for the average characteristics of a worker's neighbors, we are, in effect, controlling for peer effects on a worker's wages. 
 Our estimate may, therefore, underestimate the true impact of living in a city if it mainly operates through better peer-networks. 
 There are two reasons that we think alleviate this concern. 
-First, recent work trying to `decompose' the wage premium does not point to peer effects as being a particularly important component, e.g. \citet{card2024location} and \citet{adenbaum2025there}.
+First, recent work trying to decompose the wage premium does not point to peer effects as particularly important, e.g. \citet*{card2024location} and \citet*{adenbaum2025there}.
 Second, in practice our estimates in later decades match other estimates found using panel data.
 
 Under five assumptions, we are able to exploit the above linear mapping and therefore absorb the bias due to sorting of workers.
@@ -533,9 +513,9 @@ For example, our estimates are consistent with the wave of factory automation in
 % Kyle: I'm wondering about future work trying to think about skill-biased technological change and how it might benefit low-wage workers relative to "pre automation"
 % Like in Acemoglu and Restrepo type setup
 
-\subsection{Causal Urban Wage Premium Adjusted for Housing Costs}
+\subsection*{Causal Urban Wage Premium Adjusted for Housing Costs}
 
-So far we have ignored the role that rents have in determining an individual's `real wage'.
+So far we have ignored the role that rents have in determining an individual's ``real wage.''
 Canonical urban models suggest that urban rents will adjust in response to higher wages and partially absorb the wage premium, such that utility is equalized across space.  
 To ensure that the urban wage premium we estimate is not driven by rent differentials, we re-estimate equation \eqref{eq:AM} using a measure of income that accounts for location-specific differences in housing costs.\footnote{
   For example, between 1960 and 2010, the average rent in an MSA was between 50 and 70 percent higher than non-MSA regions.
@@ -552,7 +532,7 @@ However, the estimated wage premium from 1940 to 1960 shrinks slightly to betwee
 These results suggest that some of the causal benefits of cities that accrued to worker was lost to higher rents between 1940 and 1960.
 
 
-\subsection{Female Workers}\label{sec:female_wage_premium}
+\subsection*{Female Workers}\label{sec:female_wage_premium}
 
 In this subsection, we repeat our main causal analysis using female workers.
 As mentioned above, opportunities for work were changing dramatically for women over the course of the twentieth century \citep{goldin2006quiet}. 
