@@ -12,7 +12,7 @@ library(patchwork)
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 gh <- "~/Documents/Projects/urban-wage-premium"
 
-source("code/utils/calculate_group_averages.R")
+source(here("code/utils/calculate_group_averages.R"))
 
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
@@ -380,7 +380,7 @@ ests_group_rent_only <- ests_group_rent_only |>
 
 # %%
 (plot_group_avgs <- ggplot(
-  data = ests_group_52,
+  data = ests_group,
   aes(
     x = year,
     y = exp_est,
@@ -595,37 +595,39 @@ ests_group_rent_only <- ests_group_rent_only |>
 
 # %%
 kfbmisc::tikzsave(
-  glue("{gh}/out/figures/raw_housing_costs_differences.pdf"),
+  glue("{gh}/out/figures/housing_costs/raw_housing_costs_differences.pdf"),
   plot_rent_premium,
   width = 11,
   height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/out/figures/net_urbanpremium_raw.pdf"),
+  glue("{gh}/out/figures/housing_costs/net_urbanpremium_raw.pdf"),
   plot_raw,
   width = 11,
   height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/out/figures/net_urbanpremium_causal.pdf"),
+  glue("{gh}/out/figures/housing_costs/net_urbanpremium_causal.pdf"),
   plot_group_avgs,
   width = 11,
   height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/out/figures/raw_housing_costs_differences_rent_only.pdf"),
+  glue(
+    "{gh}/out/figures/housing_costs/raw_housing_costs_differences_rent_only.pdf"
+  ),
   plot_rent_premium_rent_only,
   width = 11,
   height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/out/figures/net_urbanpremium_raw_rent_only.pdf"),
+  glue("{gh}/out/figures/housing_costs/net_urbanpremium_raw_rent_only.pdf"),
   plot_raw_rent_only,
   width = 11,
   height = 5
 )
 kfbmisc::tikzsave(
-  glue("{gh}/out/figures/net_urbanpremium_causal_rent_only.pdf"),
+  glue("{gh}/out/figures/housing_costs/net_urbanpremium_causal_rent_only.pdf"),
   plot_group_avgs_rent_only,
   width = 11,
   height = 5

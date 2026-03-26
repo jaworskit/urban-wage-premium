@@ -66,11 +66,35 @@ top15_by_year <- premias |>
   arrange(desc(est_premia)) |>
   filter(.by = year, row_number(desc(est_premia)) <= 15)
 
-top15_by_year |> View()
-
+# top15_by_year |> View()
 
 #' ### Output to Table
 # %%
+top10_1940 <- top15_by_year |>
+  filter(.by = year, row_number(desc(est_premia)) <= 10) |>
+  filter(year == 1940) |>
+  select(metarea, est_premia)
+top10_2010 <- top15_by_year |>
+  filter(.by = year, row_number(desc(est_premia)) <= 10) |>
+  filter(year == 2010) |>
+  select(metarea, est_premia)
+
+tab_top10 <- cbind(top10_1940, top10_2010) |>
+  tt() |>
+  format_tt(
+    j = c(2, 4),
+    fn = scales::label_percent(accuracy = 0.1, suffix = "\\%")
+  )
+
+print(tab_top10, "markdown")
+
+cat(extract_body(tab_top10), sep = "\n")
+cat(
+  extract_body(tab_top10),
+  sep = "\n",
+  file = here("out/tables/summary_stats/top10_1940_2010.tex")
+)
+
 top15_1940 <- top15_by_year |>
   filter(year == 1940) |>
   select(metarea, est_premia)

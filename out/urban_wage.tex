@@ -138,8 +138,8 @@
 
 % Commands for leaving comments \kyle{...}
 \newtoggle{INCLUDECOMMENTS}
-% \toggletrue{INCLUDECOMMENTS}
-\togglefalse{INCLUDECOMMENTS}
+\toggletrue{INCLUDECOMMENTS}
+% \togglefalse{INCLUDECOMMENTS}
 
 \newcommand{\taylor}[1]{\iftoggle{INCLUDECOMMENTS}{{\color{magenta}\textbf{Taylor:} #1}}{}}
 \newcommand{\kyle}[1]{\iftoggle{INCLUDECOMMENTS}{{\color{magenta}\textbf{Kyle:} #1}}{}}
@@ -237,7 +237,7 @@ The shift away from manufacturing in cities could be a driver of the decrease in
 
 While urban workers may have higher wages, they also face larger housing costs, and therefore the real benefit of urban status after adjusting for housing costs may be smaller.
 We calculate a wage measure that adjusts for housing costs following \citet{ganong2017has}.
-Adjusting for housing prices significantly decreases the raw wage premium to around 18 percent in recent years. 
+Adjusting for housing prices significantly decreases the raw wage premium, with the observed net-of-housing premium falling to around 5 percent by the end of our sample period.
 The decline is smallest around 1970 with around a 5 percentage point decline, and larger at the beginning and end of our sample with around 15 percentage point decline. 
 However, our causal estimates are qualitatively similar.
 There is a small decrease in 1940 and 1950, but otherwise our estimates remain stable. 
@@ -378,10 +378,10 @@ Instead, it is sufficient to control for \emph{location averages} of unobservabl
 Since we can not directly measure unobservables, we will draw on the properties of the canonical location choice model in urban economics for a solution.
 As shown by \citet{altonji2018estimating}, this model yields statistics from observable data that we use to isolate the causal wage premium. 
 
-To build intuition on the approach, consider parents deciding where to live and send their children to school. 
-Some parents may have a preference for their children to attend a high quality school; this preference is unobservable in the data.
-If the preference for high quality schools is correlated with the observable education level of parents, then locations with high shares of college-educated workers will tend to be locations with high quality schools. 
-Therefore, under a set of formal conditions we outline below, including the average level of education or the fraction of individuals that have completed college in a location controls for the (unobserved) amenities that drive sorting. 
+To build intuition on the approach, consider parents deciding where to live.
+Some parents may have a preference for living in locations with low crime rates; this preference is an unobservable characteristic in the data.
+If the preference for low crime is correlated with the observable education level of parents, then locations with high shares of college-educated workers will tend to be locations with low crime, an unobservable amenity.
+Therefore, under a set of formal conditions we outline below, including the average level of education (an observable characteristic) or the fraction of individuals that have completed college in a location controls for the unobserved amenities that drive sorting.
 
 In the location choice model, individuals have an indirect utility function over locations $\ell$ that depends on a vector of location-specific amenities, $\bm{A}_\ell$, and the cost to live in that location, ${P}_\ell$: 
 \begin{equation}
@@ -417,7 +417,7 @@ This allows us to rewrite equation (\ref{eq:controls}) to include group-level av
 \end{equation} 
 where $\bar{\bm{X}}_{\ell(i)}$ are the location-specific average of the individual characteristics in $\bm{X}_i$ and additional location-invariant characteristics.
 We include as group-averages the share of white workers; share of residents in all but one of the age groups; share that are veterans; share that are married and together, married and apart, and single; and share with less than a high school degree, share with a high school degree, share with some college, share with BA degree, and share with advanced education.
-We also include a measure of market access calculated as in \citet{Jaworski_Kitchens_2019}.
+We also include a measure of market access, defined as the sum of inverse-distance-weighted populations of surrounding locations, calculated as in \citet{Jaworski_Kitchens_2019}.
 
 Our estimate $\beta_1$ now captures the causal urban wage premium since the group averages control for the sorting of individuals.
 Note that by controlling for the average characteristics of a worker's neighbors, we are, in effect, controlling for peer effects on a worker's wages. 
@@ -493,12 +493,12 @@ Remarkably, our estimates are closely in line with the literature that uses the 
 The overlap of our estimates for the decades since 1980 and previous estimates provides support for our approach using group-level averages to address the potential role of sorting.
 
 Next, we turn to the period from 1940 to 1980, where the previous literature has yet to provide estimates of the urban wage premium.
-In 1940, we find that the urban wage premium was approximately 13 percent.\footnote{
+In 1940, we find that the urban wage premium was approximately 11 percent.\footnote{
 The estimates for 1940 may differ from the estimates in other decades for several reasons. First, the 1940 Census only reports wages for wage workers and not income for all workers. Thus, the composition of employment in 1940 may differ relative to later decades. Second, New Deal labor policies such as the National Industrial Recovery Act (NIRA) aimed at wage earners to restrict hours and raise wages may have had persistent effects after being declared unconstitutional in 1935 \citep{cole2004new,fishback2024labor}. To the extent that cities were more affected by NIRA policy, this may generate larger than expected wage premiums in 1940. Additionally, cities experienced sharp increases in labor demand under lend lease in the buildup to WWII, resulting in subsidies to help accommodate the additional labor via the Lanham Act \citep{herbst2017universal, goldin2025mobilizing}. 
 }
 Given a raw differential of 31 percent, sorting and individual characteristics explain about three-fifths of the urban versus non-urban wage gap.
-Between 1940 and 1960, the estimate remained large with estimates at 16 percent in 1950 and 13 percent in 1960. 
-Starting in 1970, the premium fell substantially until reaching it's current state of about 5 percent in the 1990s.
+Between 1940 and 1960, the estimate remained large with estimates at 15 percent in 1950 and 13 percent in 1960. 
+Starting in 1970, the premium fell substantially until reaching its current state of about 5.5 percent in the 1990s.
 
 The results for the period from 1940 to 1970 are striking.
 Our estimates for this earlier period are more than twice the size of those reported in the literature for the period after 1980.
@@ -528,8 +528,8 @@ Then our housing cost is subtracted from the reported weekly wage to get that in
 
 Figure \ref{fig:raw_net_premium} plots the raw wage premium after subtracting the cost of housing. This figure shows that in the raw data, a portion of the wage premium is extracted by landlords via a higher rent premium. 
 Turning to our causal estimates in Figure \ref{fig:causal_net_premium}, the results after 1970 do not seem to significantly change. 
-However, the estimated wage premium from 1940 to 1960 shrinks slightly to between 5 and 10 percent. 
-These results suggest that some of the causal benefits of cities that accrued to worker was lost to higher rents between 1940 and 1960.
+However, the estimated wage premia for 1940 to 1950 shrink slightly to around 8 and 10 percent. 
+These results suggest that some of the causal benefits of cities that accrued to worker was lost to higher rents between 1940 and 1950.
 
 
 \subsection*{Female Workers}\label{sec:female_wage_premium}
@@ -549,6 +549,8 @@ So far, we have documented the increasing role of sorting in explaining the wage
 Importantly, this pattern may differ substantially throughout the city-size distribution, across regions, or for workers with different characteristics.
 In this section, we examine the role of these factors.
 We present the results in graphical form in Figure \ref{fig:heterogeneity} but complete results are available in appendix Table \ref{tab:heterogeneity}.
+When examining heterogeneity across groups defined by a single characteristic (e.g., city size, region, or industry), we interact the urban indicator with group indicators in a single regression, which allows us to test for differences across groups while using the full sample. 
+When the relevant subgroups are defined by multiple overlapping characteristics (e.g., race, college education, or age), we estimate equation (\ref{eq:AM}) on separate subsamples to avoid a proliferation of interaction terms.
  
 The literature highlights that the urban wage premium is increasing in city size \citep[e.g.][]{BaumSnow_Pavan_2012}.
 To test for heterogeneity in the urban wage premium throughout the city-size distribution, we re-estimate equation \eqref{eq:AM} by estimating separate premiums for large cities (more than 1 million residents) and smaller cities.
@@ -581,7 +583,7 @@ Work by \citet*{ananat2018race} has highlighted the potential for differences in
 We estimate equation \eqref{eq:AM} while interacting urban state with an indicator for race.
 Figure \ref{fig:heterogeneity}E shows the results. 
 Across all years, the Black urban wage premium is estimated to be no smaller than the white premium and is usually larger.
-The Black urban wage premium is estimated to be ten percentage points larger in the middle of the 20th century which is in line with the timing of the Great Migration \citep{boustan2016competition,derenoncourt2022can}.
+The Black urban wage premium is estimated to be between five and ten percentage points larger in the middle of the 20th century which is in line with the timing of the Great Migration \citep{boustan2016competition,derenoncourt2022can}.
 
 \citet*{BaumSnow_Pavan_2012} and \citet*{carlsen2016education} document the urban \emph{wage growth} premium, which shows that cities benefit workers by faster wage growth. 
 Since we do not have panel data, we can not observe wage growth. 
@@ -597,10 +599,10 @@ To understand and role compression of the wage distribution in our setting, we e
 We find a narrowing between 1940 and 1960, and a widening thereafter.\footnote{We present the ninetieth-tenth percentiles to summarize the distribution of the wage residuals for each decade in Figure \ref{fig:9010}A. 
 In Figure \ref{fig:9010}B, we plot the distribution of residuals for urban and non-urban workers.
 }
+Interestingly, this pattern appears the same when estimating deciles in urban and non-urban workers separately. 
 In 1940, urban and non-urban workers had a large left tail in the wage distribution, reflecting many workers who earned very low (residualized) weekly earnings.
 Between 1940 and 1960 this left-tail disappeared, which provides some evidence that a rising floor potentially drove the Great Compression on non-urban wages.\footnote{
 The overall compression and the narrowing of the left-tail are also apparent when using $95^{th}$ and $5^{th}$ percentiles.} 
-Our estimates suggest that the narrowing of the wage distribution occurred in urban and non-urban areas in a similar ways.
 
 
 
@@ -755,19 +757,19 @@ These point estimates serve as our estimate for the causal urban wage premium.
     \caption{Raw Differences}
     \label{fig:raw_net_premium}
     \begin{adjustbox}{width=\textwidth,center}
-      \includegraphics{figures/housing_costs/net_raw.pdf}
+      \includegraphics{figures/housing_costs/net_urbanpremium_raw.pdf}
     \end{adjustbox}
   \end{subfigure}
   \begin{subfigure}{\linewidth}
     \caption{Controlling for Individual Characteristics and Sorting Using Group-Level Averages}
     \label{fig:causal_net_premium}
     \begin{adjustbox}{width=\textwidth,center}
-      \includegraphics{figures/housing_costs/net_causal.pdf}
+      \includegraphics{figures/housing_costs/net_urbanpremium_causal.pdf}
     \end{adjustbox}
   \end{subfigure}
 
   {\footnotesize\singlespacing
-    \textit{Notes:} This figure recreates figures \ref{fig:premium_over_time} and \ref{fig:causal_premium} using a modified wage measure that subtracts off the cost of housing. 
+    \textit{Notes:} This figure recreates figures \ref{fig:premium_over_time} and \ref{fig:causal_premium} using a modified wage measure that subtracts off the cost of housing. ™The sample is restricted to individuals with non-missing housing cost data, which accounts for differences in the ``Weekly Wage'' series relative to Figures \ref{fig:premium_over_time} and \ref{fig:causal_premium}.
   }
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%
@@ -850,12 +852,12 @@ These point estimates serve as our estimate for the causal urban wage premium.
   \vspace{-5mm}
   {\footnotesize\singlespacing
       \textit{Notes:} This figure plots the coefficient for survey-year level estimates of the urban wage premium from equation (\ref{eq:AM}) including the individual-level and group-average controls described in section \ref{sec:sorting} while interacting urban status with various characteristics.  
-      Panel A interacts the urban indicator with an indicator for the top 20 most populous MSA in 1940.
+      Panel A interacts the urban indicator with an indicator for having more than 1 million residents in the given year.
       Panel B interacts the urban indicator with indicators for each census region.
-      Panel C interacts the urban indicator with indicators for each two-digit SOC industry code and presents estimates for the 5 largest industries in terms of employment.
-      Panel D report estimates for separate samples of college- or non-college-educated workers.
-      Panel E report estimates for separate samples of Black and White workers.
-      Panel F\textbf{} report estimates for separate samples of college- or non-college-educated workers.
+      Panel C interacts the urban indicator with indicators for each two-digit SOC industry code and presents estimates for the 5 largest industries in terms of 1940 employment.
+      Panel D reports estimates from separate subsamples of college- and non-college-educated workers.
+      Panel E reports estimates from separate subsamples of White and Black workers. 
+      Panel F reports estimates from separate subsamples defined by age group.
   }
 \end{figure}
 %%%%%%%%%%%%%%%%%
@@ -915,7 +917,7 @@ These point estimates serve as our estimate for the causal urban wage premium.
       % Body
       \toprule
 
-      \input{tables/summary_stats/summary.tex}
+\input{tables/summary_stats/summary.tex}
 
       \bottomrule
     \end{tabular}
@@ -953,28 +955,7 @@ The data cleaning process is described in Section \ref{sec:data}.
       % Body
       \toprule
 
-% Flint, MI & 47.9\% & San Jose-Sunnyvale-Santa Clara, CA & 63.2\% \\ 
-% Detroit, MI & 46.0\% & Bridgeport-Stamford-Norwalk, CT & 54.7\% \\ 
-% Washington DC, MD/VA/WV & 45.7\% & San Francisco-San Mateo-Redwood City,CA & 52.0\% \\ 
-% San Francisco, CA & 44.0\% & Washington-Arlington-Alexandria DC-VA & 42.9\% \\ 
-% Seattle-Everett, WA & 41.7\% & Boston-Quincy, MA & 42.7\% \\ 
-% Lansing-East Lansing, MI & 41.0\% & Seattle-Bellevue-Everett, WA & 42.2\% \\ 
-% New York, NY & 40.2\% & Santa Cruz-Watsonville, CA & 36.7\% \\ 
-% Sacramento, CA & 39.2\% & Trenton-Ewing, NJ & 36.1\% \\ 
-% Chicago, IL & 38.8\% & Midland, TX & 34.0\% \\ 
-% Rochester, NY & 38.1\% & Baltimore-Towson, MD & 33.6\% \\ 
-
-Flint, MI & 48.4\% & Stamford, CT & 80.5\% \\
-Detroit, MI & 45.9\% & Danbury, CT & 56.9\% \\
-San Francisco-Oakland-Vallejo, CA & 43.4\% & San Jose, CA & 51.5\% \\
-Seattle-Everett, WA & 42.6\% & Washington, DC/MD/VA & 46.5\% \\
-Washington, DC/MD/VA & 42.3\% & Monmouth-Ocean, NJ & 45.5\% \\
-Lansing-East Lansing, MI & 38.8\% & Boston, MA& 41.5\% \\
-Sacramento, CA & 38.6\% & Trenton, NJ & 41.3\% \\
-New York, NY & 38.4\% & Bridgeport, CT & 41.2\% \\
-Milwaukee, WI & 38.1\% & San Francisco, CA & 39.6\% \\
-Rochester, NY & 38.1\% & Nashua, NH & 37.7\% \\
-    
+\input{tables/summary_stats/top10_1940_2010.tex} 
 
       \bottomrule
     \end{tabular}
@@ -1011,30 +992,61 @@ Rochester, NY & 38.1\% & Nashua, NH & 37.7\% \\
 
       % Body
       \toprule
-      
-\multicolumn{9}{l}{\hspace{-2.5mm}{\bfseries \itshape Panel A: Raw Wage Premium}} \\
-$\text{Urban} = 1$ & 0.3162$^{***}$ & 0.2208$^{***}$ & 0.2288$^{***}$ & 0.2109$^{***}$ & 0.1692$^{***}$ & 0.1939$^{***}$ & 0.2014$^{***}$ & 0.1898$^{***}$\\
-& (0.0192) & (0.0131) & (0.0134) & (0.0119) & (0.0110) & (0.0158) & (0.0144) & (0.0155)\\
-\midrule
 
-\multicolumn{9}{l}{\hspace{-2.5mm}{\bfseries \itshape Panel B: Individual Controls}} \\
-$\text{Urban} = 1$ & 0.2822$^{***}$ & 0.2012$^{***}$ & 0.2038$^{***}$ & 0.1833$^{***}$ & 0.1334$^{***}$ & 0.1609$^{***}$ & 0.1566$^{***}$ & 0.1414$^{***}$\\
-& (0.0186) & (0.0125) & (0.0123) & (0.0119) & (0.0116) & (0.0163) & (0.0125) & (0.0127)\\
-\midrule
-
-\multicolumn{9}{l}{\hspace{-2.5mm}{\bfseries \itshape Panel C: Individual Controls \& Group Averages}} \\
-$\text{Urban} = 1$ & 0.1216$^{***}$ & 0.1506$^{***}$ & 0.1251$^{***}$ & 0.0883$^{***}$ & 0.0731$^{***}$ & 0.0487$^{***}$ & 0.0359$^{***}$ & 0.0499$^{***}$\\
-& (0.0144) & (0.0167) & (0.0144) & (0.0154) & (0.0171) & (0.0160) & (0.0137) & (0.0147)\\
-\midrule
-
-Observations & 2,504,957 & 68,457 & 1,364,524 & 280,338 & 1,907,943 & 2,260,990 & 2,582,144 & 2,718,970\\
+\input{tables/urban_premium/ests.tex}
 
       \bottomrule
     \end{tabular}
         
     % Notes 
     \begin{tablenotes}[flushleft]\footnotesize
-        \item\textit{Notes.} This table reports coefficient for survey-year level estimates of the urban wage premium from equation (\ref{eq:controls}) with three different level of controls.
+        \item\textit{Notes.} This table reports coefficient for survey-year level estimates of the urban wage premium from equation (\ref{eq:controls}) with three different level of controls using our main sample of male workers.
+The first section includes no controls and represents the urban wage premium observed in the data.
+The second section includes controls for age in 5-year bins, education levels, and an indicator for being White.
+The final section includes group-average variables following the methodology in Section \ref{sec:sorting}.
+These point estimates serve as our estimate for the causal urban wage premium.
+        
+        \item Signif.
+Codes: $^{***}$: 0.01, $^{**}$: 0.05, $^{*}$: 0.1.
+Standard errors are clustered  by MSA/CBSA.
+    \end{tablenotes}
+  \end{threeparttable}
+  }
+
+\end{table}
+%%%%%%%%%%%
+
+\newpage\clearpage
+
+%%%%%%%%%%%%%%%%
+\begin{table}[ht]
+  \caption{Estimates of the Urban Wage Premium for Female Workers, 1940-2010}
+  \label{tab:female_wage_premium}
+  \renewcommand{\arraystretch}{1.25}
+
+  \resizebox{\columnwidth}{!}{
+  \begin{threeparttable}
+    \begin{tabular}{@{} l *{8}{c} @{}}
+      % Head
+      \toprule
+
+      & \multicolumn{8}{c}{$\log(\text{Weekly Wage})$}\\
+      \cmidrule{2-9}
+      
+      & 1940 & 1950 & 1960 & 1970 & 1980 & 1990 & 2000 & 2010 \\
+        
+
+      % Body
+      \toprule
+
+\input{tables/urban_premium/female_ests.tex}
+
+      \bottomrule
+    \end{tabular}
+        
+    % Notes 
+    \begin{tablenotes}[flushleft]\footnotesize
+        \item\textit{Notes.} This table reports coefficient for survey-year level estimates of the urban wage premium from equation (\ref{eq:controls}) with three different level of controls using our sample of female workers.
 The first section includes no controls and represents the urban wage premium observed in the data.
 The second section includes controls for age in 5-year bins, education levels, and an indicator for being White.
 The final section includes group-average variables following the methodology in Section \ref{sec:sorting}.
@@ -1086,13 +1098,13 @@ Standard errors are clustered  by MSA/CBSA.
 
 \midrule
 
-\multicolumn{9}{l}{\hspace{-2.5mm}{\bfseries \itshape Panel D: Education}} \\
+\multicolumn{9}{l}{\hspace{-2.5mm}{\bfseries \itshape Panel C: Education}} \\
 
 \input{tables/heterogeneity/by_college}
 
 \midrule
 
-\multicolumn{9}{l}{\hspace{-2.5mm}{\bfseries \itshape Panel C: Race}} \\
+\multicolumn{9}{l}{\hspace{-2.5mm}{\bfseries \itshape Panel D: Race}} \\
 
 \input{tables/heterogeneity/by_race}
 
@@ -1108,7 +1120,7 @@ Standard errors are clustered  by MSA/CBSA.
         
     % Notes 
     \begin{tablenotes}[flushleft]\footnotesize
-        \item\textit{Notes.} This table reports coefficient and standard errors corresponding to Figures \ref{fig:heterogeneity}.
+        \item\textit{Notes.} This table reports coefficient and standard errors corresponding to Figures \ref{fig:heterogeneity}. Panels A and B report results from specifications that interact the urban indicator with group indicators. Panels C, D, and E report results from separate subsamples.
         
         \item Signif.
 Codes: $^{***}$: 0.01, $^{**}$: 0.05, $^{*}$: 0.1.
@@ -1142,7 +1154,6 @@ Standard errors are clustered  by MSA/CBSA.
       % Body
       \toprule
 
-
 \input{tables/heterogeneity/by_occupation}
 
       \bottomrule
@@ -1150,7 +1161,7 @@ Standard errors are clustered  by MSA/CBSA.
         
     % Notes 
     \begin{tablenotes}[flushleft]\footnotesize
-        \item\textit{Notes.} This table reports coefficient and standard errors corresponding to Figures \ref{fig:heterogeneity}.
+        \item\textit{Notes.} This table reports coefficient and standard errors corresponding to Figures \ref{fig:heterogeneity}. The results come from specifications that interact the urban indicator with industry indicators.
         
         \item Signif.
 Codes: $^{***}$: 0.01, $^{**}$: 0.05, $^{*}$: 0.1.

@@ -9,7 +9,7 @@ library(collapse)
 library(kfbmisc)
 
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
-source("code/utils/calculate_group_averages.R")
+source(here("code/utils/calculate_group_averages.R"))
 
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
   arrow::open_dataset() |>

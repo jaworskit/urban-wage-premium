@@ -3,13 +3,14 @@ library(tidyverse)
 library(glue)
 library(arrow)
 library(collapse)
+library(here)
 # remotes::install_github("kylebutts/kfbmisc")
 library(kfbmisc)
 
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 gh <- "~/Documents/Projects/urban-wage-premium"
 
-source("code/utils/calculate_group_averages.R")
+source(here("code/utils/calculate_group_averages.R"))
 
 group_averages <- c(
   "share_nonwhite",

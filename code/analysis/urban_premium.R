@@ -12,9 +12,6 @@ dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 source(here("code/utils/calculate_group_averages.R"))
 
 # %%
-here()
-
-# %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
   arrow::open_dataset() |>
   filter(ind_main_sample == TRUE) |>
@@ -99,10 +96,10 @@ ests <- map(year_seq, function(y) {
   est_group <- feols(
     ln_weeklywage ~
       i(urban) +
-        ..individual_controls +
-        ln_ma_removeown +
-        ..group_averages |
-        ..individual_fe,
+      ..individual_controls +
+      ln_ma_removeown +
+      ..group_averages |
+      ..individual_fe,
     data = data_y,
     weights = ~perwt,
     cluster = ~metarea,

@@ -9,7 +9,7 @@ library(collapse)
 library(kfbmisc)
 
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
-source("code/utils/calculate_group_averages.R")
+source(here("code/utils/calculate_group_averages.R"))
 
 options(pillar.print_max = 30)
 
@@ -263,7 +263,7 @@ plot_ests <- function(ests, which_groups, base_size = 16) {
     ) +
     scale_y_continuous(
       labels = scales::label_percent(suffix = "\\%"),
-      limits = c(-0.05, 0.54),
+      limits = c(-0.05, 0.6),
       expand = c(0, 0)
     ) +
     scale_x_continuous(breaks = seq(1940, 2010, by = 10)) +

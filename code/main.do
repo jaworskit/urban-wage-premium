@@ -66,7 +66,7 @@ shell Rscript code/analysis/female_urban_premium.R
 * Robustness checks on main estimates
 shell Rscript code/analysis/robustness_full_time_employees.R
 shell Rscript code/analysis/importance_of_market_access.R
-shell Rscript code/analysis/plot_leave_one_out_group_averages.R
+shell Rscript code/analysis/leave_one_out_group_averages.R
 
 * Net-of-housing-costs
 shell Rscript code/analysis/housing_costs.R
@@ -74,6 +74,7 @@ shell Rscript code/analysis/housing_costs.R
 * Heterogeneity
 shell Rscript code/analysis/heterogeneity.R
 
-* Distributional estiamtes
+* Distributional estimates
 shell Rscript code/analysis/distribution.R
+* shell Rscript code/analysis/convergence.R
 

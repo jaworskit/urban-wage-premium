@@ -9,7 +9,7 @@ library(collapse)
 library(kfbmisc)
 
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
-source("code/utils/calculate_group_averages.R")
+source(here("code/utils/calculate_group_averages.R"))
 
 options(pillar.print_max = 30)
 

@@ -11,7 +11,7 @@ library(kfbmisc)
 dropbox <- "~/Dropbox/Projects/UrbanWagePremium"
 gh <- "~/Documents/Projects/urban-wage-premium"
 
-source("code/utils/calculate_group_averages.R")
+source(here("code/utils/calculate_group_averages.R"))
 
 # %%
 data <- glue("{dropbox}/data/parquet/urban_wage") |>
